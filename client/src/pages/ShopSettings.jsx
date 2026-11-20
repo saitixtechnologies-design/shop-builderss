@@ -1180,79 +1180,20 @@ const ShopSettings = () => {
                         </div>
 
                         <div>
-                            <h2>Website Status</h2>
+                            <h2>Owner's website switch</h2>
 
                             <p>
-                                Control public website availability
+                                The shop owner opens or closes their website here. You can't change it:
+                                to stop a shop, use Suspend on the Shops page.
                             </p>
                         </div>
 
                     </div>
 
-                    <div className="shop-settings-status-options">
-
-                        <label
-                            className={
-                                form.websiteStatus === "Active"
-                                    ? "active"
-                                    : ""
-                            }
-                        >
-
-                            <input
-                                type="radio"
-                                name="websiteStatus"
-                                value="Active"
-                                checked={
-                                    form.websiteStatus === "Active"
-                                }
-                                onChange={handleChange}
-                            />
-
-                            <span className="status-dot active-dot" />
-
-                            <div>
-                                <strong>Active</strong>
-
-                                <small>
-                                    Public website is available
-                                </small>
-                            </div>
-
-                        </label>
-
-
-                        <label
-                            className={
-                                form.websiteStatus === "Inactive"
-                                    ? "inactive"
-                                    : ""
-                            }
-                        >
-
-                            <input
-                                type="radio"
-                                name="websiteStatus"
-                                value="Inactive"
-                                checked={
-                                    form.websiteStatus === "Inactive"
-                                }
-                                onChange={handleChange}
-                            />
-
-                            <span className="status-dot inactive-dot" />
-
-                            <div>
-                                <strong>Inactive</strong>
-
-                                <small>
-                                    Public website is disabled
-                                </small>
-                            </div>
-
-                        </label>
-
-                    </div>
+                    <p className={`shop-settings-owner-status ${form.websiteStatus === "Active" ? "is-open" : "is-closed"}`}>
+                        <span className="status-dot" />
+                        {form.websiteStatus === "Active" ? "Open: the owner has the website switched on" : "Closed: the owner has switched the website off"}
+                    </p>
 
                 </section>
 

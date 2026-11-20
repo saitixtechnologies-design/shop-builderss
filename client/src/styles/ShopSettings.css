@@ -535,3 +535,8 @@
         flex: 1;
     }
 }
+/* Super admin view of the owner's own website switch (read-only). */
+.shop-settings-owner-status { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 10px 14px; border-radius: 10px; font-weight: 600; }
+.shop-settings-owner-status .status-dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.shop-settings-owner-status.is-open { background: #ecfdf5; color: #047857; }
+.shop-settings-owner-status.is-closed { background: #fef2f2; color: #b91c1c; }

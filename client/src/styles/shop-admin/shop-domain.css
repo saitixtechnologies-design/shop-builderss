@@ -1,0 +1,107 @@
+/* "Website address" card in Shop Settings (ShopDomainCard.jsx). Matches the settings cards. */
+
+.domain-card .domain-muted { margin: 4px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6; }
+
+.domain-addresses { display: grid; gap: 10px; }
+.domain-address-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+}
+.domain-address-copy { display: grid; gap: 3px; min-width: 0; }
+.domain-address-copy span { color: #6b7280; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.domain-address-copy a { overflow: hidden; color: #1d4ed8; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
+.domain-address-copy a:hover { text-decoration: underline; }
+.domain-address-copy em { color: #6b7280; font-size: 13px; font-style: normal; }
+.domain-address-actions { display: flex; flex: none; gap: 6px; }
+.domain-address-actions > * {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+}
+.domain-address-actions > *:hover { border-color: #2563eb; color: #2563eb; }
+
+.domain-own { margin-top: 24px; padding-top: 20px; border-top: 1px solid #f0f0f0; }
+.domain-own h3 { margin: 0; color: #111827; font-size: 16px; }
+
+.domain-status-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
+.domain-status-row strong { color: #111827; font-size: 16px; overflow-wrap: anywhere; }
+.domain-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.domain-badge.is-active { background: #ecfdf5; color: #047857; }
+.domain-badge.is-pending { background: #fffbeb; color: #b45309; }
+
+.domain-form { display: grid; gap: 7px; margin-top: 16px; }
+.domain-form label { color: #374151; font-size: 13px; font-weight: 600; }
+.domain-form > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.domain-form input {
+    flex: 1 1 240px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    color: #111827;
+    font-size: 15px;
+}
+.domain-form input:focus { border-color: #2563eb; outline: 3px solid #2563eb22; }
+.domain-form small { color: #6b7280; font-size: 12px; }
+
+.domain-primary, .domain-secondary, .domain-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.domain-primary { border: 0; background: #2563eb; color: #fff; }
+.domain-primary:hover { background: #1d4ed8; }
+.domain-secondary { border: 1px solid #d1d5db; background: #fff; color: #374151; }
+.domain-danger { border: 1px solid #fecaca; background: #fff; color: #b91c1c; }
+.domain-danger:hover { background: #fef2f2; }
+.domain-primary:disabled, .domain-secondary:disabled, .domain-danger:disabled { opacity: .6; cursor: wait; }
+.is-spinning { animation: domain-spin 1s linear infinite; }
+@keyframes domain-spin { to { transform: rotate(360deg); } }
+
+.domain-steps { display: grid; gap: 12px; margin: 18px 0 0; padding-left: 20px; color: #374151; font-size: 14px; line-height: 1.6; }
+.domain-records { display: grid; gap: 6px; margin-top: 10px; }
+.domain-record {
+    display: grid;
+    grid-template-columns: 70px minmax(90px, 1fr) minmax(0, 2fr) 36px;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+}
+.domain-record.is-head { padding-top: 0; padding-bottom: 0; border: 0; background: none; color: #6b7280; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.domain-record code { padding: 3px 6px; border-radius: 6px; background: #f3f4f6; color: #111827; font-size: 13px; overflow-wrap: anywhere; }
+.domain-record button { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; color: #374151; cursor: pointer; }
+
+.domain-note { margin: 16px 0 0; padding: 12px 14px; border-radius: 10px; background: #eff6ff; color: #1e3a8a; font-size: 13px; line-height: 1.6; }
+.domain-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+/* Phones: records stack as labelled rows. */
+@media (max-width: 640px) {
+    .domain-record.is-head { display: none; }
+    .domain-record { grid-template-columns: 1fr 36px; gap: 6px; }
+    .domain-record > span { grid-column: 1; display: flex; gap: 8px; align-items: baseline; }
+    .domain-record > span::before { content: attr(data-label); min-width: 46px; color: #6b7280; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .domain-record button { grid-column: 2; grid-row: 1 / span 3; }
+    .domain-actions > button { flex: 1 1 auto; }
+}

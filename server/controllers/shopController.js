@@ -2,6 +2,7 @@ import sql from "mssql";
 import bcrypt from "bcryptjs";
 
 import { getDB } from "../config/db.js";
+import { forgetShopStatus } from "../middleware/authMiddleware.js";
 
 const templateOptionsByType = { Ecommerce: ["editorial", "minimal", "boutique", "bold"], Service: ["studio", "serene", "modern"] };
 const defaultTemplateByType = { Ecommerce: "editorial", Service: "studio" };
@@ -313,7 +314,9 @@ export const getAllShops = async (req, res) => {
                         WebsiteTemplate,
                         Status,
                         CreatedAt,
-                        UpdatedAt
+                        UpdatedAt,
+                        -- The owner's own website switch (read-only for the super admin)
+                        (SELECT TOP 1 ss.WebsiteStatus FROM dbo.ShopSettings ss WHERE ss.ShopID = dbo.Shops.ShopID) AS OwnerWebsiteStatus
 
                     FROM dbo.Shops
 
@@ -896,12 +899,16 @@ export const toggleShopStatus = async (req, res) => {
             `);
 
 
+        forgetShopStatus(id);
+
         return res.status(200).json({
 
             success: true,
 
             message:
-                `Shop ${newStatus.toLowerCase()} successfully.`,
+                newStatus === "Active"
+                    ? "Shop is active again. The owner can sign in, and the website shows if the owner has it open."
+                    : "Shop suspended. Its website is offline and the owner cannot sign in until you activate it.",
 
             status:
                 newStatus

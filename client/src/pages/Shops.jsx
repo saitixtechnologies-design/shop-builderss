@@ -485,7 +485,7 @@ const Shops = () => {
                     </div>
 
                     <div>
-                        <span>Inactive Shops</span>
+                        <span>Suspended Shops</span>
                         <strong>{inactiveShops}</strong>
                     </div>
                 </div>
@@ -671,27 +671,38 @@ const Shops = () => {
                                                 {/* STATUS */}
 
                                                 <td>
+                                                    {/* Platform switch (super admin only). Suspending takes the
+                                                        website offline and locks the owner out; the owner's own
+                                                        website switch below is separate and read-only here. */}
                                                     <button
                                                         className={`status-badge ${
                                                             shop.Status?.toLowerCase()
                                                         }`}
-                                                        onClick={() =>
-                                                            handleToggleStatus(
-                                                                shop
-                                                            )
-                                                        }
+                                                        onClick={() => {
+                                                            if (
+                                                                shop.Status === "Active" &&
+                                                                !window.confirm(`Suspend ${shop.ShopName}? Its website goes offline and the owner cannot sign in until you activate it again.`)
+                                                            ) return;
+                                                            handleToggleStatus(shop);
+                                                        }}
                                                         disabled={
                                                             statusId ===
                                                             shop.ShopID
                                                         }
+                                                        title={shop.Status === "Active" ? "Click to suspend this shop" : "Click to activate this shop"}
                                                     >
                                                         <i></i>
 
                                                         {statusId ===
                                                         shop.ShopID
                                                             ? "Updating..."
-                                                            : shop.Status}
+                                                            : shop.Status === "Active" ? "Active" : "Suspended"}
                                                     </button>
+                                                    <small className="shop-owner-switch">
+                                                        Owner: {(shop.OwnerWebsiteStatus || "Active") === "Active" ? "Open" : "Closed"}
+                                                        {" · "}
+                                                        Live: {shop.Status === "Active" && (shop.OwnerWebsiteStatus || "Active") === "Active" ? "Yes" : "No"}
+                                                    </small>
                                                 </td>
 
                                                 {/* CREATED */}

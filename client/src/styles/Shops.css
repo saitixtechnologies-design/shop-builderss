@@ -1316,3 +1316,6 @@
     gap: 6px;
 }
 
+
+/* Owner's own website switch and whether the shop is live, under the platform status. */
+.shop-owner-switch { display: block; margin-top: 6px; color: #6b7280; font-size: 11px; white-space: nowrap; }

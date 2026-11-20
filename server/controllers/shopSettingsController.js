@@ -821,10 +821,13 @@ export const updateShopSettings = async (req, res) => {
                     : current.YouTubeURL;
 
 
+            // The website on/off switch belongs to the shop owner. The super admin stops a shop with
+            // Shops.Status (Suspend on the Shops page) instead, so the two never overwrite each other.
+            const callerIsOwner = String(req.user?.role || "").toLowerCase().replace(/[ _-]/g, "") === "shopadmin";
             const finalWebsiteStatus =
-                websiteStatus !== undefined
-                    ? cleanValue(websiteStatus) || "Active"
-                    : current.WebsiteStatus;
+                callerIsOwner && websiteStatus !== undefined
+                    ? (cleanValue(websiteStatus) === "Inactive" ? "Inactive" : "Active")
+                    : current.WebsiteStatus || "Active";
 
 
             const finalPrimaryColor =
@@ -990,7 +993,11 @@ export const updateShopSettings = async (req, res) => {
                 )
                 .input(
                     "WebsiteStatus",
-                    cleanValue(websiteStatus) || "Active"
+                    // Only the owner chooses; a first save by the super admin starts the website open.
+                    String(req.user?.role || "").toLowerCase().replace(/[ _-]/g, "") === "shopadmin" &&
+                        cleanValue(websiteStatus) === "Inactive"
+                        ? "Inactive"
+                        : "Active"
                 );
 
 

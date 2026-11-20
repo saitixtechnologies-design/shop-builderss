@@ -1,12 +1,48 @@
 import { createBoldTemplate, loadBoldFonts, mountBold } from "./bold-storefront.js";
 
 const API_BASE = window.SHOP_API_BASE || "http://localhost:5001/api/public/shops";
-const routeSegments = location.pathname.split("/").filter(Boolean).map((segment) => {
+const PLATFORM_DOMAIN = String(window.SHOP_PLATFORM_DOMAIN || "").toLowerCase();
+const RESERVED_SUBDOMAINS = new Set(["www", "api", "admin", "app", "mail"]);
+
+const pathSegments = (pathname) => pathname.split("/").filter(Boolean).map((segment) => {
   try { return decodeURIComponent(segment); } catch { return segment; }
 });
+
+/**
+ * How this storefront was opened (see DOMAINS.md):
+ * - "path":      any address + /shop/<slug>/...      (always works)
+ * - "subdomain": <slug>.<platform domain>/...        (free address for every shop)
+ * - "domain":    www.ownshop.com/...                 (the shop's own domain; the API says which shop)
+ * In the last two, the shop's pages live at the root: /product/…, /about, /offers.
+ */
+function storefrontAddress() {
+  const host = location.hostname.toLowerCase();
+  const segments = pathSegments(location.pathname);
+  if (segments[0] === "shop") return { mode: "path", slug: segments[1] || "" };
+  if (PLATFORM_DOMAIN && host.endsWith(`.${PLATFORM_DOMAIN}`)) {
+    const sub = host.slice(0, -(PLATFORM_DOMAIN.length + 1));
+    if (sub && !sub.includes(".") && !RESERVED_SUBDOMAINS.has(sub)) return { mode: "subdomain", slug: sub };
+  }
+  const platformHost = !PLATFORM_DOMAIN || host === PLATFORM_DOMAIN || host === `www.${PLATFORM_DOMAIN}` ||
+    ["localhost", "127.0.0.1"].includes(host) || host.endsWith(".vercel.app");
+  if (platformHost) return { mode: "path", slug: segments.at(-1) || "" };
+  return { mode: "domain", slug: "" };
+}
+
+const address = storefrontAddress();
+const atRoot = address.mode !== "path";
+
+/** The shop's own route (["product", "x"], ["about"], …) for a path, or null if it is not this shop's. */
+function routeFromPath(pathname, slug) {
+  const segments = pathSegments(pathname);
+  if (atRoot) return segments;
+  if (segments[0] !== "shop" || String(segments[1] || "").toLowerCase() !== String(slug || "").toLowerCase()) return null;
+  return segments.slice(2);
+}
+
 const state = {
-  slug: routeSegments[0] === "shop" ? (routeSegments[1] || "") : (routeSegments.at(-1) || ""),
-  route: routeSegments[0] === "shop" ? routeSegments.slice(2) : [],
+  slug: address.slug,
+  route: routeFromPath(location.pathname, address.slug) || [],
   shop: null,
   settings: {},
   categories: [],
@@ -67,8 +103,10 @@ const safeUrl = (value, fallback = "") => {
     const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(source);
     const isProtocolRelative = source.startsWith("//");
     const isBareDomain = /^(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:\:\d+)?(?:\/|[?#]|$)/i.test(source);
+    // On a subdomain / own domain, a saved "/shop/<this shop>/x" link becomes "/x".
+    const ownPrefix = `/shop/${String(state.shop?.ShopSlug || state.slug).toLowerCase()}`;
     const internalPath = source.startsWith("/shop/")
-      ? source
+      ? (atRoot && source.toLowerCase().startsWith(ownPrefix) ? source.slice(ownPrefix.length) || "/" : source)
       : `${shopHomeUrl()}/${source.replace(/^\/+/, "")}`;
     const url = new URL(hasScheme || isProtocolRelative ? source : isBareDomain ? `https://${source}` : internalPath, location.origin);
     return ["http:", "https:", "mailto:", "tel:"].includes(url.protocol) ? escapeHTML(url.href) : fallback;
@@ -110,14 +148,17 @@ const imageMarkup = (value, alt = "", className = "") => {
 };
 const safeCssImage = (value) => safeImage(value, "").replace(/[\s'"()\\]/g, (char) => `%${char.charCodeAt(0).toString(16)}`);
 const getCartKey = () => `shop-cart:${isPreview ? "preview-" : ""}${state.slug}`;
-const shopHomeUrl = () => `/shop/${encodeURIComponent(state.shop?.ShopSlug || state.slug)}`;
+// Base for the shop's links: "/shop/<slug>" on the platform address, "" on a subdomain or own domain.
+const shopHomeUrl = () => (atRoot ? "" : `/shop/${encodeURIComponent(state.shop?.ShopSlug || state.slug)}`);
+/** Link to the shop's home page (never an empty href). */
+const shopHomeHref = () => shopHomeUrl() || "/";
 const isEcommerceShop = () => String(state.shop?.ShopType || "Ecommerce").toLowerCase() === "ecommerce";
 const activeTemplate = () => String(previewTemplate || state.shop?.WebsiteTemplate || "").trim().toLowerCase().replace(/[^a-z-]/g, "");
 const isBoldTemplate = () => isEcommerceShop() && activeTemplate() === "bold";
 
 let boldTemplate = null;
 const bold = () => (boldTemplate ??= createBoldTemplate({
-  state, escapeHTML, money, safeImage, safeUrl, icon, shopHomeUrl, normalizeWhatsAppNumber, getProductSizes, isSoldOut, isPreview, cartCount, cartSubtotal,
+  state, escapeHTML, money, safeImage, safeUrl, icon, shopHomeUrl, shopHomeHref, normalizeWhatsAppNumber, getProductSizes, isSoldOut, isPreview, cartCount, cartSubtotal,
   renderHeader, renderProductCards, renderShopBrands, renderCouponOffers, renderCartDrawer, renderCheckout
 }));
 
@@ -357,7 +398,25 @@ function hydrateShopData(data) {
   };
   state.pages = Array.isArray(data.pages) ? data.pages : [];
 }
+/** On a shop's own domain, ask the API which shop it belongs to. */
+async function findShopForThisDomain() {
+  try {
+    const response = await fetch(`${API_BASE}/by-domain/${encodeURIComponent(location.hostname.toLowerCase())}`);
+    const result = await response.json();
+    return response.ok && result.success ? String(result.data?.slug || "") : "";
+  } catch {
+    return "";
+  }
+}
+
 async function loadShop() {
+  if (address.mode === "domain" && !state.slug) {
+    state.slug = await findShopForThisDomain();
+    if (!state.slug) {
+      renderNotFound("This web address is not connected to a shop yet. If it is your domain, finish the steps in Shop Admin → Shop Settings → Website address.");
+      return;
+    }
+  }
   if (!state.slug || state.slug === "shop") {
     renderNotFound("Open your shop using its public link: /shop/your-shop-slug");
     return;
@@ -441,8 +500,8 @@ function getNavigationItems(isEcommerce) {
     items.push({ key, label, href });
   };
 
-  add("home", "Home", shopUrl);
-  if (isEcommerce) add("shop", "Shop", `${shopUrl}#collections`);
+  add("home", "Home", shopHomeHref());
+  if (isEcommerce) add("shop", "Shop", `${shopHomeHref()}#collections`);
   else add("services", "Services", `${shopUrl}/services`);
 
   const aboutIndex = state.pages.findIndex((page) => String(page.PageType || "").toLowerCase() === "about");
@@ -491,14 +550,14 @@ function updateSearchSuggestions() {
   host.querySelectorAll("[data-search-category]").forEach((button) => button.addEventListener("click", () => {
     state.activeCategory = button.dataset.searchCategory;
     state.query = "";
-    if (state.route.length) { location.href = `${shopHomeUrl()}?category=${encodeURIComponent(state.activeCategory)}#collections`; return; }
+    if (state.route.length) { location.href = `${shopHomeHref()}?category=${encodeURIComponent(state.activeCategory)}#collections`; return; }
     render();
     document.querySelector("#collections")?.scrollIntoView({ behavior: "smooth" });
   }));
   host.querySelectorAll("[data-search-brand]").forEach((button) => button.addEventListener("click", () => {
     state.query = button.dataset.searchBrand;
     state.activeCategory = "all";
-    if (state.route.length) { location.href = `${shopHomeUrl()}?q=${encodeURIComponent(state.query)}#collections`; return; }
+    if (state.route.length) { location.href = `${shopHomeHref()}?q=${encodeURIComponent(state.query)}#collections`; return; }
     render();
     document.querySelector("#collections")?.scrollIntoView({ behavior: "smooth" });
     document.querySelector("#site-search")?.focus();
@@ -514,7 +573,7 @@ function renderHeader(isEcommerce) {
   const mobileNavigation = renderNavigation(isEcommerce, true);
   return `
     <header class="site-header">
-      <a class="brand" href="${shopHomeUrl()}" aria-label="${escapeHTML(shop.ShopName || "Shop home")}">
+      <a class="brand" href="${shopHomeHref()}" aria-label="${escapeHTML(shop.ShopName || "Shop home")}">
         ${logoImage ? `<img class="brand-logo" src="${logoImage}" alt="${escapeHTML(shop.ShopName || "Shop logo")}">` : `<span class="brand-monogram">${escapeHTML((shop.ShopName || "S").slice(0, 1))}</span>`}
         <span class="brand-copy"><strong>${escapeHTML(shop.ShopName || "Your shop")}</strong><small>${escapeHTML(settings.Tagline || "A little shop with a lot of heart")}</small></span>
       </a>
@@ -532,7 +591,7 @@ function renderFooter() {
   const settings = state.settings || {};
   const logo = settings.ShopLogo || shop.LogoURL;
   const logoImage = safeImage(logo);
-  return `${renderFooterDiscovery()}<footer class="site-footer page-gutter"><a class="brand footer-brand" href="${shopHomeUrl()}">${logoImage ? `<img class="brand-logo" src="${logoImage}" alt="">` : `<span class="brand-monogram">${escapeHTML((shop.ShopName || "S").slice(0, 1))}</span>`}<span class="brand-copy"><strong>${escapeHTML(shop.ShopName || "Your shop")}</strong><small>${escapeHTML(settings.Tagline || "A little shop with a lot of heart")}</small></span></a><span>${escapeHTML([settings.Address, settings.City, settings.State].filter(Boolean).join(", ") || "Made with care, for the people around us.")}</span><div class="footer-social">${settings.InstagramURL ? `<a href="${safeUrl(settings.InstagramURL)}" target="_blank" rel="noreferrer" aria-label="Instagram">${icon("instagram", 18)}</a>` : ""}${settings.Email ? `<a href="mailto:${escapeHTML(settings.Email)}" aria-label="Email us">${icon("mail", 18)}</a>` : ""}${settings.Phone || shop.Phone ? `<a href="tel:${escapeHTML(settings.Phone || shop.Phone)}" aria-label="Call us">${icon("phone", 18)}</a>` : ""}</div><small>© ${new Date().getFullYear()} ${escapeHTML(shop.ShopName || "Your shop")}</small></footer>`;
+  return `${renderFooterDiscovery()}<footer class="site-footer page-gutter"><a class="brand footer-brand" href="${shopHomeHref()}">${logoImage ? `<img class="brand-logo" src="${logoImage}" alt="">` : `<span class="brand-monogram">${escapeHTML((shop.ShopName || "S").slice(0, 1))}</span>`}<span class="brand-copy"><strong>${escapeHTML(shop.ShopName || "Your shop")}</strong><small>${escapeHTML(settings.Tagline || "A little shop with a lot of heart")}</small></span></a><span>${escapeHTML([settings.Address, settings.City, settings.State].filter(Boolean).join(", ") || "Made with care, for the people around us.")}</span><div class="footer-social">${settings.InstagramURL ? `<a href="${safeUrl(settings.InstagramURL)}" target="_blank" rel="noreferrer" aria-label="Instagram">${icon("instagram", 18)}</a>` : ""}${settings.Email ? `<a href="mailto:${escapeHTML(settings.Email)}" aria-label="Email us">${icon("mail", 18)}</a>` : ""}${settings.Phone || shop.Phone ? `<a href="tel:${escapeHTML(settings.Phone || shop.Phone)}" aria-label="Call us">${icon("phone", 18)}</a>` : ""}</div><small>© ${new Date().getFullYear()} ${escapeHTML(shop.ShopName || "Your shop")}</small></footer>`;
 }
 
 function renderFooterDiscovery() {
@@ -713,7 +772,7 @@ function renderOffersPage() {
   const shopName = state.shop?.ShopName || "our shop";
   return `<main class="offers-page">
     <section class="offers-page-intro page-gutter"><span class="eyebrow"><span class="eyebrow-line"></span> A LITTLE EXTRA FROM ${escapeHTML(shopName).toUpperCase()}</span><h1>Lovely finds.<br><em>Lovelier offers.</em></h1><p>Thoughtful little savings, picked just for you.</p></section>
-    ${coupons.length ? `<section class="offers-page-grid page-gutter">${coupons.map((coupon, index) => renderOfferCard(coupon, index)).join("")}</section>` : `<section class="offers-empty page-gutter"><span>✳</span><h2>A little something is on its way.</h2><p>There are no active offers from ${escapeHTML(shopName)} right now. Please check back soon.</p><a class="button button-dark" href="${shopHomeUrl()}#collections">Browse the shop ${icon("arrow", 17)}</a></section>`}
+    ${coupons.length ? `<section class="offers-page-grid page-gutter">${coupons.map((coupon, index) => renderOfferCard(coupon, index)).join("")}</section>` : `<section class="offers-empty page-gutter"><span>✳</span><h2>A little something is on its way.</h2><p>There are no active offers from ${escapeHTML(shopName)} right now. Please check back soon.</p><a class="button button-dark" href="${shopHomeHref()}#collections">Browse the shop ${icon("arrow", 17)}</a></section>`}
     <section class="offers-page-note page-gutter"><span class="eyebrow">A NOTE FROM ${escapeHTML(shopName).toUpperCase()}</span><p>Offers are managed by this shop and may have order minimums or expiry dates.</p></section>
   </main>`;
 }
@@ -1079,7 +1138,7 @@ function renderDedicatedRoute(routeInfo) {
   const pageType = String(page?.PageType || "").toLowerCase();
   document.title = `${page?.PageTitle || page?.PageName || "Shop"} | ${shop.ShopName || "ShopBuilder"}`;
   if (routeInfo.kind === "not-found") {
-    app.innerHTML = `<main class="status-screen"><a class="status-brand" href="${shopHomeUrl()}">${escapeHTML(shop.ShopName || "Shop")}</a><div class="status-card"><span class="status-kicker">PAGE NOT FOUND</span><h1>This page isn’t here.</h1><p>Try a link in the shop navigation.</p><a class="button button-dark" href="${shopHomeUrl()}">Back to the shop ${icon("arrow", 17)}</a></div></main>`;
+    app.innerHTML = `<main class="status-screen"><a class="status-brand" href="${shopHomeHref()}">${escapeHTML(shop.ShopName || "Shop")}</a><div class="status-card"><span class="status-kicker">PAGE NOT FOUND</span><h1>This page isn’t here.</h1><p>Try a link in the shop navigation.</p><a class="button button-dark" href="${shopHomeHref()}">Back to the shop ${icon("arrow", 17)}</a></div></main>`;
     return;
   }
   if (routeInfo.kind === "product") {
@@ -1087,7 +1146,7 @@ function renderDedicatedRoute(routeInfo) {
     const gallery = Array.isArray(product.Images) ? product.Images.map((image) => typeof image === "string" ? image : image.ImageURL || image.imageURL || image.url).filter((image) => Boolean(safeImage(image))) : [];
     const imageList = [...new Set([product.ImageURL, ...gallery].filter((image) => Boolean(safeImage(image))))].slice(0, 10);
     const sizes = getProductSizes(product);
-    app.innerHTML = `<div class="announcement">${escapeHTML(shop.ShopName || "Your shop")}</div>${renderHeader(isEcommerce)}<main class="public-product-page page-gutter"><a class="text-link" href="${shopHomeUrl()}#collections">← Back to the shop</a><article class="public-product-detail"><div class="public-product-gallery">${imageList.length ? renderMediaCarousel(imageList, product.ProductName, "public-product-carousel") : `<div class="public-product-image"><div class="product-image-placeholder">${icon("bag", 40)}</div></div>`}</div><div class="public-product-copy"><span class="eyebrow">${escapeHTML(product.BrandName ? `Brand is ${product.BrandName}` : product.CategoryName || "SHOP FAVOURITE")}</span>${product.BrandName && product.CategoryName ? `<span class="product-detail-category">${escapeHTML(product.CategoryName)}</span>` : ""}<h1>${escapeHTML(product.ProductName)}</h1><strong class="public-product-price">${money(product.SellingPrice)}</strong>${product.ShortDescription ? `<p class="product-short-description">${escapeHTML(product.ShortDescription)}</p>` : ""}${product.Description ? `<p>${escapeHTML(product.Description)}</p>` : ""}${renderSizeSelector(sizes, "product-size")}${isSoldOut(product) ? `<button class="button button-dark" disabled>Sold out</button>` : `<button class="button button-dark" data-action="add-cart" data-id="${Number(product.ProductID)}">Add to bag ${icon("bag", 18)}</button>`}${stockLeft(product) > 0 && stockLeft(product) <= 5 ? `<p class="stock-note">Only ${stockLeft(product)} left in stock</p>` : ""}</div></article></main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
+    app.innerHTML = `<div class="announcement">${escapeHTML(shop.ShopName || "Your shop")}</div>${renderHeader(isEcommerce)}<main class="public-product-page page-gutter"><a class="text-link" href="${shopHomeHref()}#collections">← Back to the shop</a><article class="public-product-detail"><div class="public-product-gallery">${imageList.length ? renderMediaCarousel(imageList, product.ProductName, "public-product-carousel") : `<div class="public-product-image"><div class="product-image-placeholder">${icon("bag", 40)}</div></div>`}</div><div class="public-product-copy"><span class="eyebrow">${escapeHTML(product.BrandName ? `Brand is ${product.BrandName}` : product.CategoryName || "SHOP FAVOURITE")}</span>${product.BrandName && product.CategoryName ? `<span class="product-detail-category">${escapeHTML(product.CategoryName)}</span>` : ""}<h1>${escapeHTML(product.ProductName)}</h1><strong class="public-product-price">${money(product.SellingPrice)}</strong>${product.ShortDescription ? `<p class="product-short-description">${escapeHTML(product.ShortDescription)}</p>` : ""}${product.Description ? `<p>${escapeHTML(product.Description)}</p>` : ""}${renderSizeSelector(sizes, "product-size")}${isSoldOut(product) ? `<button class="button button-dark" disabled>Sold out</button>` : `<button class="button button-dark" data-action="add-cart" data-id="${Number(product.ProductID)}">Add to bag ${icon("bag", 18)}</button>`}${stockLeft(product) > 0 && stockLeft(product) <= 5 ? `<p class="stock-note">Only ${stockLeft(product)} left in stock</p>` : ""}</div></article></main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
     bindEvents();
     return;
   }
@@ -1118,7 +1177,7 @@ function renderDedicatedRoute(routeInfo) {
   const hasContactDetailsInPage = /\b(address|phone|email|opening hours)\b/i.test(pageText);
   const routeSection = pageType === "services" ? `<section class="content-section">${renderServiceCards()}</section>` : pageType === "gallery" && !pageHtml ? `<section class="content-section"><div class="public-content-body"><p>Gallery images can be added to this page from the Website Editor.</p></div></section>` : "";
   const pageTitleSection = !hasDesignedHeading || !pageHtml ? `<section class="public-page-hero page-gutter"><span class="eyebrow"><span class="eyebrow-line"></span>${escapeHTML(shop.ShopName || "OUR STORY").toUpperCase()}</span><h1>${escapeHTML(pageTitle)}</h1>${pageType === "custom" ? "" : `<p>${escapeHTML(settings.Tagline || "Thoughtfully made for you.")}</p>`}</section>` : "";
-  app.innerHTML = `${isPreview ? `<div class="preview-ribbon">DESIGN PREVIEW <span>·</span> EXAMPLE CONTENT ONLY</div>` : ""}<div class="announcement"><span class="announcement-spark">✳</span> ${escapeHTML(settings.City || shop.ShopName || "Welcome")} <span class="announcement-separator">·</span> ${escapeHTML(settings.Tagline || "A little shop with a lot of heart")}</div>${renderHeader(isEcommerce)}<main class="public-page-main">${pageTitleSection}${pageHtml ? `<div class="public-html-frame-wrap"><iframe class="public-page-html-frame" title="${escapeHTML(pageTitle)}" sandbox="allow-same-origin" loading="eager"></iframe></div>` : `<div class="public-content-wrap page-gutter"><article class="public-content-body">${pageType === "about" ? `<p>${escapeHTML(settings.AboutUs || `Welcome to ${shop.ShopName || "our shop"}. We are glad you are here.`)}</p>` : ""}</article></div>`}${routeSection}${pageType === "about" || pageType === "contact" ? `<section class="content-section page-gutter">${pageType === "contact" ? (hasContactDetailsInPage ? "" : renderContactCard()) : `<div class="public-contact-cta"><div><span class="eyebrow">A LITTLE MORE</span><h2>We’d love to hear from you.</h2></div><a class="button button-dark" href="${shopHomeUrl()}/contact">Get in touch ${icon("arrow", 17)}</a></div>`}</section>` : ""}${isEcommerce ? `<section class="content-section page-gutter"><a class="button button-dark" href="${shopHomeUrl()}#collections">Browse the collection ${icon("arrow", 17)}</a></section>` : ""}</main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
+  app.innerHTML = `${isPreview ? `<div class="preview-ribbon">DESIGN PREVIEW <span>·</span> EXAMPLE CONTENT ONLY</div>` : ""}<div class="announcement"><span class="announcement-spark">✳</span> ${escapeHTML(settings.City || shop.ShopName || "Welcome")} <span class="announcement-separator">·</span> ${escapeHTML(settings.Tagline || "A little shop with a lot of heart")}</div>${renderHeader(isEcommerce)}<main class="public-page-main">${pageTitleSection}${pageHtml ? `<div class="public-html-frame-wrap"><iframe class="public-page-html-frame" title="${escapeHTML(pageTitle)}" sandbox="allow-same-origin" loading="eager"></iframe></div>` : `<div class="public-content-wrap page-gutter"><article class="public-content-body">${pageType === "about" ? `<p>${escapeHTML(settings.AboutUs || `Welcome to ${shop.ShopName || "our shop"}. We are glad you are here.`)}</p>` : ""}</article></div>`}${routeSection}${pageType === "about" || pageType === "contact" ? `<section class="content-section page-gutter">${pageType === "contact" ? (hasContactDetailsInPage ? "" : renderContactCard()) : `<div class="public-contact-cta"><div><span class="eyebrow">A LITTLE MORE</span><h2>We’d love to hear from you.</h2></div><a class="button button-dark" href="${shopHomeUrl()}/contact">Get in touch ${icon("arrow", 17)}</a></div>`}</section>` : ""}${isEcommerce ? `<section class="content-section page-gutter"><a class="button button-dark" href="${shopHomeHref()}#collections">Browse the collection ${icon("arrow", 17)}</a></section>` : ""}</main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
   if (pageHtml) mountPublicPageContent(pageHtml);
   bindEvents();
 }
@@ -1180,7 +1239,7 @@ function render() {
         <div class="collection-toolbar"><span id="product-count">${visibleProducts.length} lovely ${visibleProducts.length === 1 ? "find" : "finds"}</span><div><span>Sort</span><select id="sort-products"><option value="featured">Our favourites</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option></select></div></div>
         <div class="product-grid" id="product-grid">${renderProductCards(visibleProducts)}</div>
       </section>` : ""}
-      ${editorialBanners.map((item) => { const image = safeCssImage(item.ImageURL); return `<section class="editorial-banner page-gutter"><div class="editorial-card" style="${image ? `--editorial-image:url('${image}')` : ""}"><div><span class="eyebrow">A NOTE FROM ${escapeHTML(shop.ShopName || "US").toUpperCase()}</span><h2>${escapeHTML(item.Title)}</h2><p>${escapeHTML(item.Subtitle || "Come on in and find something that feels just right.")}</p><a class="button button-light" href="${safeUrl(item.ButtonLink, isEcommerce ? `${shopHomeUrl()}#collections` : `${shopHomeUrl()}/contact`)}">${escapeHTML(item.ButtonText || "Take a look")} ${icon("arrow", 17)}</a></div><span class="editorial-seal">${escapeHTML(shop.ShopName || "SHOP").slice(0, 14)}<b>✳</b>EST. WITH LOVE</span></div></section>`; }).join("")}
+      ${editorialBanners.map((item) => { const image = safeCssImage(item.ImageURL); return `<section class="editorial-banner page-gutter"><div class="editorial-card" style="${image ? `--editorial-image:url('${image}')` : ""}"><div><span class="eyebrow">A NOTE FROM ${escapeHTML(shop.ShopName || "US").toUpperCase()}</span><h2>${escapeHTML(item.Title)}</h2><p>${escapeHTML(item.Subtitle || "Come on in and find something that feels just right.")}</p><a class="button button-light" href="${safeUrl(item.ButtonLink, isEcommerce ? `${shopHomeHref()}#collections` : `${shopHomeUrl()}/contact`)}">${escapeHTML(item.ButtonText || "Take a look")} ${icon("arrow", 17)}</a></div><span class="editorial-seal">${escapeHTML(shop.ShopName || "SHOP").slice(0, 14)}<b>✳</b>EST. WITH LOVE</span></div></section>`; }).join("")}
       ${renderShopBrands()}
       ${renderCouponOffers()}
       ${state.services.length ? `<section class="services-section page-gutter" id="services"><div class="section-heading"><div><span class="eyebrow"><span class="eyebrow-line"></span> ${isEcommerce ? "MORE THAN A SHOP" : "WHAT WE DO"}</span><h2>${isEcommerce ? `Here for the <em>little extras.</em>` : `Good work, <em>made personal.</em>`}</h2></div><p>${isEcommerce ? "Good service is our favourite thing to put on the menu." : `A few ways ${escapeHTML(shop.ShopName || "we")} can help you.`}</p></div>${renderServiceCards(state.services.slice(0, 3))}<a class="text-link services-more" href="${serviceLink}">Explore all services <span>↗</span></a></section>` : ""}
@@ -1778,12 +1837,10 @@ document.addEventListener("keydown", (event) => {
 });
 
 function syncStorefrontLocation() {
-  const segments = location.pathname.split("/").filter(Boolean).map((segment) => {
-    try { return decodeURIComponent(segment); } catch { return segment; }
-  });
-  if (segments[0] !== "shop" || String(segments[1] || "").toLowerCase() !== String(state.shop?.ShopSlug || state.slug).toLowerCase()) return false;
+  const route = routeFromPath(location.pathname, state.shop?.ShopSlug || state.slug);
+  if (!route) return false;
   const params = new URLSearchParams(location.search);
-  state.route = segments.slice(2);
+  state.route = route;
   state.activeCategory = params.get("category") || "all";
   state.query = params.get("q") || "";
   state.mobileMenuOpen = false;
@@ -1807,8 +1864,7 @@ document.addEventListener("click", (event) => {
   let destination;
   try { destination = new URL(link.href, location.href); } catch { return; }
   if (destination.origin !== location.origin || (destination.pathname === location.pathname && destination.search === location.search)) return;
-  const parts = destination.pathname.split("/").filter(Boolean);
-  if (parts[0] !== "shop" || String(parts[1] || "").toLowerCase() !== String(state.shop?.ShopSlug || state.slug).toLowerCase()) return;
+  if (!routeFromPath(destination.pathname, state.shop?.ShopSlug || state.slug)) return;
   event.preventDefault();
   history.pushState({}, "", `${destination.pathname}${destination.search}${destination.hash}`);
   syncStorefrontLocation();

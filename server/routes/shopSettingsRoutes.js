@@ -8,11 +8,28 @@ import {
 } from "../controllers/shopSettingsController.js";
 
 import {
+    getMyDomain,
+    saveMyDomain,
+    verifyMyDomain,
+    removeMyDomain
+} from "../controllers/shopDomainController.js";
+
+import {
     authenticateToken,
     requireShopAccess
 } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+
+
+// =====================================================
+// SHOP ADMIN — MY WEB ADDRESS (free subdomain + own domain)
+// =====================================================
+
+router.get("/me/domain", authenticateToken, requireShopAccess, getMyDomain);
+router.put("/me/domain", authenticateToken, requireShopAccess, saveMyDomain);
+router.post("/me/domain/verify", authenticateToken, requireShopAccess, verifyMyDomain);
+router.delete("/me/domain", authenticateToken, requireShopAccess, removeMyDomain);
 
 
 // =====================================================

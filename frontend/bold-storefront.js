@@ -21,7 +21,7 @@ export function loadBoldFonts() {
 }
 
 export function createBoldTemplate(helpers) {
-  const { state, escapeHTML, money, safeImage, icon, shopHomeUrl, normalizeWhatsAppNumber } = helpers;
+  const { state, escapeHTML, money, safeImage, icon, shopHomeUrl, shopHomeHref, normalizeWhatsAppNumber } = helpers;
 
   const shopName = () => state.shop?.ShopName || "Your shop";
   const productUrl = (product) => `${shopHomeUrl()}/product/${encodeURIComponent(product.Slug || product.ProductID)}`;
@@ -307,12 +307,13 @@ export function createBoldTemplate(helpers) {
         : address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}` : "";
     const wordmarkWidth = Math.max(600, [...name].length * 128);
     const home = shopHomeUrl();
+    const homeHref = shopHomeHref();
 
     return `<footer class="bold-footer">
       <div class="bold-footer-frame">
         <div class="bold-footer-top">
-          <a class="bold-footer-brand" href="${home}">${logo ? `<img src="${logo}" alt="">` : `<span class="bold-monogram">${escapeHTML(name.slice(0, 1))}</span>`}<span>${escapeHTML(name)}</span></a>
-          <a class="bold-starburst" href="${home}#collections"><span>Shop<br>now</span></a>
+          <a class="bold-footer-brand" href="${homeHref}">${logo ? `<img src="${logo}" alt="">` : `<span class="bold-monogram">${escapeHTML(name.slice(0, 1))}</span>`}<span>${escapeHTML(name)}</span></a>
+          <a class="bold-starburst" href="${homeHref}#collections"><span>Shop<br>now</span></a>
           ${chat ? `<a class="bold-chat-bubble" href="${chat}" target="_blank" rel="noopener noreferrer">Say hi on WhatsApp ${icon("arrow", 16)}</a>` : ""}
         </div>
         <div class="bold-footer-panel">
@@ -332,7 +333,7 @@ export function createBoldTemplate(helpers) {
             </div>
             <div>
               <h3>Explore</h3>
-              <a href="${home}#collections">Shop all</a>
+              <a href="${homeHref}#collections">Shop all</a>
               ${state.coupons.length ? `<a href="${home}/offers">Offers</a>` : ""}
               <a href="${home}/about">About us</a>
               <a href="${home}/contact">Contact</a>

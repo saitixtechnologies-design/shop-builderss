@@ -18,6 +18,7 @@ import {
 import "../../styles/shop-admin/shop-settings.css";
 import ImageGalleryField from "../../components/ImageGalleryField.jsx";
 import ShopTemplatePicker, { getDefaultWebsiteTemplate } from "../../components/ShopTemplatePicker.jsx";
+import ShopDomainCard from "../../components/shopAdmin/ShopDomainCard.jsx";
 import { API_ORIGIN } from "../../lib/api.js";
 
 
@@ -577,6 +578,9 @@ function ShopSettings() {
             </div>
 
 
+
+            {/* Outside the settings form: it saves on its own buttons. */}
+            <ShopDomainCard />
 
             <form onSubmit={handleSubmit}>
 

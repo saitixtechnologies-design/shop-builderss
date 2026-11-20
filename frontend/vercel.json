@@ -3,7 +3,9 @@
   "framework": null,
   "buildCommand": null,
   "outputDirectory": ".",
-  "rewrites": [{ "source": "/shop/:path*", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/((?!.*\\.[a-zA-Z0-9]+$).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

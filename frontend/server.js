@@ -3,41 +3,52 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Local server for the public storefront. Real files (app.js, *.css …) are served as they are;
+// every other address is a storefront page (/shop/<slug>/…, or /product/… on a shop's
+// subdomain or own domain), so it gets index.html and app.js works out which shop to show.
+
 const root = path.dirname(fileURLToPath(import.meta.url));
+const indexFile = path.join(root, "index.html");
 const port = Number(process.env.FRONTEND_PORT || 5174);
 const contentTypes = {
     ".html": "text/html; charset=utf-8",
     ".css": "text/css; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
     ".svg": "image/svg+xml",
     ".png": "image/png",
     ".jpg": "image/jpeg",
-    ".webp": "image/webp"
+    ".webp": "image/webp",
+    ".ico": "image/x-icon"
+};
+
+const send = (response, status, body, type) => {
+    response.writeHead(status, { "Content-Type": type, "Cache-Control": "no-cache" });
+    response.end(body);
 };
 
 http.createServer(async (request, response) => {
-    const pathname = decodeURIComponent(new URL(request.url, `http://${request.headers.host}`).pathname);
-    const requestedFile = pathname === "/" || pathname.startsWith("/shop/")
-        ? "index.html"
-        : pathname.replace(/^\/+/, "");
-    const target = path.resolve(root, requestedFile);
-
-    if (!target.startsWith(`${root}${path.sep}`) && target !== path.join(root, "index.html")) {
-        response.writeHead(403).end("Forbidden");
-        return;
+    let pathname;
+    try {
+        pathname = decodeURIComponent(new URL(request.url, "http://storefront.local").pathname);
+    } catch {
+        return send(response, 400, "Bad request", "text/plain; charset=utf-8");
     }
 
+    const extension = path.extname(pathname);
+    // Page addresses have no file extension: always the storefront page.
+    if (!extension) return send(response, 200, await readFile(indexFile), contentTypes[".html"]);
+
+    const target = path.resolve(root, pathname.replace(/^\/+/, ""));
+    if (!target.startsWith(`${root}${path.sep}`) || path.basename(target) === "server.js") {
+        return send(response, 403, "Forbidden", "text/plain; charset=utf-8");
+    }
     try {
-        const body = await readFile(target);
-        response.writeHead(200, {
-            "Content-Type": contentTypes[path.extname(target)] || "application/octet-stream",
-            "Cache-Control": "no-cache"
-        });
-        response.end(body);
+        send(response, 200, await readFile(target), contentTypes[extension] || "application/octet-stream");
     } catch {
-        response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-        response.end("Not found");
+        send(response, 404, "Not found", "text/plain; charset=utf-8");
     }
 }).listen(port, "0.0.0.0", () => {
     console.log(`Public storefront running at http://localhost:${port}/shop/<shop-slug>`);
+    console.log(`Free subdomain address (local): http://<shop-slug>.localhost:${port}/`);
 });

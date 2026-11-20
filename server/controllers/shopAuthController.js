@@ -94,7 +94,7 @@ export const shopAdminLogin = async (req, res) => {
         ) {
             return res.status(403).json({
                 success: false,
-                message: "Your shop is inactive."
+                message: "Your shop has been paused by the platform team. Please contact support to turn it back on."
             });
         }
 

@@ -51,10 +51,15 @@ const allowedOrigins = String(process.env.CORS_ORIGINS || "")
     .filter(Boolean);
 
 app.disable("x-powered-by");
-app.use(cors({
-    origin: allowedOrigins.length
-        ? (origin, callback) => callback(null, !origin || allowedOrigins.includes(origin))
-        : true
+// Public shop data (/api/public/...) is read by storefronts on any address, including shops'
+// own domains, and uses no sign-in cookies, so every origin may call it. Admin APIs stay limited.
+app.use(cors((req, callback) => {
+    const isPublic = req.path.startsWith("/api/public/");
+    callback(null, {
+        origin: isPublic || !allowedOrigins.length
+            ? true
+            : (origin, done) => done(null, !origin || allowedOrigins.includes(origin))
+    });
 }));
 app.use((req, res, next) => {
     res.set({ "X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin" });

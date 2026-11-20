@@ -1,0 +1,2 @@
+# Local development server only; Vercel serves the files itself.
+server.js
