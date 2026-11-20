@@ -483,33 +483,72 @@ function mountRing(ring) {
     if (!card.classList.contains("is-front")) { event.preventDefault(); goTo(index); }
   }));
 
-  // Drag / swipe. A drag of more than a few pixels never counts as a click on a card.
+  // Drag (mouse) and swipe (finger). A drag of more than a few pixels never counts as a click.
   let startX = 0;
   let startPosition = 0;
   let dragged = false;
-  ring.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0 || event.target.closest("button")) return;
-    startX = event.clientX;
+  const beginDrag = (x) => {
+    startX = x;
     startPosition = position;
     dragged = false;
     ring.classList.add("is-dragging");
-    ring.setPointerCapture(event.pointerId);
-  });
-  ring.addEventListener("pointermove", (event) => {
-    if (!ring.classList.contains("is-dragging")) return;
-    const distance = event.clientX - startX;
+  };
+  const moveDrag = (x) => {
+    const distance = x - startX;
     if (Math.abs(distance) > 6) dragged = true;
     position = startPosition - distance / ((cards[0].offsetWidth || 260) * 0.8);
     render();
-  });
+  };
   const endDrag = () => {
     if (!ring.classList.contains("is-dragging")) return;
     ring.classList.remove("is-dragging");
     position = Math.round(position);
     render();
   };
-  ring.addEventListener("pointerup", endDrag);
-  ring.addEventListener("pointercancel", endDrag);
+
+  // Mouse and pen. Touch is handled below: phone browsers (Safari especially) often keep a
+  // finger swipe over links and images for themselves and never deliver it as pointer moves.
+  ring.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "touch" || event.button !== 0 || event.target.closest("button")) return;
+    beginDrag(event.clientX);
+    ring.setPointerCapture(event.pointerId);
+  });
+  ring.addEventListener("pointermove", (event) => {
+    if (event.pointerType !== "touch" && ring.classList.contains("is-dragging")) moveDrag(event.clientX);
+  });
+  ring.addEventListener("pointerup", (event) => { if (event.pointerType !== "touch") endDrag(); });
+  ring.addEventListener("pointercancel", (event) => { if (event.pointerType !== "touch") endDrag(); });
+
+  // Finger: a sideways swipe turns the carousel; an up/down swipe scrolls the page as usual.
+  let touchStart = null;
+  let swiping = false;
+  ring.addEventListener("touchstart", (event) => {
+    if (event.touches.length !== 1 || event.target.closest("button")) { touchStart = null; return; }
+    touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+    swiping = false;
+  }, { passive: true });
+  ring.addEventListener("touchmove", (event) => {
+    if (!touchStart) return;
+    const touch = event.touches[0];
+    const dx = touch.clientX - touchStart.x;
+    const dy = touch.clientY - touchStart.y;
+    if (!swiping) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      if (Math.abs(dy) > Math.abs(dx)) { touchStart = null; return; } // vertical: let the page scroll
+      swiping = true;
+      beginDrag(touchStart.x);
+    }
+    event.preventDefault(); // keep the page still while the carousel turns
+    moveDrag(touch.clientX);
+  }, { passive: false });
+  const endTouch = () => {
+    if (swiping) endDrag();
+    touchStart = null;
+    swiping = false;
+  };
+  ring.addEventListener("touchend", endTouch);
+  ring.addEventListener("touchcancel", endTouch);
+
   ring.addEventListener("click", (event) => {
     if (dragged) { event.preventDefault(); event.stopPropagation(); dragged = false; }
   }, true);
