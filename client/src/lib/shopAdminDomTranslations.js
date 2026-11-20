@@ -138,7 +138,7 @@ Object.assign(translations, {
     "Manage products for your shop": ["अपनी दुकान के उत्पाद सँभालें", "Apni shop ke products sambhalein"],
     "Manage product categories for your shop": ["अपनी दुकान के उत्पादों की श्रेणियाँ सँभालें", "Apni shop ke products ki categories sambhalein"],
     "Manage brands for your shop": ["अपनी दुकान के ब्रांड सँभालें", "Apni shop ke brands sambhalein"],
-    "Manage promotional banners displayed on your storefront.": ["अपनी दुकान की वेबसाइट पर दिखने वाले ऑफ़र बैनर सँभालें।", "Apni shop website par dikhne wale offer banners sambhalein."],
+    "Your active banners are the big top section of your website. Each one is a slide: add a photo or a video link (YouTube, Vimeo or .mp4), a headline, a short line and a button. Display order sets which comes first.": ["चालू बैनर आपकी वेबसाइट का सबसे ऊपर वाला बड़ा हिस्सा हैं। हर बैनर एक स्लाइड है: फ़ोटो या वीडियो लिंक (YouTube, Vimeo या .mp4), हेडलाइन, छोटी लाइन और बटन जोड़ें। डिस्प्ले ऑर्डर तय करता है कि कौन सा पहले दिखेगा।", "Active banners aapki website ka sabse upar wala bada hissa hain. Har banner ek slide hai: photo ya video link (YouTube, Vimeo ya .mp4), headline, chhoti line aur button add karein. Display order se tay hota hai kaunsa pehle dikhega."],
     "Manage your portfolio and showcase your work.": ["अपने काम की तस्वीरें और जानकारी दिखाएँ।", "Apne kaam ki photos aur details dikhayein."],
     "Create and manage discount coupons for your customers.": ["ग्राहकों के लिए छूट वाले कूपन बनाएँ और सँभालें।", "Customers ke liye discount coupons banayein aur sambhalein."],
     "Add your first product to get started.": ["शुरू करने के लिए अपना पहला उत्पाद जोड़ें।", "Shuru karne ke liye apna pehla product jodein."],

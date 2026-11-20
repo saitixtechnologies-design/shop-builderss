@@ -2656,7 +2656,7 @@ html,body{min-width:0;overflow-x:clip}
 .media-carousel-slide { position:absolute; inset:0; display:block; width:100%; height:100%; padding:0; overflow:hidden; border:0; background:transparent; cursor:zoom-in; }
 .media-carousel-slide[hidden] { display:none; }
 .media-carousel-slide img { display:block; width:100%; height:100%; object-fit:contain; }
-.media-carousel-zoom { position:absolute; right:12px; bottom:12px; padding:8px 11px; color:white; background:#193b35e8; font-size:11px; }
+.media-carousel-zoom { position:absolute; right:12px; bottom:12px; padding:8px 11px; color:white; background:color-mix(in srgb,var(--store-brand,#193b35) 90%,transparent); border-radius:999px; font-size:11px; }
 .media-carousel-arrow { position:absolute; top:calc((100% - 46px) / 2); z-index:2; display:grid; place-items:center; width:38px; height:42px; border:1px solid #ffffff90; background:#193b35db; color:white; font:400 29px/1 var(--serif); cursor:pointer; transition:background .2s ease; }
 .media-carousel-arrow:hover { background:#102c27; }
 .media-carousel-prev { left:10px; }
@@ -2710,7 +2710,7 @@ html,body{min-width:0;overflow-x:clip}
 .portfolio-gallery-image img { width:100%; height:100%; object-fit:cover; transition:transform .55s ease; }
 .portfolio-gallery-image:hover img { transform:scale(1.035); }
 .portfolio-gallery-image small { position:absolute; top:14px; left:14px; padding:7px 9px; background:#f7f4eeed; color:var(--store-ink); font:italic 13px var(--serif); }
-.portfolio-image-view { position:absolute; right:14px; bottom:14px; padding:9px 12px; background:#193b35e8; color:white; font-size:11px; }
+.portfolio-image-view { position:absolute; right:14px; bottom:14px; padding:9px 12px; background:color-mix(in srgb,var(--store-brand,#193b35) 90%,transparent); color:white; font-size:11px; }
 .portfolio-image-placeholder { font-size:46px; color:#a87e57; }
 .portfolio-gallery-copy { padding:18px 3px 0; }
 .portfolio-gallery-copy>.eyebrow { color:#a87e57; font-size:10px; }

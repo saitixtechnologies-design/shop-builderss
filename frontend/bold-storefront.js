@@ -1,14 +1,13 @@
-// "Bold" storefront template: a kinetic fly-through hero, a 3D featured-product ring and a
-// sticker footer. app.js decides when a shop uses it and passes in its shared helpers, so the
-// cart, checkout, search and product pages keep working exactly as in the other templates.
+// "Bold" storefront template: a hero built from the shop's own banners, shop sections (categories,
+// deals), a 3D featured-product arc and a sticker footer. app.js decides when a shop uses it and
+// passes in its shared helpers, so the cart, checkout, search and product pages keep working
+// exactly as in the other templates.
 
 const FONT_STYLESHEET =
   "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400..700&family=Noto+Sans+Devanagari:wght@400..700&display=swap";
-const GOLDEN_ANGLE = 137.508;
-const MAX_TUNNEL_CARDS = 10;
 const MAX_RING_CARDS = 8;
+const HERO_SLIDE_SECONDS = 6;
 
-const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** Loads the template's sans-serif fonts once, only for shops that use it. */
@@ -48,54 +47,96 @@ export function createBoldTemplate(helpers) {
   }
 
   // ---------------------------------------------------------------- hero
+  // The hero is the shop's own content: every active banner from Shop Admin → Banners becomes a
+  // slide (its image or video, title, subtitle and button). With no banners, a plain brand-colour
+  // hero shows the shop's name and tagline.
 
-  function renderTunnelCards() {
-    const source = state.products.length
-      ? state.products
-      : state.categories.map((category) => ({ ProductID: 0, ProductName: category.CategoryName, ImageURL: category.ImageURL }));
-    if (!source.length) return "";
-    const count = Math.min(MAX_TUNNEL_CARDS, Math.max(source.length, 6));
-    return Array.from({ length: count }, (_, index) => {
-      const item = source[index % source.length];
-      const angle = (index * GOLDEN_ANGLE * Math.PI) / 180;
-      const radius = 40 + (index % 4) * 7; // % of the stage, so cards frame the headline
-      const x = 50 + Math.cos(angle) * radius;
-      const y = 50 + Math.sin(angle) * radius * 0.62;
-      const depth = -380 - index * 360;
-      const tilt = ((index % 5) - 2) * 3;
-      const label = item.ProductID
-        ? `<span class="bold-tunnel-label"><b>${escapeHTML(item.ProductName)}</b>${item.SellingPrice ? `<i>${money(item.SellingPrice)}</i>` : ""}</span>`
-        : `<span class="bold-tunnel-label"><b>${escapeHTML(item.ProductName)}</b></span>`;
-      return `<div class="bold-tunnel-card" data-depth="${depth}" data-tilt="${tilt}" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;transform:translate(-50%,-50%) translateZ(${depth}px) rotate(${tilt}deg)">${productVisual(item, "220px")}${label}</div>`;
-    }).join("");
+  /** Background video for a banner: a direct .mp4/.webm file, or a muted YouTube / Vimeo embed. */
+  function heroVideo(value, poster) {
+    if (!value) return "";
+    let url;
+    try {
+      const source = String(value).trim();
+      url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(source) ? source : `https://${source}`);
+      if (!["http:", "https:"].includes(url.protocol)) return "";
+    } catch { return ""; }
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+    const youtubeId = host === "youtu.be"
+      ? url.pathname.split("/").filter(Boolean)[0]
+      : ["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(host)
+        ? url.searchParams.get("v") || url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1]
+        : "";
+    if (youtubeId) {
+      const id = encodeURIComponent(youtubeId);
+      return `<iframe class="bold-hero-embed" src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1&rel=0&modestbranding=1" title="" tabindex="-1" allow="autoplay; encrypted-media" loading="lazy"></iframe>`;
+    }
+    const vimeoId = (host === "vimeo.com" || host === "player.vimeo.com") && url.pathname.split("/").filter(Boolean).at(-1);
+    if (vimeoId && /^\d+$/.test(vimeoId)) {
+      return `<iframe class="bold-hero-embed" src="https://player.vimeo.com/video/${vimeoId}?background=1&autoplay=1&muted=1&loop=1" title="" tabindex="-1" allow="autoplay" loading="lazy"></iframe>`;
+    }
+    if (/\.(?:mp4|webm|ogg)(?:$|[?#])/i.test(url.pathname + url.search)) {
+      return `<video class="bold-hero-video" src="${escapeHTML(url.href)}"${poster ? ` poster="${poster}"` : ""} autoplay muted loop playsinline preload="metadata"></video>`;
+    }
+    return "";
+  }
+
+  function heroButtonLink(banner) {
+    const link = String(banner.ButtonLink || "").trim();
+    if (!link) return "#collections";
+    if (link.startsWith("#")) return escapeHTML(link);
+    return helpers.safeUrl(link, "#collections");
+  }
+
+  function renderHeroSlide(banner, index) {
+    const image = safeImage((Array.isArray(banner.Images) && banner.Images[0]) || banner.ImageURL);
+    const video = reducedMotion() ? "" : heroVideo(banner.VideoURL, image);
+    const media = video || (image ? `<img class="bold-hero-image" src="${image}" alt="" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">` : "");
+    const link = heroButtonLink(banner);
+    const external = /^https?:/i.test(link) && !link.startsWith(location.origin);
+    return `<div class="bold-hero-slide${index === 0 ? " is-active" : ""}${media ? " has-media" : ""}" data-hero-slide="${index}" ${index === 0 ? "" : 'aria-hidden="true"'}>
+      ${media ? `<div class="bold-hero-media" aria-hidden="true">${media}</div>` : ""}
+      <div class="bold-hero-copy page-gutter">
+        <p class="bold-kicker"><span class="bold-dot"></span>${escapeHTML(shopName())}</p>
+        ${index === 0 ? `<h1 class="bold-hero-title">${escapeHTML(banner.Title)}</h1>` : `<h2 class="bold-hero-title">${escapeHTML(banner.Title)}</h2>`}
+        ${banner.Subtitle ? `<p class="bold-hero-text">${escapeHTML(banner.Subtitle)}</p>` : ""}
+        <div class="bold-actions">
+          <a class="bold-btn bold-btn-solid" href="${link}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}>${escapeHTML(banner.ButtonText || "Shop now")} ${icon("arrow", 18)}</a>
+        </div>
+      </div>
+    </div>`;
   }
 
   function renderHero() {
     const settings = state.settings || {};
-    const banner = state.banners[0];
-    const title = String(banner?.Title || settings.Tagline || `Welcome to ${shopName()}`).trim();
-    const words = title.split(/\s+/);
-    const split = Math.max(1, Math.ceil(words.length / 2));
-    const firstLine = words.slice(0, split).join(" ");
-    const secondLine = words.slice(split).join(" ");
-    const subtitle = banner?.Subtitle || settings.AboutUs || "Good things, picked with care and easy to order.";
-    const chat = whatsAppUrl(`Hi ${shopName()}, I'd like to know more.`);
-    const facts = [settings.City, state.products.length ? `${state.products.length} products` : "", state.coupons.length ? `${state.coupons.length} offers live` : ""].filter(Boolean);
+    const banners = state.banners.filter((banner) => String(banner.Title || "").trim()).slice(0, 6);
 
-    return `<section class="bold-hero" data-bold-tunnel>
-      <div class="bold-hero-stage">
-        <div class="bold-tunnel" aria-hidden="true">${renderTunnelCards()}</div>
-        <div class="bold-hero-copy">
-          ${facts.length ? `<p class="bold-kicker"><span class="bold-dot"></span>${facts.map(escapeHTML).join(" · ")}</p>` : ""}
-          <h1 class="bold-hero-title"><span>${escapeHTML(firstLine)}</span>${secondLine ? `<span class="is-outline">${escapeHTML(secondLine)}</span>` : ""}</h1>
-          <p class="bold-hero-text">${escapeHTML(subtitle)}</p>
-          <div class="bold-actions">
-            <a class="bold-btn bold-btn-solid" href="#collections">Shop the collection ${icon("arrow", 18)}</a>
-            ${chat ? `<a class="bold-btn bold-btn-ghost" href="${chat}" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>` : ""}
+    if (!banners.length) {
+      const chat = whatsAppUrl(`Hi ${shopName()}, I'd like to know more.`);
+      return `<section class="bold-hero is-plain">
+        <div class="bold-hero-slide is-active">
+          <div class="bold-hero-copy page-gutter">
+            ${settings.City ? `<p class="bold-kicker"><span class="bold-dot"></span>${escapeHTML(settings.City)}</p>` : ""}
+            <h1 class="bold-hero-title">${escapeHTML(shopName())}</h1>
+            <p class="bold-hero-text">${escapeHTML(settings.Tagline || settings.AboutUs || "Good things, picked with care and easy to order.")}</p>
+            <div class="bold-actions">
+              <a class="bold-btn bold-btn-solid" href="#collections">Shop now ${icon("arrow", 18)}</a>
+              ${chat ? `<a class="bold-btn bold-btn-ghost" href="${chat}" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>` : ""}
+            </div>
           </div>
         </div>
-        <span class="bold-scroll-cue" aria-hidden="true">Scroll</span>
-      </div>
+      </section>`;
+    }
+
+    const controls = banners.length > 1
+      ? `<div class="bold-hero-controls page-gutter">
+          <button type="button" class="bold-round" data-hero-prev aria-label="Previous slide">${icon("arrow", 18)}</button>
+          <div class="bold-hero-dots">${banners.map((_, index) => `<button type="button" data-hero-dot="${index}" aria-label="Show slide ${index + 1}"${index === 0 ? ' aria-current="true"' : ""}></button>`).join("")}</div>
+          <button type="button" class="bold-round" data-hero-next aria-label="Next slide">${icon("arrow", 18)}</button>
+        </div>`
+      : "";
+    return `<section class="bold-hero" data-bold-hero aria-roledescription="carousel" aria-label="${escapeHTML(shopName())} highlights">
+      ${banners.map(renderHeroSlide).join("")}
+      ${controls}
     </section>`;
   }
 
@@ -313,56 +354,62 @@ export function createBoldTemplate(helpers) {
 }
 
 // ------------------------------------------------------------------ behaviour
-// The storefront re-renders with innerHTML, so mountBold() runs after every render. It looks the
-// elements up again each time; the scroll listener is added only once for the whole page.
+// The storefront re-renders with innerHTML, so mountBold() runs after every render and looks the
+// elements up again each time.
 
-let activeTunnel = null;
-let scrollQueued = false;
 let revealObserver = null;
+let heroTimer = null;
 
-function updateTunnel() {
-  scrollQueued = false;
-  if (!activeTunnel?.isConnected) return;
-  const rect = activeTunnel.getBoundingClientRect();
-  const travelDistance = Math.max(1, rect.height - window.innerHeight);
-  applyTunnel(activeTunnel, clamp(-rect.top / travelDistance, 0, 1));
-}
+/** Hero slider: arrows, dots, swipe, and auto-advance that pauses while the shopper interacts. */
+function mountHeroSlider(root) {
+  window.clearInterval(heroTimer);
+  const hero = root.querySelector("[data-bold-hero]");
+  const slides = hero ? [...hero.querySelectorAll("[data-hero-slide]")] : [];
+  if (slides.length < 2) return;
+  const dots = [...hero.querySelectorAll("[data-hero-dot]")];
+  let current = 0;
 
-function applyTunnel(section, progress) {
-  const cards = section.querySelectorAll(".bold-tunnel-card");
-  const deepest = Math.min(...[...cards].map((card) => Number(card.dataset.depth)));
-  const travel = Math.abs(deepest) + 900;
-  section.style.setProperty("--p", progress.toFixed(4));
-  cards.forEach((card) => {
-    const z = Number(card.dataset.depth) + progress * travel;
-    const fadeIn = clamp((z + 4200) / 2400, 0.15, 1);
-    const fadeOut = z > 250 ? clamp(1 - (z - 250) / 450, 0, 1) : 1;
-    card.style.transform = `translate(-50%,-50%) translateZ(${z.toFixed(1)}px) rotate(${card.dataset.tilt}deg)`;
-    card.style.opacity = (fadeIn * fadeOut).toFixed(3);
-    card.style.visibility = z > 700 ? "hidden" : "visible";
-  });
-}
+  const show = (index) => {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      const active = slideIndex === current;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+      slide.querySelectorAll("a, button").forEach((element) => { element.tabIndex = active ? 0 : -1; });
+      const video = slide.querySelector("video");
+      if (video) active ? video.play()?.catch(() => {}) : video.pause();
+    });
+    dots.forEach((dot, dotIndex) => {
+      if (dotIndex === current) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  };
+  const stop = () => window.clearInterval(heroTimer);
+  const start = () => {
+    stop();
+    if (reducedMotion()) return;
+    heroTimer = window.setInterval(() => (hero.isConnected ? show(current + 1) : stop()), HERO_SLIDE_SECONDS * 1000);
+  };
 
-function onScroll() {
-  if (scrollQueued) return;
-  scrollQueued = true;
-  requestAnimationFrame(updateTunnel);
-}
+  hero.querySelector("[data-hero-prev]")?.addEventListener("click", () => { show(current - 1); start(); });
+  hero.querySelector("[data-hero-next]")?.addEventListener("click", () => { show(current + 1); start(); });
+  dots.forEach((dot, index) => dot.addEventListener("click", () => { show(index); start(); }));
+  hero.addEventListener("mouseenter", stop);
+  hero.addEventListener("mouseleave", start);
+  hero.addEventListener("focusin", stop);
+  hero.addEventListener("focusout", start);
 
-function mountTunnel(root) {
-  activeTunnel = root.querySelector("[data-bold-tunnel]");
-  if (!activeTunnel) return;
-  if (reducedMotion()) {
-    activeTunnel.classList.add("is-static");
-    applyTunnel(activeTunnel, 0.3);
-    return;
-  }
-  if (!window.__boldScrollBound) {
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    window.__boldScrollBound = true;
-  }
-  updateTunnel();
+  let touchStartX = null;
+  hero.addEventListener("touchstart", (event) => { touchStartX = event.changedTouches[0]?.clientX ?? null; }, { passive: true });
+  hero.addEventListener("touchend", (event) => {
+    if (touchStartX === null) return;
+    const distance = (event.changedTouches[0]?.clientX ?? touchStartX) - touchStartX;
+    if (Math.abs(distance) > 45) { show(current + (distance < 0 ? 1 : -1)); start(); }
+    touchStartX = null;
+  }, { passive: true });
+
+  show(0);
+  start();
 }
 
 // Cards sit on a curved arc around the front card. Each card's place is its distance from the
@@ -490,7 +537,7 @@ function mountReveal(root) {
 
 /** Starts the template's motion after each render. Safe to call repeatedly. */
 export function mountBold(root) {
-  mountTunnel(root);
+  mountHeroSlider(root);
   root.querySelectorAll("[data-bold-ring]").forEach(mountRing);
   mountReveal(root);
 }

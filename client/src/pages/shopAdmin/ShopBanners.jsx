@@ -399,8 +399,10 @@ const ShopBanners = () => {
                     <h1>Website Banners</h1>
 
                     <p>
-                        Manage promotional banners displayed on your
-                        storefront.
+                        Your active banners are the big top section of your
+                        website. Each one is a slide: add a photo or a video
+                        link (YouTube, Vimeo or .mp4), a headline, a short line
+                        and a button. Display order sets which comes first.
                     </p>
                 </div>
 

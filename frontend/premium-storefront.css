@@ -186,8 +186,8 @@ button, input, textarea, select { font-family: inherit; }
 .footer-brand .brand-copy small { font-size: 9px; }
 
 .public-page-hero { padding-top: clamp(46px, 7vw, 90px); padding-bottom: clamp(32px, 4vw, 55px); }
-.public-page-hero h1, .offers-page-intro h1, .portfolio-gallery-intro h1, .banner-gallery-intro h1 { max-width: 980px; color: var(--store-brand); font-size: clamp(42px, 6.8vw, 82px); line-height: 1.02; }
-.public-page-hero>p, .offers-page-intro>p, .portfolio-gallery-intro>p, .banner-gallery-intro>p { color: var(--muted); font-size: 16px; line-height: 1.8; }
+.public-page-hero h1, .offers-page-intro h1 { max-width: 980px; color: var(--store-brand); font-size: clamp(42px, 6.8vw, 82px); line-height: 1.02; }
+.public-page-hero>p, .offers-page-intro>p { color: var(--muted); font-size: 16px; line-height: 1.8; }
 .public-content-body { border-color: var(--line); border-radius: 5px; background: var(--white); box-shadow: 0 14px 38px #21140c08; color: #514a44; font-size: 16px; }
 .public-content-body h1, .public-content-body h2, .public-content-body h3 { color: var(--store-brand); }
 .public-product-page { max-width: var(--page-width); padding: 36px var(--page-gutter) 88px; }
@@ -201,7 +201,7 @@ button, input, textarea, select { font-family: inherit; }
 .public-contact-cta { border: 1px solid var(--line); border-radius: 5px; background: color-mix(in srgb, var(--store-brand) 7%, var(--paper)); }
 .public-contact-cta .button { color: var(--store-on-primary); }
 .banner-feature-card, .banner-story-card, .portfolio-gallery-card, .store-offer-card { border-radius: 5px; }
-.banner-feature-copy h2, .banner-story-copy h3, .portfolio-gallery-copy h2 { color: var(--store-brand); font-family: var(--serif); }
+.banner-story-copy h3, .portfolio-gallery-copy h2 { color: var(--store-brand); font-family: var(--serif); }
 
 .overlay { background: #211a16a8; backdrop-filter: blur(5px); }
 .drawer, .checkout-card { border-radius: 8px 0 0 8px; background: var(--paper); }
