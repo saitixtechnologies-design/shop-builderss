@@ -90,7 +90,11 @@ export function createBoldTemplate(helpers) {
   function renderHeroSlide(banner, index) {
     const image = safeImage((Array.isArray(banner.Images) && banner.Images[0]) || banner.ImageURL);
     const video = reducedMotion() ? "" : heroVideo(banner.VideoURL, image);
-    const media = video || (image ? `<img class="bold-hero-image" src="${image}" alt="" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">` : "");
+    // The whole photo is always visible (never cropped); a blurred copy fills the space around it.
+    const loading = index === 0 ? 'fetchpriority="high"' : 'loading="lazy"';
+    const media = video || (image
+      ? `<img class="bold-hero-backdrop" src="${image}" alt="" ${loading} decoding="async"><img class="bold-hero-image" src="${image}" alt="" ${loading} decoding="async">`
+      : "");
     const link = heroButtonLink(banner);
     const external = /^https?:/i.test(link) && !link.startsWith(location.origin);
     return `<div class="bold-hero-slide${index === 0 ? " is-active" : ""}${media ? " has-media" : ""}" data-hero-slide="${index}" ${index === 0 ? "" : 'aria-hidden="true"'}>
