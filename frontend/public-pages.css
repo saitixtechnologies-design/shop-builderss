@@ -200,7 +200,7 @@
 
     .product-card img {
         width: 100%;
-        height: auto;
+        height: 100%;
         object-fit: cover;
     }
 
@@ -543,3 +543,38 @@
 .portfolio-gallery-card:only-child{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center}
 .portfolio-gallery-card:only-child .portfolio-gallery-copy{padding:clamp(24px,4vw,56px)}
 @media(max-width:760px){.portfolio-gallery-card:only-child{grid-template-columns:1fr}}
+
+/* Keep service-site navigation readable across every tenant, including pale brand colors. */
+.site-header:has(+ .service-home-main) {
+  position: sticky;
+  top: 0;
+  right: auto;
+  left: auto;
+  height: 88px;
+  margin-bottom: 0;
+  background: var(--paper, #f7f5f0);
+  border: 0;
+  border-bottom: 1px solid rgba(36, 53, 45, .12);
+  box-shadow: 0 8px 26px rgba(25, 59, 53, .06);
+  backdrop-filter: none;
+  color: #193b35;
+  z-index: 20;
+}
+.site-header:has(+ .service-home-main) .brand-copy strong,
+.site-header:has(+ .service-home-main) .desktop-nav .nav-link,
+.site-header:has(+ .service-home-main) .desktop-nav .nav-link:hover,
+.site-header:has(+ .service-home-main) .desktop-nav .nav-link.active,
+.site-header:has(+ .service-home-main) .mobile-nav .nav-link,
+.site-header:has(+ .service-home-main) .mobile-menu-trigger {
+  color: #193b35;
+}
+.site-header:has(+ .service-home-main) .brand-copy small { color: #6f756e; }
+.site-header:has(+ .service-home-main) .header-contact {
+  border-color: #193b35;
+  background: #193b35;
+  color: #fffefa;
+}
+.site-header:has(+ .service-home-main) .mobile-nav { background: var(--paper, #f7f5f0); }
+@media (max-width: 1450px) {
+  .site-header:has(+ .service-home-main) { margin-bottom: 0; }
+}
