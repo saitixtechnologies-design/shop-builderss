@@ -1,0 +1,43 @@
+.shop-help-page { min-height: 100%; padding: clamp(17px, 2.5vw, 32px); color: #17283e; background: #f6f8fc; }
+.shop-help-hero { display: flex; align-items: center; gap: 17px; padding: 25px; border: 1px solid #deebea; border-radius: 21px; background: linear-gradient(115deg, #eefaf3, #fff 72%, #f0f6ff); box-shadow: 0 9px 25px #142a4010; }
+.shop-help-hero-icon { display: grid; place-items: center; width: 56px; height: 56px; flex: 0 0 56px; border-radius: 17px; color: #fff; background: linear-gradient(145deg, #15aa60, #087c46); box-shadow: 0 8px 17px #078c4b30; }
+.shop-help-hero-copy { flex: 1; min-width: 0; }
+.shop-help-hero-copy > span { color: #07884b; font-size: 10px; font-weight: 800; letter-spacing: .11em; }
+.shop-help-hero h1 { margin: 5px 0 7px; color: #162b43; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.04em; }
+.shop-help-hero p { max-width: 720px; margin: 0; color: #65758a; font-size: 14px; line-height: 1.55; }
+.shop-help-languages { display: flex; gap: 3px; flex: 0 0 auto; padding: 4px; border: 1px solid #e1e9e5; border-radius: 11px; background: #fff; }
+.shop-help-languages button { min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; color: #617086; background: transparent; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.shop-help-languages button.active { color: #fff; background: #078b4b; }
+.shop-help-languages button:focus-visible, .shop-help-page button:focus-visible, .shop-help-search:focus-within { outline: 2px solid #3975ef; outline-offset: 2px; }
+.shop-help-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin: 21px 0 12px; }
+.shop-help-search { display: flex; align-items: center; gap: 10px; width: min(100%, 570px); min-height: 46px; padding: 0 14px; border: 1px solid #dfe6ee; border-radius: 12px; color: #8793a5; background: #fff; }
+.shop-help-search input { width: 100%; border: 0; outline: 0; color: #26384f; background: transparent; font: inherit; font-size: 14px; }
+.shop-help-search input::placeholder { color: #9aa5b4; }
+.shop-help-count { flex: 0 0 auto; color: #768398; font-size: 12px; font-weight: 650; }
+.shop-help-guide-list { display: grid; gap: 10px; }
+.shop-help-guide { overflow: hidden; border: 1px solid #e2e8ef; border-radius: 15px; background: #fff; box-shadow: 0 4px 14px #142a4007; }
+.shop-help-guide summary { display: flex; align-items: center; gap: 14px; min-height: 78px; padding: 14px 17px; cursor: pointer; list-style: none; }
+.shop-help-guide summary::-webkit-details-marker { display: none; }
+.shop-help-guide summary > svg { flex: 0 0 auto; color: #8290a2; transition: transform .2s ease; }
+.shop-help-guide[open] summary > svg { transform: rotate(180deg); color: #078b4b; }
+.shop-help-guide-number { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; border-radius: 12px; color: #087b46; background: #eaf8f0; font-size: 12px; font-weight: 800; }
+.shop-help-guide-title { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.shop-help-guide-title strong { color: #1d2f47; font-size: 15px; }
+.shop-help-guide-title small { overflow: hidden; color: #77869a; font-size: 12px; line-height: 1.45; text-overflow: ellipsis; }
+.shop-help-guide-body { padding: 1px 22px 20px 71px; border-top: 1px solid #f0f2f5; }
+.shop-help-guide-body h2 { display: flex; align-items: center; gap: 8px; margin: 16px 0 7px; color: #334660; font-size: 13px; }
+.shop-help-guide-body h2 svg { color: #15945a; }
+.shop-help-guide-body > p { margin: 0; color: #69788c; font-size: 13px; line-height: 1.5; }
+.shop-help-guide-body ol { display: grid; gap: 9px; margin: 12px 0 15px; padding: 0; list-style: none; }
+.shop-help-guide-body li { display: flex; align-items: flex-start; gap: 10px; color: #3d4f66; }
+.shop-help-guide-body li > span { display: grid; place-items: center; width: 23px; height: 23px; flex: 0 0 23px; border: 1px solid #cdebd9; border-radius: 50%; color: #07884b; background: #f0faf4; font-size: 11px; font-weight: 800; }
+.shop-help-guide-body li p { margin: 2px 0 0; font-size: 13px; line-height: 1.5; }
+.shop-help-tip { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border: 1px solid #e6eed2; border-radius: 11px; color: #687044; background: #fbfced; font-size: 12px; line-height: 1.5; }
+.shop-help-tip strong { flex: 0 0 auto; color: #627127; }
+.shop-help-open-section { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; margin-top: 13px; padding: 0 15px; border: 0; border-radius: 10px; color: #fff; background: #078b4b; font: inherit; font-size: 12px; font-weight: 750; cursor: pointer; }
+.shop-help-open-section:hover { background: #066f3c; }
+.shop-help-empty { display: grid; justify-items: center; gap: 9px; padding: 42px 16px; border: 1px dashed #d8e0e9; border-radius: 15px; color: #7a8798; background: #fff; text-align: center; }
+.shop-help-empty svg { color: #15945a; }
+.shop-help-empty strong { font-size: 14px; }
+@media (max-width: 760px) { .shop-help-hero { align-items: flex-start; flex-wrap: wrap; padding: 20px; } .shop-help-hero-copy { flex-basis: calc(100% - 75px); } .shop-help-languages { width: 100%; } .shop-help-languages button { flex: 1; } .shop-help-toolbar { align-items: flex-start; flex-direction: column; } .shop-help-search { width: auto; align-self: stretch; } .shop-help-guide-body { padding: 1px 15px 17px; } }
+@media (prefers-reduced-motion: reduce) { .shop-help-guide summary > svg { transition: none; } }

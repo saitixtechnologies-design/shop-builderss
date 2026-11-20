@@ -1,0 +1,1173 @@
+/* =========================================================
+   SHOP BRANDS PAGE
+========================================================= */
+
+.shop-brands-page {
+    width: 100%;
+    min-height: 100%;
+    padding: 28px 30px 40px;
+    box-sizing: border-box;
+    background: #f5f7fb;
+    color: #172033;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.shop-brands-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.shop-brands-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #6366f1;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.shop-brands-header h1 {
+    margin: 0;
+    color: #111827;
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+}
+
+.shop-brands-header p {
+    margin: 7px 0 0;
+    color: #7b8498;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   ADD BRAND BUTTON
+========================================================= */
+
+.shop-brand-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(79, 70, 229, 0.22);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.shop-brand-add-btn span {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.shop-brand-add-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.03);
+    box-shadow: 0 12px 24px rgba(79, 70, 229, 0.28);
+}
+
+.shop-brand-add-btn:active {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.shop-brand-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.shop-brand-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-height: 92px;
+    padding: 18px 20px;
+    box-sizing: border-box;
+    border: 1px solid #e8ebf2;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 5px 20px rgba(31, 41, 55, 0.045);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.shop-brand-stat-card:hover {
+    transform: translateY(-2px);
+    border-color: #dfe3f0;
+    box-shadow: 0 10px 26px rgba(31, 41, 55, 0.075);
+}
+
+.shop-brand-stat-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.shop-brand-stat-icon.active {
+    background: #ecfdf3;
+    color: #16a34a;
+}
+
+.shop-brand-stat-icon.inactive {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.shop-brand-stat-card span {
+    display: block;
+    margin-bottom: 4px;
+    color: #8a93a6;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.shop-brand-stat-card strong {
+    display: block;
+    color: #182033;
+    font-size: 25px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.shop-brands-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.shop-brand-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 470px;
+    height: 45px;
+    border: 1px solid #e1e5ee;
+    border-radius: 11px;
+    background: #ffffff;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.shop-brand-search:focus-within {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.shop-brand-search > span {
+    margin-left: 14px;
+    color: #98a1b3;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.shop-brand-search input {
+    width: 100%;
+    height: 100%;
+    padding: 0 40px 0 11px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #1f2937;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+.shop-brand-search input::placeholder {
+    color: #a1a9b8;
+}
+
+.shop-brand-search button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    width: 27px;
+    height: 27px;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 7px;
+    background: #f1f3f7;
+    color: #737d91;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.shop-brand-search button:hover {
+    background: #e8eaf0;
+    color: #374151;
+}
+
+.shop-brand-status-filter {
+    height: 45px;
+    min-width: 145px;
+    padding: 0 36px 0 13px;
+    border: 1px solid #e1e5ee;
+    border-radius: 11px;
+    outline: none;
+    background: #ffffff;
+    color: #465065;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.shop-brand-status-filter:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.shop-brand-refresh-btn {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    border: 1px solid #e1e5ee;
+    border-radius: 11px;
+    background: #ffffff;
+    color: #566075;
+    font-size: 21px;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.shop-brand-refresh-btn:hover:not(:disabled) {
+    transform: rotate(35deg);
+    border-color: #cfd5e2;
+    background: #f8f9fc;
+}
+
+.shop-brand-refresh-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.shop-brands-card {
+    overflow: hidden;
+    border: 1px solid #e7eaf0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 7px 28px rgba(31, 41, 55, 0.055);
+}
+
+.shop-brands-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 78px;
+    padding: 17px 22px;
+    border-bottom: 1px solid #edf0f4;
+    box-sizing: border-box;
+}
+
+.shop-brands-card-header h2 {
+    margin: 0 0 4px;
+    color: #182033;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.shop-brands-card-header p {
+    margin: 0;
+    color: #929bad;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.shop-brands-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.shop-brands-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.shop-brands-table thead {
+    background: #fafbfc;
+}
+
+.shop-brands-table th {
+    height: 48px;
+    padding: 0 18px;
+    border-bottom: 1px solid #edf0f4;
+    color: #737d91;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.shop-brands-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #f0f2f6;
+    color: #4b5567;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.shop-brands-table tbody tr {
+    transition: background 0.18s ease;
+}
+
+.shop-brands-table tbody tr:hover {
+    background: #fafbff;
+}
+
+.shop-brands-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* =========================================================
+   BRAND INFO
+========================================================= */
+
+.shop-brand-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 190px;
+}
+
+.shop-brand-logo {
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid #e6e9f0;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #f5f7ff, #eef1ff);
+    color: #4f46e5;
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.shop-brand-logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.shop-brand-logo.fallback {
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+}
+
+.shop-brand-info strong {
+    display: block;
+    max-width: 190px;
+    overflow: hidden;
+    color: #1b2436;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shop-brand-info small {
+    display: block;
+    margin-top: 3px;
+    color: #9aa2b2;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* =========================================================
+   SLUG
+========================================================= */
+
+.shop-brand-slug {
+    display: inline-block;
+    max-width: 170px;
+    padding: 5px 8px;
+    overflow: hidden;
+    border-radius: 7px;
+    background: #f5f6f9;
+    color: #596276;
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.shop-brand-description {
+    max-width: 270px;
+    overflow: hidden;
+    color: #737d90;
+    font-size: 12px;
+    line-height: 1.55;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.shop-brand-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 82px;
+    justify-content: center;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 750;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.shop-brand-status span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.shop-brand-status.active {
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.shop-brand-status.active span {
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.shop-brand-status.inactive {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.shop-brand-status.inactive span {
+    background: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.shop-brand-status:hover {
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.shop-brand-date {
+    color: #697386;
+    font-size: 12px;
+    font-weight: 550;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.shop-brand-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.shop-brand-edit,
+.shop-brand-delete {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e6e9ef;
+    border-radius: 9px;
+    background: #ffffff;
+    font-size: 15px;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.shop-brand-edit {
+    color: #4f46e5;
+}
+
+.shop-brand-delete {
+    color: #dc2626;
+}
+
+.shop-brand-edit:hover {
+    transform: translateY(-1px);
+    border-color: #c7c9f8;
+    background: #eef2ff;
+}
+
+.shop-brand-delete:hover {
+    transform: translateY(-1px);
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.shop-brands-loading {
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    color: #8b94a7;
+    font-size: 13px;
+}
+
+.shop-brand-spinner {
+    width: 34px;
+    height: 34px;
+    border: 3px solid #e8eaff;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: shopBrandSpin 0.75s linear infinite;
+}
+
+@keyframes shopBrandSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.shop-brands-empty {
+    min-height: 310px;
+    padding: 45px 25px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.shop-brand-empty-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    background: #f1f3ff;
+    color: #6366f1;
+    font-size: 28px;
+}
+
+.shop-brands-empty h3 {
+    margin: 0 0 6px;
+    color: #20283a;
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.shop-brands-empty p {
+    margin: 0 0 18px;
+    color: #929bad;
+    font-size: 13px;
+}
+
+.shop-brand-empty-btn {
+    min-height: 40px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 9px;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.shop-brand-empty-btn:hover {
+    background: #e0e7ff;
+}
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.shop-brand-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(5px);
+    animation: shopBrandFadeIn 0.2s ease;
+}
+
+@keyframes shopBrandFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* =========================================================
+   ADD / EDIT MODAL
+========================================================= */
+
+.shop-brand-modal {
+    width: min(620px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+    animation: shopBrandModalUp 0.25s ease;
+}
+
+@keyframes shopBrandModalUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.shop-brand-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.shop-brand-modal-header > div > span {
+    display: block;
+    margin-bottom: 5px;
+    color: #6366f1;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+}
+
+.shop-brand-modal-header h2 {
+    margin: 0;
+    color: #182033;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.shop-brand-modal-header button {
+    width: 35px;
+    height: 35px;
+    border: 0;
+    border-radius: 9px;
+    background: #f4f5f8;
+    color: #687286;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.shop-brand-modal-header button:hover {
+    background: #eceef3;
+    color: #252c3b;
+}
+
+.shop-brand-modal-header button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.shop-brand-form {
+    padding: 23px 24px 24px;
+}
+
+.shop-brand-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.shop-brand-field {
+    min-width: 0;
+}
+
+.shop-brand-field.full {
+    grid-column: 1 / -1;
+}
+
+.shop-brand-field label:not(.shop-brand-checkbox) {
+    display: block;
+    margin-bottom: 7px;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shop-brand-field label span {
+    margin-left: 3px;
+    color: #ef4444;
+}
+
+.shop-brand-field input,
+.shop-brand-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #dfe3eb;
+    border-radius: 10px;
+    outline: none;
+    background: #ffffff;
+    color: #20283a;
+    font-family: inherit;
+    font-size: 13px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.shop-brand-field input {
+    height: 44px;
+    padding: 0 13px;
+}
+
+.shop-brand-field textarea {
+    min-height: 100px;
+    padding: 12px 13px;
+    resize: vertical;
+    line-height: 1.55;
+}
+
+.shop-brand-field input::placeholder,
+.shop-brand-field textarea::placeholder {
+    color: #a4abba;
+}
+
+.shop-brand-field input:focus,
+.shop-brand-field textarea:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.shop-brand-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+.shop-brand-checkbox input {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    appearance: none;
+    border: 1.5px solid #cbd2df;
+    border-radius: 5px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.shop-brand-checkbox input:checked {
+    border-color: #6366f1;
+    background: #6366f1;
+}
+
+.shop-brand-checkbox input:checked::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 5px;
+    height: 9px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* =========================================================
+   MODAL ACTIONS
+========================================================= */
+
+.shop-brand-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 23px;
+    padding-top: 18px;
+    border-top: 1px solid #edf0f4;
+}
+
+.shop-brand-cancel-btn,
+.shop-brand-save-btn {
+    min-height: 42px;
+    padding: 0 17px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+}
+
+.shop-brand-cancel-btn {
+    border: 1px solid #dfe3ea;
+    background: #ffffff;
+    color: #596276;
+}
+
+.shop-brand-cancel-btn:hover:not(:disabled) {
+    background: #f7f8fa;
+}
+
+.shop-brand-save-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 125px;
+    border: 0;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    box-shadow: 0 7px 16px rgba(79, 70, 229, 0.2);
+}
+
+.shop-brand-save-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.27);
+}
+
+.shop-brand-cancel-btn:disabled,
+.shop-brand-save-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.shop-brand-small-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: shopBrandSpin 0.7s linear infinite;
+}
+
+/* =========================================================
+   DELETE MODAL
+========================================================= */
+
+.shop-brand-delete-modal {
+    width: min(420px, 100%);
+    padding: 30px;
+    box-sizing: border-box;
+    border-radius: 18px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+    animation: shopBrandModalUp 0.25s ease;
+}
+
+.shop-brand-delete-icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 17px;
+    border-radius: 17px;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.shop-brand-delete-modal h2 {
+    margin: 0 0 9px;
+    color: #1f2937;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.shop-brand-delete-modal p {
+    margin: 0;
+    color: #7a8497;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.shop-brand-delete-modal p strong {
+    color: #374151;
+    font-weight: 750;
+}
+
+.shop-brand-delete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.shop-brand-confirm-delete {
+    min-height: 42px;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 9px;
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+    box-shadow: 0 7px 16px rgba(220, 38, 38, 0.18);
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease;
+}
+
+.shop-brand-confirm-delete:hover {
+    transform: translateY(-1px);
+    background: #b91c1c;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.shop-brand-modal::-webkit-scrollbar,
+.shop-brands-table-wrapper::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.shop-brand-modal::-webkit-scrollbar-track,
+.shop-brands-table-wrapper::-webkit-scrollbar-track {
+    background: #f5f6f8;
+}
+
+.shop-brand-modal::-webkit-scrollbar-thumb,
+.shop-brands-table-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #d3d7e0;
+}
+
+.shop-brand-modal::-webkit-scrollbar-thumb:hover,
+.shop-brands-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #b9bfcb;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+    .shop-brands-page {
+        padding: 24px 20px 35px;
+    }
+
+    .shop-brand-stats {
+        gap: 12px;
+    }
+
+    .shop-brand-stat-card {
+        padding: 16px;
+    }
+
+    .shop-brand-description {
+        max-width: 190px;
+    }
+}
+
+@media (max-width: 760px) {
+    .shop-brands-page {
+        padding: 20px 15px 30px;
+    }
+
+    .shop-brands-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shop-brand-add-btn {
+        width: 100%;
+    }
+
+    .shop-brand-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-brands-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .shop-brand-search {
+        width: 100%;
+        max-width: none;
+        flex-basis: 100%;
+    }
+
+    .shop-brand-status-filter {
+        flex: 1;
+    }
+
+    .shop-brand-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-brand-field.full {
+        grid-column: auto;
+    }
+
+    .shop-brand-modal {
+        max-height: calc(100vh - 24px);
+    }
+
+    .shop-brand-modal-header,
+    .shop-brand-form {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .shop-brands-header h1 {
+        font-size: 25px;
+    }
+
+    .shop-brand-stat-card {
+        min-height: 82px;
+    }
+
+    .shop-brand-stat-icon {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+    }
+
+    .shop-brand-modal-overlay {
+        padding: 12px;
+    }
+
+    .shop-brand-delete-modal {
+        padding: 24px 18px;
+    }
+
+    .shop-brand-modal-actions,
+    .shop-brand-delete-actions {
+        flex-direction: column-reverse;
+    }
+
+    .shop-brand-modal-actions button,
+    .shop-brand-delete-actions button {
+        width: 100%;
+    }
+}

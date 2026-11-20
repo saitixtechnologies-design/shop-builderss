@@ -1,0 +1,597 @@
+/* =====================================================
+   ADMIN SETTINGS PAGE
+===================================================== */
+
+.admin-settings-page {
+    width: 100%;
+    padding: 34px 32px 50px;
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.admin-settings-heading {
+    margin-bottom: 28px;
+}
+
+.admin-settings-heading p {
+    margin: 0 0 5px;
+    color: #8490a6;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.admin-settings-heading h1 {
+    margin: 0;
+    color: #14213d;
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 750;
+    letter-spacing: -0.7px;
+}
+
+.admin-settings-heading span {
+    display: block;
+    margin-top: 8px;
+    color: #7d899f;
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   MAIN LAYOUT
+===================================================== */
+
+.admin-settings-layout {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+
+/* =====================================================
+   SETTINGS MENU
+===================================================== */
+
+.settings-menu {
+    background: #ffffff;
+    border: 1px solid #e5eaf2;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 5px 20px rgba(20, 33, 61, 0.04);
+}
+
+.settings-menu-item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 13px 12px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+    color: #68758d;
+}
+
+.settings-menu-item:hover {
+    background: #f5f7ff;
+    color: #4f46e5;
+}
+
+.settings-menu-item.active {
+    background: linear-gradient(
+        135deg,
+        #eef0ff,
+        #f6f7ff
+    );
+    color: #4f46e5;
+}
+
+.settings-menu-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #f3f5f9;
+}
+
+.settings-menu-item.active .settings-menu-icon {
+    background: #e0e4ff;
+}
+
+.settings-menu-item strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.settings-menu-item small {
+    display: block;
+    margin-top: 3px;
+    color: #929caf;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.settings-content {
+    min-width: 0;
+}
+
+.settings-card {
+    background: #ffffff;
+    border: 1px solid #e5eaf2;
+    border-radius: 20px;
+    box-shadow: 0 6px 25px rgba(20, 33, 61, 0.045);
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   CARD HEADER
+===================================================== */
+
+.settings-card-header {
+    padding: 25px 28px;
+    border-bottom: 1px solid #edf0f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.settings-card-header h2 {
+    margin: 0;
+    color: #17243e;
+    font-size: 20px;
+    font-weight: 750;
+}
+
+.settings-card-header p {
+    margin: 6px 0 0;
+    color: #8994a8;
+    font-size: 13px;
+}
+
+.settings-card-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    background: #eef1ff;
+    color: #5146e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-card-icon.security {
+    background: #eef8f3;
+    color: #15966b;
+}
+
+
+/* =====================================================
+   PROFILE PREVIEW
+===================================================== */
+
+.profile-preview {
+    margin: 25px 28px 5px;
+    padding: 18px;
+    border-radius: 15px;
+    background: linear-gradient(
+        135deg,
+        #f8f9ff,
+        #fbfcff
+    );
+    border: 1px solid #edf0f6;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.profile-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 17px;
+    background: linear-gradient(
+        135deg,
+        #6747f5,
+        #4d5be8
+    );
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 750;
+    box-shadow: 0 7px 18px rgba(88, 72, 220, 0.22);
+}
+
+.profile-preview strong {
+    display: block;
+    color: #17243e;
+    font-size: 15px;
+}
+
+.profile-preview span {
+    display: block;
+    margin-top: 4px;
+    color: #8b96a9;
+    font-size: 12px;
+}
+
+.profile-status {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #15966b;
+    background: #eaf8f2;
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.settings-form-grid {
+    padding: 25px 28px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.settings-field {
+    min-width: 0;
+}
+
+.settings-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #34415a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.settings-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.settings-input > svg {
+    position: absolute;
+    left: 14px;
+    color: #9aa5b8;
+    pointer-events: none;
+}
+
+.settings-input input {
+    width: 100%;
+    height: 48px;
+    box-sizing: border-box;
+    border: 1px solid #dfe4ec;
+    border-radius: 11px;
+    outline: none;
+    background: #ffffff;
+    color: #27344d;
+    padding: 0 45px 0 43px;
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+.settings-input input:focus {
+    border-color: #6557e8;
+    box-shadow: 0 0 0 3px rgba(101, 87, 232, 0.08);
+}
+
+.settings-input input::placeholder {
+    color: #adb5c3;
+}
+
+.settings-input input[readonly] {
+    background: #f7f8fa;
+    color: #7f899b;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.settings-card-footer {
+    padding: 18px 28px;
+    border-top: 1px solid #edf0f5;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.settings-save-btn {
+    height: 43px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(
+        135deg,
+        #5b4be8,
+        #4d63df
+    );
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(82, 73, 210, 0.18);
+    transition: 0.2s ease;
+}
+
+.settings-save-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 20px rgba(82, 73, 210, 0.23);
+}
+
+.settings-save-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =====================================================
+   SECURITY
+===================================================== */
+
+.security-info {
+    margin: 25px 28px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #f5faf8;
+    border: 1px solid #dcefe7;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.security-info-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 10px;
+    background: #e0f5eb;
+    color: #15966b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.security-info strong {
+    color: #244436;
+    font-size: 13px;
+}
+
+.security-info p {
+    margin: 4px 0 0;
+    color: #799184;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.password-form {
+    padding: 0 28px 0;
+    max-width: 680px;
+}
+
+.password-form .settings-field {
+    margin-bottom: 20px;
+}
+
+.settings-password-toggle {
+    position: absolute;
+    right: 10px;
+    border: 0;
+    background: transparent;
+    color: #8e99aa;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.settings-password-toggle:hover {
+    background: #f0f2f6;
+    color: #4f46e5;
+}
+
+
+/* =====================================================
+   PASSWORD STRENGTH
+===================================================== */
+
+.password-strength {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.strength-track {
+    flex: 1;
+    height: 5px;
+    background: #edf0f4;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    background: #4f46e5;
+    border-radius: 10px;
+    transition: width 0.25s ease;
+}
+
+.password-strength span {
+    min-width: 55px;
+    color: #7f899b;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   PASSWORD REQUIREMENTS
+===================================================== */
+
+.password-requirements {
+    margin: 4px 0 22px;
+    padding: 15px 16px;
+    border-radius: 13px;
+    background: #f8f9fb;
+    border: 1px solid #edf0f4;
+}
+
+.password-requirements strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #44516a;
+    font-size: 12px;
+}
+
+.password-requirements div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px 20px;
+}
+
+.password-requirements span {
+    color: #7e899d;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   SECURITY NOTE
+===================================================== */
+
+.security-note {
+    margin: 0 28px 25px;
+    padding: 13px 15px;
+    border-radius: 11px;
+    background: #f7f8fc;
+    color: #8993a6;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 950px) {
+
+    .admin-settings-page {
+        padding: 25px 20px 40px;
+    }
+
+    .admin-settings-layout {
+        grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .admin-settings-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .settings-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .admin-settings-page {
+        padding: 20px 14px 35px;
+    }
+
+    .admin-settings-heading h1 {
+        font-size: 27px;
+    }
+
+    .settings-menu {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-card-header {
+        padding: 20px;
+    }
+
+    .profile-preview {
+        margin: 20px;
+    }
+
+    .settings-form-grid {
+        padding: 20px;
+    }
+
+    .settings-card-footer {
+        padding: 16px 20px;
+    }
+
+    .password-form {
+        padding: 0 20px;
+    }
+
+    .security-info {
+        margin: 20px;
+    }
+
+    .security-note {
+        margin: 0 20px 20px;
+    }
+
+    .profile-status {
+        display: none;
+    }
+
+    .password-requirements div {
+        grid-template-columns: 1fr;
+    }
+
+}

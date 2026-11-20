@@ -1,0 +1,20 @@
+# Secrets: never commit these. Set the same values in Vercel / Render instead.
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+
+# Files uploaded by shops at runtime (product photos, banners, logos)
+uploads/
+
+# Logs and editor / OS files
+*.log
+npm-debug.log*
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

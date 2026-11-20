@@ -1,0 +1,1470 @@
+/* =========================================================
+   BANNERS PAGE
+========================================================= */
+
+.banners-page {
+    width: 100%;
+    min-height: 100%;
+    padding: 28px;
+    background: #f7f8fc;
+    color: #172033;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.banners-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 25px;
+}
+
+.banners-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 9px;
+    color: #98a1b2;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.banners-breadcrumb svg {
+    color: #667085;
+}
+
+.banners-breadcrumb strong {
+    color: #475467;
+    font-weight: 700;
+}
+
+.banners-header h1 {
+    margin: 0;
+    font-size: 29px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+    color: #172033;
+}
+
+.banners-header p {
+    margin: 7px 0 0;
+    color: #7b8494;
+    font-size: 14px;
+}
+
+.banners-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.banner-refresh-btn,
+.banner-add-btn {
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+}
+
+.banner-refresh-btn {
+    border: 1px solid #e1e5ec;
+    background: #ffffff;
+    color: #344054;
+}
+
+.banner-refresh-btn:hover {
+    background: #f9fafb;
+    border-color: #d4d9e2;
+}
+
+.banner-add-btn {
+    border: 1px solid #172033;
+    background: #172033;
+    color: #ffffff;
+    box-shadow: 0 7px 18px rgba(23, 32, 51, 0.15);
+}
+
+.banner-add-btn:hover {
+    background: #0d1525;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(23, 32, 51, 0.2);
+}
+
+.banner-refresh-btn:disabled,
+.banner-add-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.banner-stats {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.banner-stat-card {
+    min-height: 88px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 17px 18px;
+    background: #ffffff;
+    border: 1px solid #e9ecf2;
+    border-radius: 14px;
+    box-shadow:
+        0 2px 5px rgba(16, 24, 40, 0.025),
+        0 8px 25px rgba(16, 24, 40, 0.035);
+    box-sizing: border-box;
+}
+
+.banner-stat-icon {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.banner-stat-icon.total {
+    color: #344054;
+    background: #f2f4f7;
+}
+
+.banner-stat-icon.active {
+    color: #067647;
+    background: #ecfdf3;
+}
+
+.banner-stat-icon.inactive {
+    color: #b54708;
+    background: #fffaeb;
+}
+
+.banner-stat-icon.shops {
+    color: #175cd3;
+    background: #eff8ff;
+}
+
+.banner-stat-card span {
+    display: block;
+    margin-bottom: 5px;
+    color: #98a2b3;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.banner-stat-card strong {
+    display: block;
+    color: #172033;
+    font-size: 23px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+.banner-filter-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px;
+    margin-bottom: 18px;
+    background: #ffffff;
+    border: 1px solid #e9ecf2;
+    border-radius: 14px;
+    box-shadow:
+        0 2px 5px rgba(16, 24, 40, 0.02),
+        0 7px 20px rgba(16, 24, 40, 0.025);
+}
+
+.banner-search {
+    min-width: 260px;
+    flex: 1;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 11px;
+    border: 1px solid #e2e6ed;
+    border-radius: 9px;
+    background: #ffffff;
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.banner-search:focus-within {
+    border-color: #98a2b3;
+    box-shadow:
+        0 0 0 3px rgba(152, 162, 179, 0.12);
+}
+
+.banner-search > svg {
+    flex: 0 0 auto;
+    color: #98a2b3;
+}
+
+.banner-search input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #172033;
+    font-size: 13px;
+}
+
+.banner-search input::placeholder {
+    color: #a0a8b6;
+}
+
+.banner-search button {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 6px;
+    background: #f2f4f7;
+    color: #667085;
+    cursor: pointer;
+}
+
+.banner-search button:hover {
+    background: #e4e7ec;
+    color: #344054;
+}
+
+.banner-filter-select {
+    min-width: 175px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    border: 1px solid #e2e6ed;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #667085;
+}
+
+.banner-filter-select svg {
+    flex: 0 0 auto;
+}
+
+.banner-filter-select select {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.banner-clear-btn {
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border: 1px solid #e2e6ed;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #667085;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.banner-clear-btn:hover {
+    background: #f8f9fb;
+    color: #344054;
+}
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.banner-table-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e9ecf2;
+    border-radius: 16px;
+    box-shadow:
+        0 2px 5px rgba(16, 24, 40, 0.025),
+        0 10px 28px rgba(16, 24, 40, 0.035);
+}
+
+.banner-table-top {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.banner-table-top h2 {
+    margin: 0 0 4px;
+    color: #172033;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.banner-table-top span {
+    color: #98a2b3;
+    font-size: 12px;
+}
+
+.banner-table-top span strong {
+    color: #475467;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.banner-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.banner-table {
+    width: 100%;
+    min-width: 1050px;
+    border-collapse: collapse;
+}
+
+.banner-table th {
+    height: 46px;
+    padding: 0 16px;
+    border-bottom: 1px solid #edf0f4;
+    background: #fafbfc;
+    color: #667085;
+    font-size: 10px;
+    font-weight: 800;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.055em;
+    white-space: nowrap;
+}
+
+.banner-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f2f5;
+    vertical-align: middle;
+}
+
+.banner-table tbody tr {
+    transition:
+        background 0.15s ease;
+}
+
+.banner-table tbody tr:hover {
+    background: #fafbfc;
+}
+
+.banner-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.th-order {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+/* =========================================================
+   BANNER INFO
+========================================================= */
+
+.banner-info {
+    min-width: 260px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.banner-thumb {
+    width: 68px;
+    height: 48px;
+    flex: 0 0 68px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e4e7ec;
+    border-radius: 9px;
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #eef2f6
+        );
+}
+
+.banner-thumb img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.banner-image-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #98a2b3;
+}
+
+.banner-title-wrap {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.banner-title-wrap strong {
+    max-width: 235px;
+    overflow: hidden;
+    color: #172033;
+    font-size: 13px;
+    font-weight: 750;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.banner-title-wrap span {
+    max-width: 245px;
+    overflow: hidden;
+    color: #98a2b3;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SHOP
+========================================================= */
+
+.banner-shop {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 150px;
+}
+
+.banner-shop-icon {
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #175cd3;
+    background: #eff8ff;
+}
+
+.banner-shop > div:last-child {
+    min-width: 0;
+}
+
+.banner-shop strong {
+    display: block;
+    max-width: 150px;
+    overflow: hidden;
+    color: #344054;
+    font-size: 12px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.banner-shop span {
+    display: block;
+    margin-top: 2px;
+    color: #98a2b3;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   BUTTON PREVIEW
+========================================================= */
+
+.banner-button-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 9px;
+    border: 1px solid #e1e5eb;
+    border-radius: 7px;
+    background: #f8fafc;
+    color: #475467;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.banner-button-preview svg {
+    color: #98a2b3;
+}
+
+
+/* =========================================================
+   SCHEDULE
+========================================================= */
+
+.banner-schedule {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #667085;
+}
+
+.banner-schedule > svg {
+    flex: 0 0 auto;
+    color: #98a2b3;
+}
+
+.banner-schedule div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.banner-schedule span {
+    color: #475467;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.banner-schedule small {
+    color: #98a2b3;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   ORDER
+========================================================= */
+
+.banner-order-badge {
+    min-width: 29px;
+    height: 27px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
+    border: 1px solid #e4e7ec;
+    border-radius: 7px;
+    background: #f8fafc;
+    color: #475467;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.banner-status {
+    min-width: 78px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.banner-status:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.banner-status:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
+.banner-status.active {
+    border: 1px solid #abefc6;
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.banner-status.inactive {
+    border: 1px solid #fedf89;
+    background: #fffaeb;
+    color: #b54708;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.action-column {
+    width: 105px;
+    text-align: center !important;
+}
+
+.banner-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.banner-action {
+    width: 33px;
+    height: 33px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition:
+        transform 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease;
+}
+
+.banner-action:hover {
+    transform: translateY(-1px);
+}
+
+.banner-action.edit {
+    border: 1px solid #dbe7ff;
+    background: #f5f8ff;
+    color: #175cd3;
+}
+
+.banner-action.edit:hover {
+    background: #eaf1ff;
+    border-color: #b8d0ff;
+}
+
+.banner-action.delete {
+    border: 1px solid #fee4e2;
+    background: #fff5f4;
+    color: #d92d20;
+}
+
+.banner-action.delete:hover {
+    background: #feeceb;
+    border-color: #fecdca;
+}
+
+.muted-text {
+    color: #b0b7c3;
+}
+
+
+/* =========================================================
+   STATES
+========================================================= */
+
+.banner-state {
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.banner-state h3 {
+    margin: 15px 0 5px;
+    color: #344054;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.banner-state p {
+    max-width: 420px;
+    margin: 0;
+    color: #98a2b3;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.banner-state.error > svg {
+    color: #d92d20;
+}
+
+.banner-state.error h3 {
+    color: #b42318;
+}
+
+.banner-state.error button,
+.banner-empty-btn {
+    margin-top: 17px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 8px;
+    background: #172033;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.banner-state.error button:hover,
+.banner-empty-btn:hover {
+    background: #0d1525;
+}
+
+.banner-empty-icon {
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    color: #98a2b3;
+    background: #f2f4f7;
+}
+
+.banner-loader {
+    width: 31px;
+    height: 31px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #172033;
+    border-radius: 50%;
+    animation: bannerSpin 0.8s linear infinite;
+}
+
+
+/* =========================================================
+   ADD / EDIT MODAL
+========================================================= */
+
+.banner-modal-overlay,
+.banner-delete-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    background: rgba(15, 23, 42, 0.56);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.banner-modal {
+    width: min(760px, 100%);
+    max-height: calc(100vh - 50px);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow:
+        0 25px 80px rgba(15, 23, 42, 0.25),
+        0 8px 25px rgba(15, 23, 42, 0.08);
+    animation: bannerModalIn 0.2s ease;
+}
+
+.banner-modal-header {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #edf0f4;
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fcfdff
+        );
+}
+
+.banner-modal-header > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.banner-modal-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    color: #175cd3;
+    background: #eff8ff;
+}
+
+.banner-modal-header h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.banner-modal-header p {
+    margin: 3px 0 0;
+    color: #98a2b3;
+    font-size: 11px;
+}
+
+.banner-modal-close {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e4e7ec;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #667085;
+    cursor: pointer;
+}
+
+.banner-modal-close:hover {
+    background: #f8fafc;
+    color: #344054;
+}
+
+.banner-modal-close:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.banner-modal-body {
+    max-height: calc(100vh - 190px);
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 20px;
+}
+
+.banner-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.banner-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.banner-modal-body::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #d0d5dd;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.banner-form-group {
+    min-width: 0;
+}
+
+.banner-form-group.full {
+    grid-column: 1 / -1;
+}
+
+.banner-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #344054;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.banner-form-group label span {
+    margin-left: 3px;
+    color: #d92d20;
+}
+
+.banner-form-group input,
+.banner-form-group select {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    border: 1px solid #dfe3e9;
+    outline: none;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #344054;
+    font-family: inherit;
+    font-size: 13px;
+    transition:
+        border-color 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+.banner-form-group input:focus,
+.banner-form-group select:focus {
+    border-color: #98a2b3;
+    box-shadow:
+        0 0 0 3px rgba(152, 162, 179, 0.11);
+}
+
+.banner-form-group input::placeholder {
+    color: #a8afb9;
+}
+
+.banner-input-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.banner-input-icon > svg {
+    position: absolute;
+    left: 12px;
+    z-index: 1;
+    color: #98a2b3;
+    pointer-events: none;
+}
+
+.banner-input-icon input,
+.banner-input-icon select {
+    padding-left: 38px;
+}
+
+.banner-help-text {
+    display: block;
+    margin-top: 5px;
+    color: #98a2b3;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+.banner-form-preview {
+    overflow: hidden;
+    border: 1px solid #e4e7ec;
+    border-radius: 11px;
+    background: #f8fafc;
+}
+
+.banner-preview-label {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 11px;
+    border-bottom: 1px solid #e4e7ec;
+}
+
+.banner-preview-label span {
+    color: #667085;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.banner-preview-label a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #175cd3;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.banner-preview-label a:hover {
+    text-decoration: underline;
+}
+
+.banner-preview-box {
+    height: 175px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #eef2f6
+        );
+}
+
+.banner-preview-box img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.banner-preview-error {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: #98a2b3;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.banner-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    padding: 14px 20px;
+    border-top: 1px solid #edf0f4;
+    background: #fafbfc;
+}
+
+.banner-cancel-btn,
+.banner-save-btn {
+    min-width: 112px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.banner-cancel-btn {
+    border: 1px solid #dfe3e9;
+    background: #ffffff;
+    color: #475467;
+}
+
+.banner-cancel-btn:hover {
+    background: #f8fafc;
+}
+
+.banner-save-btn {
+    border: 1px solid #172033;
+    background: #172033;
+    color: #ffffff;
+    box-shadow: 0 5px 14px rgba(23, 32, 51, 0.14);
+}
+
+.banner-save-btn:hover {
+    background: #0d1525;
+}
+
+.banner-cancel-btn:disabled,
+.banner-save-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   DELETE MODAL
+========================================================= */
+
+.banner-delete-overlay {
+    z-index: 2100;
+}
+
+.banner-delete-modal {
+    width: min(430px, 100%);
+    padding: 27px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 19px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow:
+        0 30px 90px rgba(15, 23, 42, 0.3),
+        0 10px 25px rgba(15, 23, 42, 0.1);
+    animation: bannerModalIn 0.2s ease;
+}
+
+.banner-delete-icon {
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 17px;
+    border: 7px solid #fff1f0;
+    border-radius: 50%;
+    color: #d92d20;
+    background: #fee4e2;
+}
+
+.banner-delete-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.banner-delete-label {
+    color: #d92d20;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.banner-delete-content h2 {
+    margin: 5px 0 7px;
+    color: #172033;
+    font-size: 20px;
+    font-weight: 850;
+    letter-spacing: -0.3px;
+}
+
+.banner-delete-content p {
+    max-width: 340px;
+    margin: 0;
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.banner-delete-content p strong {
+    color: #344054;
+}
+
+.banner-delete-shop {
+    max-width: 100%;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 7px 11px;
+    border: 1px solid #e4e7ec;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475467;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.banner-delete-shop svg {
+    color: #667085;
+}
+
+.banner-delete-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 23px;
+}
+
+.banner-delete-cancel,
+.banner-delete-confirm {
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.banner-delete-cancel {
+    border: 1px solid #dfe3e9;
+    background: #ffffff;
+    color: #475467;
+}
+
+.banner-delete-cancel:hover {
+    background: #f8fafc;
+}
+
+.banner-delete-confirm {
+    border: 1px solid #d92d20;
+    background: #d92d20;
+    color: #ffffff;
+    box-shadow:
+        0 6px 15px rgba(217, 45, 32, 0.18);
+}
+
+.banner-delete-confirm:hover {
+    border-color: #b42318;
+    background: #b42318;
+}
+
+.banner-delete-cancel:disabled,
+.banner-delete-confirm:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes bannerSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bannerModalIn {
+    from {
+        opacity: 0;
+        transform:
+            translateY(8px)
+            scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+.spin {
+    animation:
+        bannerSpin 0.8s linear infinite;
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1100px
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .banner-stats {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .banner-filter-card {
+        flex-wrap: wrap;
+    }
+
+    .banner-search {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    .banner-filter-select {
+        flex: 1;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — 768px
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .banners-page {
+        padding: 20px 15px;
+    }
+
+    .banners-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .banners-header-actions {
+        width: 100%;
+    }
+
+    .banner-refresh-btn,
+    .banner-add-btn {
+        flex: 1;
+    }
+
+    .banner-modal-overlay,
+    .banner-delete-overlay {
+        padding: 15px;
+    }
+
+    .banner-modal {
+        max-height: calc(100vh - 30px);
+        border-radius: 15px;
+    }
+
+    .banner-modal-body {
+        max-height: calc(100vh - 175px);
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+    .banner-form-group.full {
+        grid-column: auto;
+    }
+
+    .banner-modal-footer {
+        padding: 12px 16px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — 560px
+========================================================= */
+
+@media (max-width: 560px) {
+
+    .banners-page {
+        padding: 16px 11px;
+    }
+
+    .banners-header h1 {
+        font-size: 24px;
+    }
+
+    .banners-header p {
+        font-size: 12px;
+    }
+
+    .banners-header-actions {
+        flex-direction: column;
+    }
+
+    .banner-refresh-btn,
+    .banner-add-btn {
+        width: 100%;
+        flex: none;
+    }
+
+    .banner-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .banner-filter-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .banner-search {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .banner-filter-select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .banner-clear-btn {
+        justify-content: center;
+    }
+
+    .banner-table-top {
+        padding: 14px;
+    }
+
+    .banner-delete-modal {
+        padding: 23px 18px;
+    }
+
+    .banner-delete-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .banner-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .banner-cancel-btn,
+    .banner-save-btn {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.banner-action:focus-visible,
+.banner-status:focus-visible,
+.banner-add-btn:focus-visible,
+.banner-refresh-btn:focus-visible,
+.banner-modal-close:focus-visible,
+.banner-save-btn:focus-visible,
+.banner-cancel-btn:focus-visible,
+.banner-delete-confirm:focus-visible,
+.banner-delete-cancel:focus-visible,
+.banner-clear-btn:focus-visible {
+    outline: 3px solid rgba(23, 92, 211, 0.18);
+    outline-offset: 2px;
+}

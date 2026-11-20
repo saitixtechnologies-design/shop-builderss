@@ -1,0 +1,837 @@
+/* =====================================================
+   SHOP ADMIN SIDEBAR
+===================================================== */
+
+.shop-admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 270px;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+
+    z-index: 1000;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+/* =====================================================
+   SIDEBAR HEADER
+===================================================== */
+
+.shop-sidebar-header {
+    height: 76px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid #eef0f4;
+
+    flex-shrink: 0;
+}
+
+.shop-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    min-width: 0;
+}
+
+.shop-sidebar-brand-button {
+    display: flex;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.shop-sidebar-brand-button:focus-visible {
+    outline: 2px solid #22a565;
+    outline-offset: 4px;
+    border-radius: 8px;
+}
+
+.shop-brand-icon {
+    width: 40px;
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.22);
+}
+
+.shop-brand-text {
+    min-width: 0;
+}
+
+.shop-brand-text h2 {
+    margin: 0;
+
+    color: #172033;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+.shop-brand-text span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #8a93a5;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   MOBILE CLOSE BUTTON
+===================================================== */
+
+.shop-sidebar-close {
+    display: none;
+
+    width: 36px;
+    height: 36px;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #f3f4f6;
+    color: #475467;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.shop-sidebar-close:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+
+/* =====================================================
+   SHOP INFORMATION CARD
+===================================================== */
+
+.shop-info-card {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin: 18px 16px 14px;
+
+    padding: 12px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    min-width: 0;
+}
+
+.shop-info-icon {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.shop-info-content {
+    min-width: 0;
+}
+
+.shop-info-content strong {
+    display: block;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #172033;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.shop-info-content span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #8a93a5;
+
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   SECTION TITLE
+===================================================== */
+
+.shop-sidebar-section-title {
+    padding: 8px 20px 9px;
+
+    color: #98a2b3;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.shop-sidebar-nav {
+    flex: 1;
+
+    padding: 0 12px 15px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+    scrollbar-color: #d9dee8 transparent;
+}
+
+.shop-sidebar-nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+.shop-sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.shop-sidebar-nav::-webkit-scrollbar-thumb {
+    background: #d9dee8;
+    border-radius: 10px;
+}
+
+
+/* =====================================================
+   NAV ITEM
+===================================================== */
+
+.shop-sidebar-nav-item {
+    position: relative;
+
+    width: 100%;
+    min-height: 46px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 4px;
+    padding: 0 13px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #667085;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.shop-sidebar-nav-item:hover {
+    background: #f5f8ff;
+    color: #2563eb;
+}
+
+.shop-sidebar-nav-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-weight: 600;
+}
+
+.shop-sidebar-nav-icon {
+    width: 20px;
+    height: 20px;
+
+    flex: 0 0 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-sidebar-nav-label {
+    flex: 1;
+
+    min-width: 0;
+
+    white-space: nowrap;
+}
+
+.shop-active-indicator {
+    position: absolute;
+
+    right: 0;
+    top: 50%;
+
+    width: 3px;
+    height: 25px;
+
+    transform: translateY(-50%);
+
+    border-radius: 4px 0 0 4px;
+
+    background: #2563eb;
+}
+
+
+/* =====================================================
+   SIDEBAR FOOTER
+===================================================== */
+
+.shop-sidebar-footer {
+    flex-shrink: 0;
+
+    padding: 14px 14px 16px;
+
+    border-top: 1px solid #eef0f4;
+
+    background: #ffffff;
+}
+
+
+/* =====================================================
+   ADMIN PROFILE
+===================================================== */
+
+.shop-admin-profile {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+
+    padding: 7px 4px 12px;
+}
+
+.shop-admin-avatar {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #172033;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shop-admin-profile-info {
+    min-width: 0;
+}
+
+.shop-admin-profile-info strong {
+    display: block;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #172033;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.shop-admin-profile-info span {
+    display: block;
+
+    margin-top: 3px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #98a2b3;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.shop-sidebar-logout {
+    width: 100%;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    border: 1px solid #fee2e2;
+    border-radius: 9px;
+
+    background: #fff7f7;
+    color: #dc2626;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.shop-sidebar-logout:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+
+/* =====================================================
+   LARGE DESKTOP
+===================================================== */
+
+@media (min-width: 1400px) {
+
+    .shop-admin-sidebar {
+        width: 285px;
+    }
+
+    .shop-sidebar-header {
+        padding: 0 23px;
+    }
+
+    .shop-sidebar-nav {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .shop-sidebar-nav-item {
+        min-height: 48px;
+        font-size: 14px;
+    }
+}
+
+
+/* =====================================================
+   LAPTOP
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .shop-admin-sidebar {
+        width: 250px;
+    }
+
+    .shop-sidebar-header {
+        padding: 0 17px;
+    }
+
+    .shop-info-card {
+        margin-left: 13px;
+        margin-right: 13px;
+    }
+
+    .shop-sidebar-nav-item {
+        min-height: 44px;
+        padding: 0 11px;
+    }
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .shop-admin-sidebar {
+
+        width: 270px;
+
+        transform: translateX(-100%);
+
+        box-shadow: none;
+    }
+
+    .shop-admin-sidebar.sidebar-open {
+
+        transform: translateX(0);
+
+        box-shadow:
+            10px 0 35px rgba(15, 23, 42, 0.16);
+    }
+
+    .shop-sidebar-close {
+        display: flex;
+    }
+
+    .shop-sidebar-header {
+        height: 70px;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 640px) {
+
+    .shop-admin-sidebar {
+        width: min(86vw, 300px);
+    }
+
+    .shop-sidebar-header {
+        height: 66px;
+
+        padding: 0 15px;
+    }
+
+    .shop-brand-icon {
+        width: 37px;
+        height: 37px;
+
+        flex-basis: 37px;
+    }
+
+    .shop-brand-text h2 {
+        font-size: 16px;
+    }
+
+    .shop-brand-text span {
+        font-size: 10px;
+    }
+
+    .shop-info-card {
+        margin: 14px 12px 12px;
+
+        padding: 10px;
+    }
+
+    .shop-sidebar-section-title {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .shop-sidebar-nav {
+        padding: 0 10px 12px;
+    }
+
+    .shop-sidebar-nav-item {
+        min-height: 45px;
+
+        padding: 0 12px;
+
+        font-size: 13px;
+    }
+
+    .shop-sidebar-footer {
+        padding: 11px 12px 13px;
+    }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+
+    .shop-admin-sidebar {
+        width: 88vw;
+    }
+
+    .shop-sidebar-header {
+        padding: 0 12px;
+    }
+
+    .shop-brand-text h2 {
+        font-size: 15px;
+    }
+
+    .shop-info-card {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .shop-sidebar-nav {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .shop-sidebar-nav-item {
+        min-height: 43px;
+
+        padding-left: 10px;
+        padding-right: 10px;
+
+        gap: 10px;
+    }
+
+    .shop-sidebar-footer {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+
+/* =====================================================
+   VERY SMALL HEIGHT DEVICES
+===================================================== */
+
+@media (max-height: 650px) {
+
+    .shop-sidebar-header {
+        height: 62px;
+    }
+
+    .shop-info-card {
+        margin-top: 10px;
+        margin-bottom: 8px;
+        padding: 8px;
+    }
+
+    .shop-info-icon {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+    }
+
+    .shop-sidebar-nav-item {
+        min-height: 40px;
+    }
+
+    .shop-sidebar-footer {
+        padding-top: 8px;
+        padding-bottom: 9px;
+    }
+
+    .shop-admin-profile {
+        padding-bottom: 7px;
+    }
+}
+
+/* Refined shop admin navigation */
+.shop-admin-sidebar {
+    background: linear-gradient(180deg, #fff 0%, #fcfcff 72%, #f8f9fd 100%);
+    border-right-color: #e4e8f1;
+    box-shadow: 8px 0 28px rgba(26, 39, 68, 0.035);
+}
+
+.shop-sidebar-header {
+    height: 82px;
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.shop-brand-icon {
+    border-radius: 13px;
+    background: linear-gradient(145deg, #3578ff, #2453d8);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.23);
+}
+
+.shop-info-card {
+    margin: 20px 16px 18px;
+    padding: 13px;
+    border-color: #e4e9f2;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #f8faff, #f5f7fb);
+    box-shadow: 0 4px 14px rgba(24, 41, 73, 0.035);
+}
+
+.shop-info-icon {
+    border-radius: 11px;
+    background: #edf3ff;
+    color: #356ee8;
+}
+
+.shop-info-text { min-width: 0; }
+.shop-info-text strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #172033; font-size: 13px; font-weight: 750; }
+.shop-info-text span { display: block; margin-top: 3px; color: #8792a6; font-size: 11px; }
+
+.shop-sidebar-section-title {
+    padding: 8px 23px 11px;
+    color: #8c97aa;
+    font-size: 9px;
+    letter-spacing: 1.35px;
+}
+
+.shop-sidebar-nav { padding: 0 11px 16px; }
+.shop-sidebar-nav-item {
+    min-height: 48px;
+    margin: 3px 0;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: #657187;
+    font-size: 13px;
+    transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+.shop-sidebar-nav-item:hover {
+    transform: translateX(2px);
+    border-color: #e7ecf7;
+    background: #f7f9fe;
+    color: #285fd9;
+}
+
+.shop-sidebar-nav-item.active {
+    border-color: #dce7ff;
+    background: linear-gradient(105deg, #eef4ff 0%, #f5f7ff 100%);
+    color: #245be0;
+    box-shadow: 0 4px 12px rgba(52, 102, 218, 0.07);
+}
+
+.shop-sidebar-nav-item.active .shop-sidebar-nav-icon {
+    color: #2c66e9;
+}
+
+.shop-active-indicator {
+    right: -1px;
+    width: 3px;
+    height: 24px;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(180deg, #5792ff, #2759df);
+}
+
+.shop-sidebar-footer {
+    padding: 15px 14px 17px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.shop-admin-avatar {
+    background: linear-gradient(145deg, #202c43, #111827);
+    box-shadow: 0 4px 10px rgba(17, 24, 39, 0.12);
+}
+
+.shop-sidebar-logout {
+    height: 44px;
+    border-radius: 11px;
+    background: #fff8f8;
+}
+
+@media (max-width: 900px) {
+    .shop-admin-sidebar { box-shadow: none; }
+    .shop-admin-sidebar.sidebar-open { box-shadow: 14px 0 40px rgba(15, 23, 42, 0.2); }
+}
+
+@media (max-width: 640px) {
+    .shop-sidebar-header { height: 66px; }
+    .shop-sidebar-nav-item { min-height: 45px; }
+}
+
+@media (max-width: 380px) {
+    .shop-sidebar-nav-item { min-height: 43px; }
+}
+
+@media (max-height: 650px) {
+    .shop-sidebar-header { height: 62px; }
+    .shop-sidebar-nav-item { min-height: 40px; }
+}
+
+
+/* =====================================================
+   ACCESSIBILITY
+===================================================== */
+
+.shop-sidebar-nav-item:focus-visible,
+.shop-sidebar-close:focus-visible,
+.shop-sidebar-logout:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .shop-admin-sidebar,
+    .shop-sidebar-nav-item,
+    .shop-sidebar-close,
+    .shop-sidebar-logout {
+        transition: none;
+    }
+}

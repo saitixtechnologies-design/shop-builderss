@@ -1,0 +1,11 @@
+import express from "express";
+import { authenticateToken, requireShopAccess } from "../middleware/authMiddleware.js";
+import { getShopPortfolio, createShopPortfolio, updateShopPortfolio, deleteShopPortfolio, toggleShopPortfolioStatus } from "../controllers/shopPortfolioController.js";
+const router = express.Router();
+router.use(authenticateToken, requireShopAccess);
+router.get("/", getShopPortfolio);
+router.post("/", createShopPortfolio);
+router.put("/:id", updateShopPortfolio);
+router.delete("/:id", deleteShopPortfolio);
+router.patch("/:id/status", toggleShopPortfolioStatus);
+export default router;

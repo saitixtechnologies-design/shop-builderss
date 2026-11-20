@@ -1,0 +1,140 @@
+/* =====================================================
+   SHOP ADMIN LAYOUT
+===================================================== */
+
+.shop-admin-layout {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+
+    background: #f7f8fc;
+}
+
+
+/* =====================================================
+   MAIN AREA
+===================================================== */
+
+.shop-admin-main {
+    min-width: 0;
+    width: calc(100% - 270px);
+
+    margin-left: 270px;
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    transition:
+        margin-left 0.3s ease,
+        width 0.3s ease;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.shop-admin-content {
+    flex: 1;
+
+    width: 100%;
+
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    overflow-x: hidden;
+}
+
+
+/* =====================================================
+   MOBILE OVERLAY
+===================================================== */
+
+.shop-admin-sidebar-overlay {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(15, 23, 42, 0.45);
+
+    z-index: 999;
+
+    backdrop-filter: blur(2px);
+}
+
+
+/* =====================================================
+   LARGE DESKTOP
+===================================================== */
+
+@media (min-width: 1400px) {
+
+    .shop-admin-main {
+        width: calc(100% - 285px);
+        margin-left: 285px;
+    }
+}
+
+
+/* =====================================================
+   LAPTOP
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .shop-admin-main {
+        width: calc(100% - 250px);
+        margin-left: 250px;
+    }
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .shop-admin-main {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .shop-admin-sidebar-overlay {
+        display: block;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 640px) {
+
+    .shop-admin-content {
+        padding: 0;
+
+        width: 100%;
+    }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+
+    .shop-admin-content {
+        min-width: 0;
+    }
+}
