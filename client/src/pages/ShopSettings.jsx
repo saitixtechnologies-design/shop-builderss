@@ -18,9 +18,9 @@ import {
 
 import "../styles/ShopSettings.css";
 import ImageGalleryField from "../components/ImageGalleryField.jsx";
-import { adminFetch as fetch } from "../lib/api.js";
+import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
 
-const API_URL = "http://localhost:5001/api/shop-settings";
+const API_URL = `${API_ORIGIN}/api/shop-settings`;
 
 const getToken = () => {
     return (

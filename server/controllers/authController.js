@@ -34,6 +34,19 @@ export const createSuperAdmin = async (req, res) => {
 
         const roleID = roleResult.recordset[0].RoleID;
 
+        // Anyone may create the first super admin (initial setup). After that, only a signed-in
+        // super admin can add another one.
+        const existingSuperAdmins = await db.request()
+            .input("RoleID", roleID)
+            .query("SELECT COUNT(*) AS Total FROM dbo.Users WHERE RoleID = @RoleID");
+
+        if (existingSuperAdmins.recordset[0].Total > 0 && !req.user) {
+            return res.status(403).json({
+                success: false,
+                message: "A super admin already exists. Sign in as a super admin to add another."
+            });
+        }
+
         // Check existing email
         const existingUser = await db.request()
             .input("Email", email)

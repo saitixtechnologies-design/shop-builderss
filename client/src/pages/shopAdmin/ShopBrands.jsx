@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../../styles/shop-admin/shop-brands.css";
 import ImageGalleryField from "../../components/ImageGalleryField.jsx";
+import { API_ORIGIN } from "../../lib/api.js";
 
-const API_URL = "http://localhost:5001/api/shop-brands";
+const API_URL = `${API_ORIGIN}/api/shop-brands`;
 
 function ShopBrands() {
     const [brands, setBrands] = useState([]);

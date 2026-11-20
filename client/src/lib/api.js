@@ -6,6 +6,10 @@ const apiOrigin = (
     .replace(/\/+$/, "");
 
 
+/** Backend address, from VITE_API_URL (falls back to the local API during development). */
+export const API_ORIGIN = apiOrigin;
+
+
 export const apiUrl = (path) =>
     `${apiOrigin}/${String(path).replace(/^\/+/, "")}`;
 

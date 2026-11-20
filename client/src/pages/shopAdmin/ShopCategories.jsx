@@ -8,11 +8,11 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "react-toastify";
-import { getShopAdminToken } from "../../lib/api.js";
+import { getShopAdminToken, API_ORIGIN } from "../../lib/api.js";
 import "../../styles/shop-admin/shop-categories.css";
 import ImageGalleryField from "../../components/ImageGalleryField.jsx";
 
-const API_URL = "http://localhost:5001/api/shop-categories";
+const API_URL = `${API_ORIGIN}/api/shop-categories`;
 
 function ShopCategories() {
   const [categories, setCategories] = useState([]);

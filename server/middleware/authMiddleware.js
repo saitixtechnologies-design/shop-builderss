@@ -36,8 +36,6 @@ export const authenticateToken = (req, res, next) => {
 
         req.user = decoded;
 
-        console.log("Authenticated User:", req.user);
-
         next();
 
     } catch (error) {

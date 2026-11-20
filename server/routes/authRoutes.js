@@ -20,8 +20,16 @@ const router = express.Router();
 // CREATE SUPER ADMIN
 // =====================================================
 
+// Open only for the very first super admin. Once one exists, the request must carry a
+// super admin's token (checked here) and the controller refuses anonymous calls.
+const superAdminIfSignedIn = (req, res, next) => {
+    if (!req.headers.authorization) return next();
+    return authenticateToken(req, res, () => requireSuperAdmin(req, res, next));
+};
+
 router.post(
     "/create-super-admin",
+    superAdminIfSignedIn,
     createSuperAdmin
 );
 

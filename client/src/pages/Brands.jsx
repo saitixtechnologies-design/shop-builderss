@@ -11,9 +11,9 @@ import {
 import { toast } from "react-toastify";
 import "../styles/Brands.css";
 import ImageGalleryField from "../components/ImageGalleryField.jsx";
-import { adminFetch as fetch } from "../lib/api.js";
+import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
 
-const API_URL = "http://localhost:5001/api";
+const API_URL = `${API_ORIGIN}/api`;
 
 const Brands = () => {
 

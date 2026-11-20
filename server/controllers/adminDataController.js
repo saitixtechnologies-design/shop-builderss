@@ -773,11 +773,58 @@ export const updateOrderStatus = async (req, res) => {
 
         const db = getDB();
 
+        // Cancelling gives the order's stock back; reopening a cancelled order takes it again.
+        // Only orders marked StockDeducted took stock (see database/OrderStockMigration.sql).
         const result = await db.request()
             .input("OrderID", orderID)
             .input("ShopID", shopID)
             .input("OrderStatus", status)
             .query(`
+                SET NOCOUNT ON;
+                BEGIN TRY
+                BEGIN TRANSACTION;
+
+                IF COL_LENGTH('dbo.Orders', 'StockDeducted') IS NOT NULL
+                BEGIN
+                    DECLARE @OldStatus NVARCHAR(40), @Deducted BIT;
+                    EXEC sp_executesql
+                        N'SELECT @OldStatus = OrderStatus, @Deducted = StockDeducted
+                          FROM dbo.Orders WITH (UPDLOCK, ROWLOCK)
+                          WHERE OrderID = @OrderID AND (@ShopID IS NULL OR ShopID = @ShopID);',
+                        N'@OrderID INT, @ShopID INT, @OldStatus NVARCHAR(40) OUTPUT, @Deducted BIT OUTPUT',
+                        @OrderID, @ShopID, @OldStatus OUTPUT, @Deducted OUTPUT;
+
+                    IF @OrderStatus = N'Cancelled' AND @OldStatus <> N'Cancelled' AND @Deducted = 1
+                    BEGIN
+                        UPDATE p SET p.StockQuantity = p.StockQuantity + items.Quantity
+                        FROM dbo.Products p
+                        INNER JOIN (SELECT ProductID, SUM(Quantity) AS Quantity FROM dbo.OrderItems WHERE OrderID = @OrderID GROUP BY ProductID) items
+                            ON items.ProductID = p.ProductID
+                        INNER JOIN dbo.Orders o ON o.OrderID = @OrderID AND o.ShopID = p.ShopID;
+                        EXEC sp_executesql N'UPDATE dbo.Orders SET StockDeducted = 0 WHERE OrderID = @OrderID;', N'@OrderID INT', @OrderID;
+                    END
+
+                    IF @OrderStatus <> N'Cancelled' AND @OldStatus = N'Cancelled' AND @Deducted = 0
+                    BEGIN
+                        IF EXISTS (
+                            SELECT 1
+                            FROM dbo.Products p
+                            INNER JOIN (SELECT ProductID, SUM(Quantity) AS Quantity FROM dbo.OrderItems WHERE OrderID = @OrderID GROUP BY ProductID) items
+                                ON items.ProductID = p.ProductID
+                            INNER JOIN dbo.Orders o ON o.OrderID = @OrderID AND o.ShopID = p.ShopID
+                            WHERE p.StockQuantity < items.Quantity
+                        )
+                            THROW 50003, N'Not enough stock to reopen this order. Add stock to its products first.', 1;
+
+                        UPDATE p SET p.StockQuantity = p.StockQuantity - items.Quantity
+                        FROM dbo.Products p
+                        INNER JOIN (SELECT ProductID, SUM(Quantity) AS Quantity FROM dbo.OrderItems WHERE OrderID = @OrderID GROUP BY ProductID) items
+                            ON items.ProductID = p.ProductID
+                        INNER JOIN dbo.Orders o ON o.OrderID = @OrderID AND o.ShopID = p.ShopID;
+                        EXEC sp_executesql N'UPDATE dbo.Orders SET StockDeducted = 1 WHERE OrderID = @OrderID;', N'@OrderID INT', @OrderID;
+                    END
+                END
+
                 UPDATE dbo.Orders
                 SET
                     OrderStatus = @OrderStatus,
@@ -797,7 +844,14 @@ export const updateOrderStatus = async (req, res) => {
                     inserted.UpdatedAt
                 WHERE
                     OrderID = @OrderID
-                    AND (@ShopID IS NULL OR ShopID = @ShopID)
+                    AND (@ShopID IS NULL OR ShopID = @ShopID);
+
+                COMMIT TRANSACTION;
+                END TRY
+                BEGIN CATCH
+                    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+                    THROW;
+                END CATCH;
             `);
 
         if (!result.recordset.length) {
@@ -814,6 +868,9 @@ export const updateOrderStatus = async (req, res) => {
         });
 
     } catch (error) {
+        if (error.number === 50003 || /Not enough stock to reopen/.test(String(error.message))) {
+            return res.status(409).json({ success: false, message: error.message });
+        }
         return sendDatabaseError(res, error, "Order status");
     }
 };

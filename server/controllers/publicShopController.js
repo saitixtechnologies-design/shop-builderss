@@ -252,8 +252,11 @@ export const createPublicShopOrder = async (req, res) => {
         const sizeSchemaResult = await db.request().query(`
             SELECT
                 CASE WHEN COL_LENGTH(N'dbo.Products', N'SizeOptions') IS NULL THEN 0 ELSE 1 END AS HasSizeOptions,
-                CASE WHEN COL_LENGTH(N'dbo.OrderItems', N'Size') IS NULL THEN 0 ELSE 1 END AS HasOrderItemSize
+                CASE WHEN COL_LENGTH(N'dbo.OrderItems', N'Size') IS NULL THEN 0 ELSE 1 END AS HasOrderItemSize,
+                CASE WHEN COL_LENGTH(N'dbo.Orders', N'StockDeducted') IS NULL THEN 0 ELSE 1 END AS HasStockDeducted
         `);
+        // Before database/OrderStockMigration.sql runs, stock is still taken but not marked on the order.
+        const orderTracksStock = Boolean(sizeSchemaResult.recordset[0]?.HasStockDeducted);
         const orderHasProductSizes = Boolean(sizeSchemaResult.recordset[0]?.HasSizeOptions);
         const orderHasItemSize = Boolean(sizeSchemaResult.recordset[0]?.HasOrderItemSize);
         const sizeSelectionExpression = orderHasProductSizes ? "SizeOptions" : "CAST(NULL AS NVARCHAR(MAX)) AS SizeOptions";
@@ -331,7 +334,14 @@ export const createPublicShopOrder = async (req, res) => {
         }
         const grandTotal = Math.max(0, subtotal - discountAmount);
         const orderNumber = `SB-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${randomUUID().slice(0, 6).toUpperCase()}`;
-        const quote = (value) => `'${String(value ?? "").replace(/'/g, "''")}'`;
+        // N'…' keeps Unicode (Hindi and other scripts) intact; a plain '…' literal turns it into "?".
+        const quote = (value) => `N'${String(value ?? "").replace(/'/g, "''")}'`;
+        // Take the stock inside the same transaction. The StockQuantity check in the WHERE clause
+        // stops two shoppers from buying the last unit at the same moment.
+        const stockSQL = [...quantitiesByProduct].map(([productID, quantity]) => `
+                UPDATE dbo.Products SET StockQuantity = StockQuantity - ${Number(quantity)}, UpdatedAt = GETDATE()
+                WHERE ProductID = ${Number(productID)} AND ShopID = ${shopID} AND StockQuantity >= ${Number(quantity)};
+                IF @@ROWCOUNT = 0 THROW 50002, ${quote(`${productsByID.get(productID).ProductName} just sold out. Please update your cart.`)}, 1;`).join("");
         const itemSQL = orderItems.map((item) => orderHasItemSize
             ? `(@OrderID, ${item.ProductID}, ${quote(item.ProductName)}, ${quote(item.SKU)}, ${item.size ? quote(item.size) : "NULL"}, ${item.quantity}, ${item.unitPrice.toFixed(2)})`
             : `(@OrderID, ${item.ProductID}, ${quote(item.ProductName)}, ${quote(item.SKU)}, ${item.quantity}, ${item.unitPrice.toFixed(2)})`).join(",\n");
@@ -342,6 +352,7 @@ export const createPublicShopOrder = async (req, res) => {
             SET NOCOUNT ON;
             BEGIN TRY
                 BEGIN TRANSACTION;
+                ${stockSQL}
                 DECLARE @CustomerID INT;
                 ${coupon && couponHasUsedCount ? `UPDATE dbo.Coupons WITH (UPDLOCK, ROWLOCK) SET UsedCount = UsedCount + 1 WHERE CouponID = ${Number(coupon.CouponID)} AND ShopID = ${shopID} AND (${Number(coupon.UsageLimit) > 0 ? `UsedCount < ${Number(coupon.UsageLimit)}` : "1 = 1"}); IF @@ROWCOUNT = 0 THROW 50001, 'This offer has reached its redemption limit.', 1;` : ""}
                 SELECT TOP 1 @CustomerID = CustomerID FROM dbo.Customers WITH (UPDLOCK, HOLDLOCK)
@@ -360,11 +371,11 @@ export const createPublicShopOrder = async (req, res) => {
                 INSERT INTO dbo.Orders
                     (ShopID, CustomerID, OrderNumber, OrderStatus, PaymentStatus, PaymentMethod,
                      SubTotal, DiscountAmount, ShippingAmount, TaxAmount, GrandTotal,
-                     ShippingName, ShippingPhone, ShippingAddress, ShippingCity, ShippingState, ShippingPostalCode, CreatedAt, UpdatedAt)
+                     ShippingName, ShippingPhone, ShippingAddress, ShippingCity, ShippingState, ShippingPostalCode, CreatedAt, UpdatedAt${orderTracksStock ? ", StockDeducted" : ""})
                 VALUES
                     (${shopID}, @CustomerID, ${quote(orderNumber)}, 'Pending', 'Pending', 'WhatsApp',
                      ${subtotal.toFixed(2)}, ${discountAmount.toFixed(2)}, 0, 0, ${grandTotal.toFixed(2)},
-                     ${quote(fullName)}, ${quote(phone)}, ${quote(address)}, ${quote(city)}, ${quote("India")}, ${quote(postalCode)}, GETDATE(), GETDATE());
+                     ${quote(fullName)}, ${quote(phone)}, ${quote(address)}, ${quote(city)}, ${quote("India")}, ${quote(postalCode)}, GETDATE(), GETDATE()${orderTracksStock ? ", 1" : ""});
                 DECLARE @OrderID INT = SCOPE_IDENTITY();
                 INSERT INTO dbo.OrderItems (${orderItemColumns})
                 VALUES ${itemSQL};

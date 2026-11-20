@@ -42,6 +42,7 @@ export function createBoldTemplate(helpers) {
   }
 
   function addButton(product) {
+    if (helpers.isSoldOut(product)) return `<button class="bold-ring-add" disabled>Sold out</button>`;
     const needsSize = helpers.getProductSizes(product).length > 0;
     return `<button class="bold-ring-add" data-action="${needsSize ? "product-detail" : "add-cart"}" data-id="${Number(product.ProductID)}" aria-label="${needsSize ? "Choose size for" : "Add"} ${escapeHTML(product.ProductName)} to bag">${needsSize ? "Choose size" : "Add to bag"} ${icon(needsSize ? "arrow" : "plus", 16)}</button>`;
   }

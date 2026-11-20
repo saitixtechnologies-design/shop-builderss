@@ -11,9 +11,10 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
 import "../styles/ShopDashboard.css";
+import { API_ORIGIN } from "../lib/api.js";
 
 const API_URL =
-    "http://localhost:5001/api/shop-dashboard";
+    `${API_ORIGIN}/api/shop-dashboard`;
 
 function ShopDashboard() {
 

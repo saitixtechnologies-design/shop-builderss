@@ -2843,3 +2843,10 @@ html[data-shop-template="modern"] .service-card, html[data-shop-template="modern
 .service-detail-media .service-image-carousel .media-carousel-stage{flex:1 1 auto;min-height:300px;aspect-ratio:auto}
 .service-detail-media .service-image-carousel .media-carousel-slide img{object-fit:cover;object-position:center}
 @media(max-width:700px){.service-detail-media{height:auto}.service-detail-media .service-image-carousel{flex:0 0 auto}.service-detail-media .service-image-carousel .media-carousel-stage{flex:none;height:min(84vw,440px);min-height:220px;aspect-ratio:auto}}
+
+/* Stock: sold-out products stay visible but cannot be added; low stock gets a short note. */
+.product-card.is-sold-out .product-image-wrap img { filter: grayscale(.85); opacity: .7; }
+.product-badge.badge-sold-out { background: #3b3b40; color: #fff; }
+.add-button:disabled, .bold-ring-add:disabled, .button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.stock-note { color: #b42318; font-size: 12px; font-weight: 600; }
+.public-product-copy .stock-note { margin-top: 10px; font-size: 14px; }

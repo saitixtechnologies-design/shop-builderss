@@ -31,6 +31,7 @@ import shopWebsiteRoutes from "./routes/shopWebsiteRoutes.js";
 import shopPasswordRoutes from "./routes/shopPasswordRoutes.js";
 import passwordRoutes from "./routes/passwordRoutes.js";
 import { fileURLToPath } from "node:url";
+import { loginLimiter, passwordLimiter, publicFormLimiter } from "./middleware/rateLimit.js";
 
 const app = express();
 
@@ -38,7 +39,32 @@ const app = express();
 // MIDDLEWARE
 // =====================================================
 
-app.use(cors());
+// Behind Render / Vercel the real visitor IP is in X-Forwarded-For. TRUST_PROXY = number of proxies.
+const trustProxy = process.env.TRUST_PROXY ?? (process.env.NODE_ENV === "production" ? "1" : "");
+if (trustProxy) app.set("trust proxy", /^\d+$/.test(trustProxy) ? Number(trustProxy) : trustProxy);
+
+// CORS_ORIGINS = comma-separated list of allowed sites (admin panel and storefront), e.g.
+// "https://admin.example.com,https://shop.example.com". Empty = allow all (local development).
+const allowedOrigins = String(process.env.CORS_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
+
+app.disable("x-powered-by");
+app.use(cors({
+    origin: allowedOrigins.length
+        ? (origin, callback) => callback(null, !origin || allowedOrigins.includes(origin))
+        : true
+}));
+app.use((req, res, next) => {
+    res.set({ "X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin" });
+    next();
+});
+
+// Slow down password guessing and form spam.
+app.use(["/api/auth/login", "/api/shop-auth/login"], loginLimiter);
+app.use(["/api/password", "/api/shop-password"], passwordLimiter);
+app.post(["/api/public/shops/:slug/orders", "/api/public/shops/:slug/enquiries"], publicFormLimiter);
 app.use(express.json({ limit: "12mb" }));
 app.use("/uploads", express.static(fileURLToPath(new URL("../uploads/", import.meta.url)), {
     fallthrough: false,

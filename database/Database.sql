@@ -498,6 +498,10 @@ BEGIN
         UpdatedAt DATETIME2(0) NOT NULL
             CONSTRAINT DF_Orders_UpdatedAt DEFAULT SYSUTCDATETIME(),
 
+        -- 1 = this order took stock from its products (given back if it is cancelled)
+        StockDeducted BIT NOT NULL
+            CONSTRAINT DF_Orders_StockDeducted DEFAULT 0,
+
         CONSTRAINT FK_Orders_Shops
             FOREIGN KEY (ShopID) REFERENCES dbo.Shops(ShopID),
 

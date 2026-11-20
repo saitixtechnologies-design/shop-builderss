@@ -18,10 +18,11 @@ import {
 import "../../styles/shop-admin/shop-settings.css";
 import ImageGalleryField from "../../components/ImageGalleryField.jsx";
 import ShopTemplatePicker, { getDefaultWebsiteTemplate } from "../../components/ShopTemplatePicker.jsx";
+import { API_ORIGIN } from "../../lib/api.js";
 
 
 const API_URL =
-    "http://localhost:5001/api/shop-settings";
+    `${API_ORIGIN}/api/shop-settings`;
 
 
 // =====================================================

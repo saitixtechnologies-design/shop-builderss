@@ -16,10 +16,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 import "../styles/Categories.css";
 import ImageGalleryField from "../components/ImageGalleryField.jsx";
-import { adminFetch as fetch } from "../lib/api.js";
+import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
 
-const API_URL = "http://localhost:5001/api/categories";
-const SHOPS_API = "http://localhost:5001/api/shops";
+const API_URL = `${API_ORIGIN}/api/categories`;
+const SHOPS_API = `${API_ORIGIN}/api/shops`;
 const authHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem("token") || ""}` });
 
 const emptyForm = {

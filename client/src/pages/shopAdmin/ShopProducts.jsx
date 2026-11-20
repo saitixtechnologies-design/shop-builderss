@@ -16,12 +16,12 @@ import {
 } from "lucide-react";
 
 import { toast } from "react-toastify";
-import { apiUrl, getShopAdminToken } from "../../lib/api.js";
+import { apiUrl, getShopAdminToken, API_ORIGIN } from "../../lib/api.js";
 
 import "../../styles/shop-admin/shop-products.css";
 import ImageGalleryField from "../../components/ImageGalleryField.jsx";
 
-const API_URL = "http://localhost:5001";
+const API_URL = `${API_ORIGIN}`;
 
 const emptyForm = {
     ProductName: "",

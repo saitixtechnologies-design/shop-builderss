@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 import { toast } from "react-toastify";
-import { adminFetch as fetch } from "../lib/api.js";
+import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
 
 import "../styles/Coupons.css";
 
@@ -31,8 +31,8 @@ import "../styles/Coupons.css";
 // API
 // =====================================================
 
-const COUPONS_API = "http://localhost:5001/api/coupons";
-const SHOPS_API = "http://localhost:5001/api/shops";
+const COUPONS_API = `${API_ORIGIN}/api/coupons`;
+const SHOPS_API = `${API_ORIGIN}/api/shops`;
 
 
 // =====================================================

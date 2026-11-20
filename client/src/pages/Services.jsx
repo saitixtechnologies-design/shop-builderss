@@ -14,13 +14,13 @@ import { toast } from "react-toastify";
 
 import "../styles/Services.css";
 import ImageGalleryField from "../components/ImageGalleryField.jsx";
-import { adminFetch as fetch } from "../lib/api.js";
+import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
 
 const SERVICES_API =
-    "http://localhost:5001/api/services";
+    `${API_ORIGIN}/api/services`;
 
 const SHOPS_API =
-    "http://localhost:5001/api/shops";
+    `${API_ORIGIN}/api/shops`;
 
 function Services() {
     /* =====================================================

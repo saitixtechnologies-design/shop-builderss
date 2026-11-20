@@ -22,7 +22,7 @@ import { toast } from "react-toastify";
 
 import "../styles/Banners.css";
 import ImageGalleryField from "../components/ImageGalleryField.jsx";
-import { adminFetch as fetch } from "../lib/api.js";
+import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
 
 
 /* =====================================================
@@ -30,10 +30,10 @@ import { adminFetch as fetch } from "../lib/api.js";
 ===================================================== */
 
 const BANNERS_API =
-    "http://localhost:5001/api/banners";
+    `${API_ORIGIN}/api/banners`;
 
 const SHOPS_API =
-    "http://localhost:5001/api/shops";
+    `${API_ORIGIN}/api/shops`;
 
 
 /* =====================================================

@@ -42,6 +42,7 @@ import { toast } from "react-toastify";
 import { getShopAdminLanguage, getShopAdminTenantId, readShopAdminUser } from "../../lib/shopAdminLanguage.js";
 
 import "../../styles/shop-admin/shop-admin-dashboard.css";
+import { API_ORIGIN } from "../../lib/api.js";
 
 
 /* =========================================================
@@ -49,7 +50,7 @@ import "../../styles/shop-admin/shop-admin-dashboard.css";
 ========================================================= */
 
 const API_URL =
-    "http://localhost:5001/api/shop-dashboard";
+    `${API_ORIGIN}/api/shop-dashboard`;
 
 
 /* =========================================================

@@ -15,8 +15,9 @@ import { toast } from "react-toastify";
 
 import "../../styles/shop-admin/ShopBanners.css";
 import ImageGalleryField from "../../components/ImageGalleryField.jsx";
+import { API_ORIGIN } from "../../lib/api.js";
 
-const API_URL = "http://localhost:5001/api/shop-banners";
+const API_URL = `${API_ORIGIN}/api/shop-banners`;
 
 const emptyForm = {
     title: "",

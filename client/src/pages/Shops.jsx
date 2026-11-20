@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import "../styles/Shops.css";
 import ShopTemplatePicker, { getDefaultWebsiteTemplate, SHOP_TEMPLATES } from "../components/ShopTemplatePicker.jsx";
-import { adminFetch as fetch } from "../lib/api.js";
+import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
 import {
     Eye,
     Pencil,
@@ -12,7 +12,7 @@ import {
     FileText
 } from "lucide-react";
 
-const API_URL = "http://localhost:5001/api/shops";
+const API_URL = `${API_ORIGIN}/api/shops`;
 const authHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem("token") || ""}` });
 
 const emptyForm = {

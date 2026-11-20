@@ -117,7 +117,7 @@ const isBoldTemplate = () => isEcommerceShop() && activeTemplate() === "bold";
 
 let boldTemplate = null;
 const bold = () => (boldTemplate ??= createBoldTemplate({
-  state, escapeHTML, money, safeImage, safeUrl, icon, shopHomeUrl, normalizeWhatsAppNumber, getProductSizes, isPreview, cartCount, cartSubtotal,
+  state, escapeHTML, money, safeImage, safeUrl, icon, shopHomeUrl, normalizeWhatsAppNumber, getProductSizes, isSoldOut, isPreview, cartCount, cartSubtotal,
   renderHeader, renderProductCards, renderShopBrands, renderCouponOffers, renderCartDrawer, renderCheckout
 }));
 
@@ -1087,7 +1087,7 @@ function renderDedicatedRoute(routeInfo) {
     const gallery = Array.isArray(product.Images) ? product.Images.map((image) => typeof image === "string" ? image : image.ImageURL || image.imageURL || image.url).filter((image) => Boolean(safeImage(image))) : [];
     const imageList = [...new Set([product.ImageURL, ...gallery].filter((image) => Boolean(safeImage(image))))].slice(0, 10);
     const sizes = getProductSizes(product);
-    app.innerHTML = `<div class="announcement">${escapeHTML(shop.ShopName || "Your shop")}</div>${renderHeader(isEcommerce)}<main class="public-product-page page-gutter"><a class="text-link" href="${shopHomeUrl()}#collections">← Back to the shop</a><article class="public-product-detail"><div class="public-product-gallery">${imageList.length ? renderMediaCarousel(imageList, product.ProductName, "public-product-carousel") : `<div class="public-product-image"><div class="product-image-placeholder">${icon("bag", 40)}</div></div>`}</div><div class="public-product-copy"><span class="eyebrow">${escapeHTML(product.BrandName ? `Brand is ${product.BrandName}` : product.CategoryName || "SHOP FAVOURITE")}</span>${product.BrandName && product.CategoryName ? `<span class="product-detail-category">${escapeHTML(product.CategoryName)}</span>` : ""}<h1>${escapeHTML(product.ProductName)}</h1><strong class="public-product-price">${money(product.SellingPrice)}</strong>${product.ShortDescription ? `<p class="product-short-description">${escapeHTML(product.ShortDescription)}</p>` : ""}${product.Description ? `<p>${escapeHTML(product.Description)}</p>` : ""}${renderSizeSelector(sizes, "product-size")}<button class="button button-dark" data-action="add-cart" data-id="${Number(product.ProductID)}">Add to bag ${icon("bag", 18)}</button></div></article></main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
+    app.innerHTML = `<div class="announcement">${escapeHTML(shop.ShopName || "Your shop")}</div>${renderHeader(isEcommerce)}<main class="public-product-page page-gutter"><a class="text-link" href="${shopHomeUrl()}#collections">← Back to the shop</a><article class="public-product-detail"><div class="public-product-gallery">${imageList.length ? renderMediaCarousel(imageList, product.ProductName, "public-product-carousel") : `<div class="public-product-image"><div class="product-image-placeholder">${icon("bag", 40)}</div></div>`}</div><div class="public-product-copy"><span class="eyebrow">${escapeHTML(product.BrandName ? `Brand is ${product.BrandName}` : product.CategoryName || "SHOP FAVOURITE")}</span>${product.BrandName && product.CategoryName ? `<span class="product-detail-category">${escapeHTML(product.CategoryName)}</span>` : ""}<h1>${escapeHTML(product.ProductName)}</h1><strong class="public-product-price">${money(product.SellingPrice)}</strong>${product.ShortDescription ? `<p class="product-short-description">${escapeHTML(product.ShortDescription)}</p>` : ""}${product.Description ? `<p>${escapeHTML(product.Description)}</p>` : ""}${renderSizeSelector(sizes, "product-size")}${isSoldOut(product) ? `<button class="button button-dark" disabled>Sold out</button>` : `<button class="button button-dark" data-action="add-cart" data-id="${Number(product.ProductID)}">Add to bag ${icon("bag", 18)}</button>`}${stockLeft(product) > 0 && stockLeft(product) <= 5 ? `<p class="stock-note">Only ${stockLeft(product)} left in stock</p>` : ""}</div></article></main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
     bindEvents();
     return;
   }
@@ -1391,7 +1391,9 @@ function renderProductCards(products) {
     const discount = oldPrice ? Math.round((1 - Number(product.SellingPrice) / Number(product.MRP)) * 100) : 0;
     const productUrl = `${shopHomeUrl()}/product/${encodeURIComponent(product.Slug || product.ProductID)}`;
     const hasSizes = getProductSizes(product).length > 0;
-    return `<article class="product-card"><a class="product-image-wrap" href="${productUrl}" aria-label="View ${escapeHTML(product.ProductName)}">${image ? `<img src="${image}" alt="${escapeHTML(product.ProductName)}" loading="lazy">` : `<span class="media-unavailable">${icon("bag", 32)}</span>`}<span class="product-image-shade"></span>${discount ? `<span class="product-badge">${discount}% less</span>` : `<span class="product-badge badge-soft">A good find</span>`}<span class="quick-view">Take a closer look ${icon("arrow", 15)}</span></a><div class="product-meta"><div><span class="product-category">${escapeHTML([product.BrandName, product.CategoryName || "SHOP FAVOURITES"].filter(Boolean).join(" · "))}</span><h3><a href="${productUrl}">${escapeHTML(product.ProductName)}</a></h3></div><button class="add-button" data-action="${hasSizes ? "product-detail" : "add-cart"}" data-id="${product.ProductID}" aria-label="${hasSizes ? "Choose size for" : "Add"} ${escapeHTML(product.ProductName)} to bag">${icon(hasSizes ? "arrow" : "plus", 18)}</button></div><div class="product-price"><strong>${money(product.SellingPrice)}</strong>${oldPrice ? `<del>${money(product.MRP)}</del>` : ""}<span>Inclusive of taxes</span></div></article>`;
+    const left = stockLeft(product);
+    const soldOut = left === 0;
+    return `<article class="product-card${soldOut ? " is-sold-out" : ""}"><a class="product-image-wrap" href="${productUrl}" aria-label="View ${escapeHTML(product.ProductName)}">${image ? `<img src="${image}" alt="${escapeHTML(product.ProductName)}" loading="lazy">` : `<span class="media-unavailable">${icon("bag", 32)}</span>`}<span class="product-image-shade"></span>${soldOut ? `<span class="product-badge badge-sold-out">Sold out</span>` : discount ? `<span class="product-badge">${discount}% off</span>` : `<span class="product-badge badge-soft">A good find</span>`}<span class="quick-view">Take a closer look ${icon("arrow", 15)}</span></a><div class="product-meta"><div><span class="product-category">${escapeHTML([product.BrandName, product.CategoryName || "SHOP FAVOURITES"].filter(Boolean).join(" · "))}</span><h3><a href="${productUrl}">${escapeHTML(product.ProductName)}</a></h3></div><button class="add-button" data-action="${hasSizes ? "product-detail" : "add-cart"}" data-id="${product.ProductID}"${soldOut ? " disabled" : ""} aria-label="${soldOut ? `${escapeHTML(product.ProductName)} is sold out` : `${hasSizes ? "Choose size for" : "Add"} ${escapeHTML(product.ProductName)} to bag`}">${icon(hasSizes ? "arrow" : "plus", 18)}</button></div><div class="product-price"><strong>${money(product.SellingPrice)}</strong>${oldPrice ? `<del>${money(product.MRP)}</del>` : ""}${left !== null && left > 0 && left <= 5 ? `<span class="stock-note">Only ${left} left</span>` : `<span>Inclusive of taxes</span>`}</div></article>`;
   }).join("");
 }
 
@@ -1552,11 +1554,34 @@ function bindMediaCarousels(root) {
   });
 }
 
+/** Units of a product still in stock, or null when the shop does not report stock for it. */
+function stockLeft(product) {
+  const quantity = Number(product?.StockQuantity);
+  return product?.StockQuantity == null || !Number.isFinite(quantity) ? null : Math.max(0, quantity);
+}
+
+const isSoldOut = (product) => stockLeft(product) === 0;
+const quantityInBag = (productID) => state.cart
+  .filter((item) => Number(item.productID) === Number(productID))
+  .reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+
+/** True if one more unit of this product fits in the stock; otherwise tells the shopper why not. */
+function canAddOneMore(productID) {
+  const product = state.products.find((entry) => Number(entry.ProductID) === Number(productID));
+  const left = stockLeft(product);
+  if (left === null || quantityInBag(productID) < left) return true;
+  showNotice(left === 0 ? `${product.ProductName} is sold out.` : `Only ${left} of ${product.ProductName} in stock, and they're all in your bag.`);
+  return false;
+}
+
+/** Adds one unit to the bag. Returns false (and tells the shopper) when stock has run out. */
 function addCartItem(productID, size = "") {
+  if (!canAddOneMore(productID)) return false;
   const existing = state.cart.find((item) => Number(item.productID) === Number(productID) && String(item.size || "") === String(size || ""));
   if (existing) existing.quantity += 1;
   else state.cart.push({ productID: Number(productID), size: String(size || ""), quantity: 1 });
   storeCart();
+  return true;
 }
 
 function bindProductActions() {
@@ -1566,8 +1591,7 @@ function bindProductActions() {
     const product = state.products.find((entry) => Number(entry.ProductID) === productID);
     const size = app.querySelector("[data-product-size]")?.value || "";
     if (getProductSizes(product).length && !size) { app.querySelector("[data-product-size]")?.focus(); showNotice("Please choose a size first."); return; }
-    addCartItem(productID, size);
-    storeCart();
+    if (!addCartItem(productID, size)) return;
     const originalContent = button.innerHTML;
     button.classList.add("added");
     button.innerHTML = icon("check", 18);
@@ -1581,7 +1605,10 @@ function bindProductActions() {
     const size = sizeParts.join("|");
     const item = state.cart.find((entry) => Number(entry.productID) === productID && String(entry.size || "") === size);
     if (button.dataset.action === "remove-cart" || (item && item.quantity + Number(button.dataset.delta) <= 0)) state.cart = state.cart.filter((entry) => !(Number(entry.productID) === productID && String(entry.size || "") === size));
-    else if (item) item.quantity += Number(button.dataset.delta);
+    else if (item) {
+      if (Number(button.dataset.delta) > 0 && !canAddOneMore(productID)) return;
+      item.quantity += Number(button.dataset.delta);
+    }
     storeCart(); render();
   }));
 }
@@ -1601,7 +1628,8 @@ function showProductDetail(productID) {
   modal.querySelector("[data-add]").addEventListener("click", () => {
     const size = modal.querySelector("[data-product-size]")?.value || "";
     if (sizes.length && !size) { modal.querySelector("[data-product-size]")?.focus(); showNotice("Please choose a size first."); return; }
-    addCartItem(productID, size); storeCart(); modal.remove(); render();
+    if (!addCartItem(productID, size)) return;
+    modal.remove(); render();
   });
 }
 
