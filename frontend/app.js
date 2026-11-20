@@ -1,3 +1,5 @@
+import { createBoldTemplate, loadBoldFonts, mountBold } from "./bold-storefront.js";
+
 const API_BASE = window.SHOP_API_BASE || "http://localhost:5001/api/public/shops";
 const routeSegments = location.pathname.split("/").filter(Boolean).map((segment) => {
   try { return decodeURIComponent(segment); } catch { return segment; }
@@ -28,6 +30,8 @@ const state = {
   couponMessage: ""
 };
 const isPreview = new URLSearchParams(location.search).get("preview") === "1";
+// In the design preview, ?template=<id> shows any template with the example content.
+const previewTemplate = isPreview ? new URLSearchParams(location.search).get("template") : "";
 
 const normalizeWhatsAppNumber = (value) => {
   const digits = String(value || "").replace(/\D/g, "");
@@ -108,6 +112,14 @@ const safeCssImage = (value) => safeImage(value, "").replace(/[\s'"()\\]/g, (cha
 const getCartKey = () => `shop-cart:${isPreview ? "preview-" : ""}${state.slug}`;
 const shopHomeUrl = () => `/shop/${encodeURIComponent(state.shop?.ShopSlug || state.slug)}`;
 const isEcommerceShop = () => String(state.shop?.ShopType || "Ecommerce").toLowerCase() === "ecommerce";
+const activeTemplate = () => String(previewTemplate || state.shop?.WebsiteTemplate || "").trim().toLowerCase().replace(/[^a-z-]/g, "");
+const isBoldTemplate = () => isEcommerceShop() && activeTemplate() === "bold";
+
+let boldTemplate = null;
+const bold = () => (boldTemplate ??= createBoldTemplate({
+  state, escapeHTML, money, safeImage, safeUrl, icon, shopHomeUrl, normalizeWhatsAppNumber, getProductSizes, isPreview, cartCount, cartSubtotal,
+  renderHeader, renderProductCards, renderShopBrands, renderCouponOffers, renderCartDrawer, renderCheckout
+}));
 
 function pageUrl(page, index = 0) {
   const slug = encodeURIComponent(page.Slug || "");
@@ -221,7 +233,8 @@ function icon(name, size = 20) {
 }
 
 function storeCart() {
-  localStorage.setItem(getCartKey(), JSON.stringify(state.cart));
+  try { localStorage.setItem(getCartKey(), JSON.stringify(state.cart)); } catch { /* storage blocked: the bag still works for this visit */ }
+  document.dispatchEvent(new CustomEvent("storefront:cart-change"));
 }
 
 function loadCart() {
@@ -303,6 +316,13 @@ function setTheme() {
   root.style.setProperty("--store-ink", luminance > 0.28 ? "#29231f" : brand);
   root.style.setProperty("--store-on-primary", luminance > 0.42 ? "#29231f" : "#fffdfa");
   root.style.setProperty("--store-accent", accent);
+
+  // The shop's chosen template switches on its styles (html[data-shop-template="…"]).
+  // "bold" is an online-shop template, so a service shop never gets its styles.
+  const template = activeTemplate() === "bold" && !isBoldTemplate() ? "" : activeTemplate();
+  if (template) root.dataset.shopTemplate = template;
+  else delete root.dataset.shopTemplate;
+  if (isBoldTemplate()) loadBoldFonts();
 }
 
 function hydrateShopData(data) {
@@ -507,6 +527,7 @@ function renderHeader(isEcommerce) {
     </header>`;
 }
 function renderFooter() {
+  if (isBoldTemplate()) return bold().renderFooter();
   const shop = state.shop || {};
   const settings = state.settings || {};
   const logo = settings.ShopLogo || shop.LogoURL;
@@ -1132,6 +1153,12 @@ function render() {
   const categories = state.categories.slice(0, 6);
   document.title = `${shop.ShopName || "Your shop"}${settings.Tagline ? ` — ${settings.Tagline}` : ""}`;
 
+  if (isBoldTemplate()) {
+    app.innerHTML = bold().renderHome(visibleProducts);
+    bindEvents();
+    return;
+  }
+
   app.innerHTML = `
     ${isPreview ? `<div class="preview-ribbon">DESIGN PREVIEW <span>·</span> EXAMPLE CONTENT ONLY</div>` : ""}
     <div class="announcement"><span class="announcement-spark">✳</span> ${escapeHTML(settings.Tagline || "A good day to shop local")} <span class="announcement-separator">·</span> ${escapeHTML(settings.City || shop.ShopName || "Welcome")}</div>
@@ -1486,6 +1513,7 @@ if (action === "clear-search") { state.query = ""; render(); }
   app.querySelectorAll("[data-open-video]").forEach((button) => button.addEventListener("click", () => showVideoLightbox(button.dataset.openVideo)));
   bindMediaCarousels(app);
   document.querySelector("#checkout-form")?.addEventListener("submit", submitOrder);
+  if (isBoldTemplate()) mountBold(app);
 }
 
 function bindMediaCarousels(root) {
@@ -1540,9 +1568,10 @@ function bindProductActions() {
     if (getProductSizes(product).length && !size) { app.querySelector("[data-product-size]")?.focus(); showNotice("Please choose a size first."); return; }
     addCartItem(productID, size);
     storeCart();
+    const originalContent = button.innerHTML;
     button.classList.add("added");
     button.innerHTML = icon("check", 18);
-    setTimeout(() => { if (button.isConnected) { button.classList.remove("added"); button.innerHTML = icon("plus", 18); } }, 900);
+    setTimeout(() => { if (button.isConnected) { button.classList.remove("added"); button.innerHTML = originalContent; } }, 900);
     const counter = document.querySelector(".cart-count");
     if (counter) counter.textContent = cartCount();
   }));

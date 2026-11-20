@@ -85,7 +85,7 @@ UPDATE dbo.Shops
 SET WebsiteTemplate = CASE WHEN ShopType = N'Service' THEN N'studio' ELSE N'editorial' END
 WHERE WebsiteTemplate IS NULL OR LTRIM(RTRIM(WebsiteTemplate)) = N''
    OR (ShopType = N'Service' AND WebsiteTemplate NOT IN (N'studio', N'serene', N'modern'))
-   OR (ShopType = N'Ecommerce' AND WebsiteTemplate NOT IN (N'editorial', N'minimal', N'boutique'));
+   OR (ShopType = N'Ecommerce' AND WebsiteTemplate NOT IN (N'editorial', N'minimal', N'boutique', N'bold'));
 GO
 
 IF NOT EXISTS (

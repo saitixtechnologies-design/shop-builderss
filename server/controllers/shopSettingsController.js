@@ -1,6 +1,6 @@
 import { getDB } from "../config/db.js";
 
-const templateOptionsByType = { Ecommerce: ["editorial", "minimal", "boutique"], Service: ["studio", "serene", "modern"] };
+const templateOptionsByType = { Ecommerce: ["editorial", "minimal", "boutique", "bold"], Service: ["studio", "serene", "modern"] };
 const defaultTemplateByType = { Ecommerce: "editorial", Service: "studio" };
 
 // =====================================================
