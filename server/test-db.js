@@ -1,30 +1,19 @@
-import sql from "msnodesqlv8";
+// Checks the database connection with the settings in server/.env (read-only).
+// Run from the server folder:  node test-db.js
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
 
-const connectionString =
-    "Driver={ODBC Driver 18 for SQL Server};" +
-    "Server=(localdb)\\MSSQLLocalDB;" +
-    "Database=ShopBuilderDB;" +
-    "Trusted_Connection=Yes;" +
-    "TrustServerCertificate=Yes;" +
-    "Encrypt=No;";
+dotenv.config({ path: fileURLToPath(new URL("./.env", import.meta.url)) });
 
-console.log("🔄 Testing direct msnodesqlv8 connection...");
+const { connectDB } = await import("./config/db.js");
 
-sql.query(
-    connectionString,
-    "SELECT DB_NAME() AS DatabaseName, COUNT(*) AS ProductCount FROM dbo.Products",
-    (error, rows) => {
-        if (error) {
-            console.error("❌ DIRECT DB TEST FAILED:");
-            console.error(error);
-            process.exit(1);
-        }
-
-        console.log("=================================");
-        console.log("✅ DIRECT DB CONNECTION SUCCESS");
-        console.log(rows);
-        console.log("=================================");
-
-        process.exit(0);
-    }
-);
+try {
+    const pool = await connectDB();
+    const result = await pool.request().query("SELECT COUNT(*) AS Shops FROM dbo.Shops");
+    console.log(`✅ Connection works. Shops in database: ${result.recordset[0].Shops}`);
+    await pool.close();
+    process.exit(0);
+} catch {
+    console.error("❌ Connection failed. Check DB_SERVER, DB_DATABASE, DB_USER, DB_PASSWORD in .env");
+    process.exit(1);
+}

@@ -1,5 +1,5 @@
 import { getDB } from "../config/db.js";
-import sql from "mssql/msnodesqlv8.js";
+import sql from "mssql";
 
 // =====================================================
 // CREATE CATEGORY

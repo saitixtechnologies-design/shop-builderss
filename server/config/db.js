@@ -1,48 +1,32 @@
-import sql from "mssql/msnodesqlv8.js";
+import sql from "mssql";
 
 // =====================================================
 // DATABASE CONFIGURATION
+// Uses mssql's built-in pure-JavaScript driver (tedious), so the API runs the same on
+// Windows, Linux (Render) and macOS without an ODBC driver. Settings come from .env.
 // =====================================================
 
-const dbServer =
-    process.env.DB_SERVER || "SQL5080.site4now.net";
+const yes = (value) => /^(yes|true|1)$/i.test(String(value ?? "").trim());
 
-const dbName =
-    process.env.DB_DATABASE || "db_ac42f8_saitix";
-
-const dbDriver =
-    process.env.DB_DRIVER || "ODBC Driver 18 for SQL Server";
-
-const dbUser =
-    process.env.DB_USER || "";
-
-const dbPassword =
-    process.env.DB_PASSWORD || "";
-
-const dbEncrypt =
-    process.env.DB_ENCRYPT || "Yes";
-
-const dbTrustCertificate =
-    process.env.DB_TRUST_CERTIFICATE || "Yes";
-
-// =====================================================
-// CONNECTION STRING
-// =====================================================
-
-const connectionString = [
-    `Driver={${dbDriver}}`,
-    `Server=${dbServer}`,
-    `Database=${dbName}`,
-    `UID=${dbUser}`,
-    `PWD=${dbPassword}`,
-    `Encrypt=${dbEncrypt}`,
-    `TrustServerCertificate=${dbTrustCertificate}`,
-].join(";") + ";";
+const dbConfig = {
+    server: process.env.DB_SERVER || "",
+    database: process.env.DB_DATABASE || "",
+    user: process.env.DB_USER || "",
+    password: process.env.DB_PASSWORD || "",
+    port: Number(process.env.DB_PORT || 1433),
+    options: {
+        encrypt: yes(process.env.DB_ENCRYPT ?? "yes"),
+        // Only "yes" for hosts with a self-signed certificate; it skips the certificate check.
+        trustServerCertificate: yes(process.env.DB_TRUST_CERTIFICATE)
+    },
+    pool: { max: 10, min: 0, idleTimeoutMillis: 30000 },
+    connectionTimeout: 20000,
+    requestTimeout: 30000
+};
 
 // =====================================================
 // DATABASE POOL
-// The controllers use the mssql request and transaction APIs, so this must
-// be an actual mssql ConnectionPool (not a query-only wrapper).
+// The controllers use the mssql request and transaction APIs on this pool.
 // =====================================================
 
 let pool = null;
@@ -54,22 +38,19 @@ let connected = false;
 
 export const connectDB = async () => {
     try {
-        console.log(
-            "🔄 Connecting to SQL Server..."
-        );
+        if (!dbConfig.server || !dbConfig.database) {
+            throw new Error("DB_SERVER and DB_DATABASE must be set in server/.env");
+        }
 
-        console.log(
-            `🖥️ Server: ${dbServer}`
-        );
+        console.log("🔄 Connecting to SQL Server...");
+        console.log(`🖥️ Server: ${dbConfig.server}`);
+        console.log(`📦 Database: ${dbConfig.database}`);
 
-        console.log(
-            `📦 Database: ${dbName}`
-        );
+        const connectionPool = new sql.ConnectionPool(dbConfig);
 
-        // Don't print password
-
-        const connectionPool = new sql.ConnectionPool({
-            connectionString
+        // A dropped connection is logged; the pool reconnects on the next request.
+        connectionPool.on("error", (error) => {
+            console.error("⚠️ SQL Server pool error:", error.message);
         });
 
         await connectionPool.connect();
@@ -78,16 +59,8 @@ export const connectDB = async () => {
             .request()
             .query("SELECT DB_NAME() AS DatabaseName");
 
-        console.log(
-            "✅ SQL Server connected successfully"
-        );
-
-        console.log(
-            `📦 Database: ${
-                result.recordset?.[0]?.DatabaseName ||
-                dbName
-            }`
-        );
+        console.log("✅ SQL Server connected successfully");
+        console.log(`📦 Database: ${result.recordset?.[0]?.DatabaseName || dbConfig.database}`);
 
         pool = connectionPool;
         connected = true;
@@ -98,13 +71,8 @@ export const connectDB = async () => {
         connected = false;
         pool = null;
 
-        console.error(
-            "❌ Database connection failed:"
-        );
-
-        console.error(
-            error.message
-        );
+        console.error("❌ Database connection failed:");
+        console.error(error.message);
 
         throw error;
     }
@@ -116,9 +84,7 @@ export const connectDB = async () => {
 
 export const getDB = () => {
     if (!connected || !pool) {
-        throw new Error(
-            "Database is not connected"
-        );
+        throw new Error("Database is not connected");
     }
 
     return pool;
