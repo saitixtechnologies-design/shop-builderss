@@ -162,6 +162,15 @@ const bold = () => (boldTemplate ??= createBoldTemplate({
   renderHeader, renderProductCards, renderShopBrands, renderCouponOffers, renderCartDrawer, renderCheckout
 }));
 
+function findAboutPageIndex() {
+  const typedIndex = state.pages.findIndex((page) => String(page.PageType || "").trim().toLowerCase() === "about");
+  if (typedIndex >= 0) return typedIndex;
+
+  const normalize = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+  return state.pages.findIndex((page) =>
+    [page.Slug, page.PageName, page.PageTitle].some((value) => ["about", "aboutus"].includes(normalize(value)))
+  );
+}
 function pageUrl(page, index = 0) {
   const slug = encodeURIComponent(page.Slug || "");
   const type = String(page.PageType || "custom").toLowerCase();
@@ -239,6 +248,10 @@ function resolveRoute() {
 
   const requestedSlug = section === "page" ? routeSlug : section;
   let page = state.pages.find((entry) => String(entry.Slug || "").toLowerCase() === String(requestedSlug || "").toLowerCase());
+  if (!page && section !== "page" && String(section).toLowerCase() === "about") {
+    const aboutIndex = findAboutPageIndex();
+    if (aboutIndex >= 0) page = state.pages[aboutIndex];
+  }
   if (!page && section !== "page") {
     page = state.pages.find((entry) => String(entry.PageType || "").toLowerCase() === section.toLowerCase());
   }
@@ -504,7 +517,7 @@ function getNavigationItems(isEcommerce) {
   if (isEcommerce) add("shop", "Shop", `${shopHomeHref()}#collections`);
   else add("services", "Services", `${shopUrl}/services`);
 
-  const aboutIndex = state.pages.findIndex((page) => String(page.PageType || "").toLowerCase() === "about");
+  const aboutIndex = findAboutPageIndex();
   const contactIndex = state.pages.findIndex((page) => String(page.PageType || "").toLowerCase() === "contact");
   add("about", "About", aboutIndex >= 0 ? pageUrl(state.pages[aboutIndex], aboutIndex) : `${shopUrl}/about`);
   add("contact", "Contact", contactIndex >= 0 ? pageUrl(state.pages[contactIndex], contactIndex) : `${shopUrl}/contact`);
@@ -1197,7 +1210,7 @@ function render() {
   const isEcommerce = isEcommerceShop();
   const banner = state.banners[0];
   const editorialBanners = state.banners.slice(1, 4);
-  const aboutPageIndex = state.pages.findIndex((page) => String(page.PageType).toLowerCase() === "about");
+  const aboutPageIndex = findAboutPageIndex();
   const aboutLink = aboutPageIndex >= 0 ? pageUrl(state.pages[aboutPageIndex], aboutPageIndex) : `${shopHomeUrl()}/about`;
   const serviceLink = `${shopHomeUrl()}/services`;
   const title = banner?.Title || settings.Tagline || `A little more ${shop.ShopName || "you"}.`;
