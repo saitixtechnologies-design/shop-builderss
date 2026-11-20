@@ -1,6 +1,7 @@
 import sql from "mssql";
 import { getDB } from "../config/db.js";
 import { productImagesSql, replaceProductImages } from "../utils/productImages.js";
+import { productIdentity } from "../utils/productDefaults.js";
 
 const normalizeSizeOptions = (value) => JSON.stringify([...new Set((Array.isArray(value) ? value : []).map((size) => String(size || "").trim()).filter(Boolean))].slice(0, 20));
 
@@ -174,6 +175,13 @@ export const getProductById = async (req, res) => {
 // =====================================================
 export const createProduct = async (req, res) => {
     try {
+
+        // Slug and SKU are optional: blanks are filled in (utils/productDefaults.js).
+        if (req.body?.productName?.trim() && req.body?.shopID) {
+            const identity = await productIdentity(getDB(), req.body.shopID, { name: req.body.productName, slug: req.body.slug, sku: req.body.SKU }, null);
+            req.body.slug = identity.slug;
+            req.body.SKU = identity.sku;
+        }
         const {
             shopID,
             categoryID,
@@ -201,14 +209,11 @@ export const createProduct = async (req, res) => {
         // ---------------------------------------------
         if (
             !shopID ||
-            !categoryID ||
-            !productName?.trim() ||
-            !slug?.trim() ||
-            !SKU?.trim()
+            !productName?.trim()
         ) {
             return res.status(400).json({
                 success: false,
-                message: "Shop, category, product name, slug and SKU are required."
+                message: "Shop and product name are required."
             });
         }
 
@@ -236,23 +241,25 @@ export const createProduct = async (req, res) => {
         // ---------------------------------------------
         // CHECK CATEGORY
         // ---------------------------------------------
-        const categoryResult = await pool
-    .request()
-    .input("CategoryID", sql.Int, Number(categoryID))
-    .input("ShopID", sql.Int, Number(shopID))
-    .query(`
-        SELECT CategoryID
-        FROM dbo.Categories
-        WHERE CategoryID = @CategoryID
-          AND ShopID = @ShopID
-          AND IsActive = 1
-    `);
-
-        if (categoryResult.recordset.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Category not found."
-            });
+        if (categoryID) {
+            const categoryResult = await pool
+        .request()
+        .input("CategoryID", sql.Int, categoryID ? Number(categoryID) : null)
+        .input("ShopID", sql.Int, Number(shopID))
+        .query(`
+            SELECT CategoryID
+            FROM dbo.Categories
+            WHERE CategoryID = @CategoryID
+              AND ShopID = @ShopID
+              AND IsActive = 1
+        `);
+    
+            if (categoryResult.recordset.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Category not found."
+                });
+            }
         }
 
         // ---------------------------------------------
@@ -328,7 +335,7 @@ export const createProduct = async (req, res) => {
         const request = pool.request();
 
         request.input("ShopID", sql.Int, Number(shopID));
-        request.input("CategoryID", sql.Int, Number(categoryID));
+        request.input("CategoryID", sql.Int, categoryID ? Number(categoryID) : null);
 
         request.input(
             "BrandID",
@@ -550,6 +557,13 @@ export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
+        // Slug and SKU are optional: blanks are filled in (utils/productDefaults.js).
+        if (req.body?.productName?.trim() && req.body?.shopID) {
+            const identity = await productIdentity(getDB(), req.body.shopID, { name: req.body.productName, slug: req.body.slug, sku: req.body.SKU }, Number(id));
+            req.body.slug = identity.slug;
+            req.body.SKU = identity.sku;
+        }
+
         const {
             shopID,
             categoryID,
@@ -581,14 +595,11 @@ export const updateProduct = async (req, res) => {
 
         if (
             !shopID ||
-            !categoryID ||
-            !productName?.trim() ||
-            !slug?.trim() ||
-            !SKU?.trim()
+            !productName?.trim()
         ) {
             return res.status(400).json({
                 success: false,
-                message: "Shop, category, product name, slug and SKU are required."
+                message: "Shop and product name are required."
             });
         }
 
@@ -635,20 +646,22 @@ export const updateProduct = async (req, res) => {
         // ---------------------------------------------
         // CHECK CATEGORY
         // ---------------------------------------------
-        const categoryResult = await pool
-            .request()
-            .input("CategoryID", sql.Int, Number(categoryID))
-            .query(`
-                SELECT CategoryID
-                FROM dbo.Categories
-                WHERE CategoryID = @CategoryID
-            `);
-
-        if (categoryResult.recordset.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Category not found."
-            });
+        if (categoryID) {
+            const categoryResult = await pool
+                .request()
+                .input("CategoryID", sql.Int, categoryID ? Number(categoryID) : null)
+                .query(`
+                    SELECT CategoryID
+                    FROM dbo.Categories
+                    WHERE CategoryID = @CategoryID
+                `);
+    
+            if (categoryResult.recordset.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Category not found."
+                });
+            }
         }
 
         // ---------------------------------------------
@@ -726,7 +739,7 @@ export const updateProduct = async (req, res) => {
 
         request.input("ProductID", sql.Int, Number(id));
         request.input("ShopID", sql.Int, Number(shopID));
-        request.input("CategoryID", sql.Int, Number(categoryID));
+        request.input("CategoryID", sql.Int, categoryID ? Number(categoryID) : null);
 
         request.input(
             "BrandID",

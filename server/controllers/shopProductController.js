@@ -1,5 +1,13 @@
 import { getDB } from "../config/db.js";
 import { productImagesSql, replaceProductImages } from "../utils/productImages.js";
+import { isValidPrice, productIdentity } from "../utils/productDefaults.js";
+
+/** Fills Slug and SKU when left empty (see utils/productDefaults.js). */
+async function fillProductDefaults(db, shopID, body, productID = null) {
+    const { slug, sku } = await productIdentity(db, shopID, { name: body.ProductName, slug: body.Slug, sku: body.SKU }, productID);
+    body.Slug = slug;
+    body.SKU = sku;
+}
 
 /* =========================================================
    GET SHOP ID FROM JWT
@@ -39,6 +47,8 @@ export const createShopProduct = async (req, res) => {
             });
         }
 
+        if (req.body?.ProductName?.trim()) await fillProductDefaults(getDB(), shopID, req.body);
+
         const {
             ProductName,
             Slug,
@@ -70,24 +80,10 @@ export const createShopProduct = async (req, res) => {
             });
         }
 
-        if (!Slug?.trim()) {
+        if (!isValidPrice(SellingPrice)) {
             return res.status(400).json({
                 success: false,
-                message: "Product slug is required."
-            });
-        }
-
-        if (!SKU?.trim()) {
-            return res.status(400).json({
-                success: false,
-                message: "SKU is required."
-            });
-        }
-
-        if (!CategoryID) {
-            return res.status(400).json({
-                success: false,
-                message: "Category is required."
+                message: "Selling price is required."
             });
         }
 
@@ -107,24 +103,26 @@ export const createShopProduct = async (req, res) => {
            VERIFY CATEGORY BELONGS TO THIS SHOP
         ================================================= */
 
-        const categoryCheck = await db
-            .request()
-            .input("CategoryID", Number(CategoryID))
-            .input("ShopID", Number(shopID))
-            .query(`
-                SELECT CategoryID
-                FROM dbo.Categories
-                WHERE
-                    CategoryID = @CategoryID
-                    AND ShopID = @ShopID
-                    AND IsActive = 1
-            `);
-
-        if (categoryCheck.recordset.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Selected category does not belong to this shop."
-            });
+        if (CategoryID) {
+            const categoryCheck = await db
+                .request()
+                .input("CategoryID", Number(CategoryID))
+                .input("ShopID", Number(shopID))
+                .query(`
+                    SELECT CategoryID
+                    FROM dbo.Categories
+                    WHERE
+                        CategoryID = @CategoryID
+                        AND ShopID = @ShopID
+                        AND IsActive = 1
+                `);
+    
+            if (categoryCheck.recordset.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Selected category does not belong to this shop."
+                });
+            }
         }
 
 
@@ -212,7 +210,7 @@ export const createShopProduct = async (req, res) => {
             .request()
 
             .input("ShopID", Number(shopID))
-            .input("CategoryID", Number(CategoryID))
+            .input("CategoryID", CategoryID ? Number(CategoryID) : null)
             .input(
                 "BrandID",
                 BrandID ? Number(BrandID) : null
@@ -657,6 +655,8 @@ export const updateShopProduct = async (req, res) => {
         }
 
 
+        if (req.body?.ProductName?.trim()) await fillProductDefaults(getDB(), shopID, req.body, productID);
+
         const {
             ProductName,
             Slug,
@@ -686,24 +686,10 @@ export const updateShopProduct = async (req, res) => {
             });
         }
 
-        if (!Slug?.trim()) {
+        if (!isValidPrice(SellingPrice)) {
             return res.status(400).json({
                 success: false,
-                message: "Product slug is required."
-            });
-        }
-
-        if (!SKU?.trim()) {
-            return res.status(400).json({
-                success: false,
-                message: "SKU is required."
-            });
-        }
-
-        if (!CategoryID) {
-            return res.status(400).json({
-                success: false,
-                message: "Category is required."
+                message: "Selling price is required."
             });
         }
 
@@ -721,36 +707,38 @@ export const updateShopProduct = async (req, res) => {
 
         /* ================= CATEGORY CHECK ================= */
 
-        const categoryCheck = await db
-            .request()
-
-            .input(
-                "CategoryID",
-                Number(CategoryID)
-            )
-
-            .input(
-                "ShopID",
-                Number(shopID)
-            )
-
-            .query(`
-                SELECT CategoryID
-                FROM dbo.Categories
-
-                WHERE
-                    CategoryID = @CategoryID
-                    AND ShopID = @ShopID
-                    AND IsActive = 1
-            `);
-
-
-        if (categoryCheck.recordset.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Selected category does not belong to this shop."
-            });
+        if (CategoryID) {
+            const categoryCheck = await db
+                .request()
+    
+                .input(
+                    "CategoryID",
+                    Number(CategoryID)
+                )
+    
+                .input(
+                    "ShopID",
+                    Number(shopID)
+                )
+    
+                .query(`
+                    SELECT CategoryID
+                    FROM dbo.Categories
+    
+                    WHERE
+                        CategoryID = @CategoryID
+                        AND ShopID = @ShopID
+                        AND IsActive = 1
+                `);
+    
+    
+            if (categoryCheck.recordset.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Selected category does not belong to this shop."
+                });
+            }
         }
 
 
@@ -891,7 +879,7 @@ export const updateShopProduct = async (req, res) => {
 
             .input(
                 "CategoryID",
-                Number(CategoryID)
+                CategoryID ? Number(CategoryID) : null
             )
 
             .input(

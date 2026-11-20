@@ -419,27 +419,6 @@ function ShopProducts() {
             return;
         }
 
-        if (!form.Slug.trim()) {
-            toast.error(
-                "Product slug is required."
-            );
-            return;
-        }
-
-        if (!form.SKU.trim()) {
-            toast.error(
-                "SKU is required."
-            );
-            return;
-        }
-
-        if (!form.CategoryID) {
-            toast.error(
-                "Please select a category."
-            );
-            return;
-        }
-
         if (
             form.SellingPrice === "" ||
             Number(form.SellingPrice) < 0
@@ -450,8 +429,9 @@ function ShopProducts() {
             return;
         }
 
+        // Stock and the low-stock alert are optional: empty means 0 and 5.
         if (
-            form.StockQuantity === "" ||
+            form.StockQuantity !== "" &&
             Number(form.StockQuantity) < 0
         ) {
             toast.error(
@@ -461,7 +441,7 @@ function ShopProducts() {
         }
 
         if (
-            form.LowStockThreshold === "" ||
+            form.LowStockThreshold !== "" &&
             Number(form.LowStockThreshold) < 0
         ) {
             toast.error(
@@ -493,8 +473,11 @@ function ShopProducts() {
                     form.Tags.trim() ||
                     null,
 
+                // Empty = no category; slug and SKU are filled in by the server when empty.
                 CategoryID:
-                    Number(form.CategoryID),
+                    form.CategoryID
+                        ? Number(form.CategoryID)
+                        : null,
 
                 BrandID:
                     form.BrandID
@@ -527,14 +510,14 @@ function ShopProducts() {
                           ),
 
                 StockQuantity:
-                    Number(
-                        form.StockQuantity
-                    ),
+                    form.StockQuantity === ""
+                        ? 0
+                        : Number(form.StockQuantity),
 
                 LowStockThreshold:
-                    Number(
-                        form.LowStockThreshold
-                    ),
+                    form.LowStockThreshold === ""
+                        ? 5
+                        : Number(form.LowStockThreshold),
 
                 IsAvailable:
                     Boolean(
@@ -1442,7 +1425,7 @@ function ShopProducts() {
 
                                         <div className="form-field">
                                             <label>
-                                                Product Slug *
+                                                Web address (slug) <span className="optional-label">Optional</span>
                                             </label>
 
                                             <input
@@ -1453,13 +1436,13 @@ function ShopProducts() {
                                                 onChange={
                                                     handleChange
                                                 }
-                                                placeholder="product-slug"
+                                                placeholder="Made from the name if empty"
                                             />
                                         </div>
 
                                         <div className="form-field">
                                             <label>
-                                                SKU *
+                                                SKU <span className="optional-label">Optional</span>
                                             </label>
 
                                             <input
@@ -1470,7 +1453,7 @@ function ShopProducts() {
                                                 onChange={
                                                     handleChange
                                                 }
-                                                placeholder="SKU-001"
+                                                placeholder="Created automatically if empty"
                                             />
                                         </div>
 
@@ -1524,7 +1507,7 @@ function ShopProducts() {
 
                                         <div className="form-field">
                                             <label>
-                                                Category *
+                                                Category <span className="optional-label">Optional</span>
                                             </label>
 
                                             <select
@@ -1537,7 +1520,7 @@ function ShopProducts() {
                                                 }
                                             >
                                                 <option value="">
-                                                    Select Category
+                                                    No category
                                                 </option>
 
                                                 {categories.map(

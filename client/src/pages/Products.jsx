@@ -638,23 +638,8 @@ const handleShopFilterChange = async (event) => {
     return;
   }
 
-  if (!form.categoryID) {
-    toast.error("Please select a category.");
-    return;
-  }
-
   if (!form.productName.trim()) {
     toast.error("Product name is required.");
-    return;
-  }
-
-  if (!form.slug.trim()) {
-    toast.error("Product slug is required.");
-    return;
-  }
-
-  if (!form.sku.trim()) {
-    toast.error("SKU is required.");
     return;
   }
 
@@ -704,7 +689,8 @@ if (form.brandID) {
   const payload = {
     shopID: Number(form.shopID),
 
-    categoryID: Number(form.categoryID),
+    // Empty = no category; slug and SKU are filled in by the server when empty.
+    categoryID: form.categoryID ? Number(form.categoryID) : null,
 
     brandID: form.brandID
       ? Number(form.brandID)
@@ -1781,14 +1767,13 @@ const handleToggleStatus = async (product) => {
                   {/* CATEGORY */}
 <div className="product-form-group">
     <label>
-        Category <span>*</span>
+        Category <small>(optional)</small>
     </label>
 
     <select
         name="categoryID"
         value={form.categoryID}
         onChange={handleInputChange}
-        required
         disabled={!form.shopID || categories.length === 0}
     >
         <option value="">
@@ -1796,7 +1781,7 @@ const handleToggleStatus = async (product) => {
                 ? "First Select Shop"
                 : categories.length === 0
                 ? "No Categories Available"
-                : "Select Category"}
+                : "No category"}
         </option>
 
         {categories.map((category) => {
@@ -1901,7 +1886,7 @@ const handleToggleStatus = async (product) => {
                   <div className="product-form-group">
                     <label>
                       Slug{" "}
-                      <span>*</span>
+                      <small>(optional)</small>
                     </label>
 
                     <input
@@ -1911,8 +1896,7 @@ const handleToggleStatus = async (product) => {
                       onChange={
                         handleInputChange
                       }
-                      placeholder="product-slug"
-                      required
+                      placeholder="Made from the name if empty"
                     />
                   </div>
 
@@ -1921,7 +1905,7 @@ const handleToggleStatus = async (product) => {
                   <div className="product-form-group">
                    <div className="product-form-group">
   <label>
-    SKU <span>*</span>
+    SKU <small>(optional)</small>
   </label>
 
   <input
@@ -1929,8 +1913,7 @@ const handleToggleStatus = async (product) => {
     name="sku"
     value={form.sku}
     onChange={handleInputChange}
-    placeholder="CAM-4MP-001"
-    required
+    placeholder="Created automatically if empty"
   />
 </div>
                   </div>

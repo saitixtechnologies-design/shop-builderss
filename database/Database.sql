@@ -303,7 +303,7 @@ BEGIN
         ProductID INT IDENTITY(1,1) NOT NULL
             CONSTRAINT PK_Products PRIMARY KEY,
         ShopID INT NOT NULL,
-        CategoryID INT NOT NULL,
+        CategoryID INT NULL, -- optional: products can be saved without a category
         BrandID INT NULL,
         ProductName NVARCHAR(250) NOT NULL,
         Slug NVARCHAR(280) NOT NULL,
