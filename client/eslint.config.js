@@ -17,5 +17,10 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // Pages load their data in an effect that first sets a "loading" flag. That is the normal
+      // pattern here, so this React Compiler rule is shown as a warning, not an error.
+      'react-hooks/set-state-in-effect': 'warn',
+    },
   },
 ])

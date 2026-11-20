@@ -5,7 +5,7 @@ import { apiUrl, getShopAdminHeaders } from "../../lib/api.js";
 import "../../styles/shop-admin/shop-domain.css";
 
 // "Website address" card in Shop Settings: the shop's links, its free subdomain and its own domain.
-// Talks to /api/shop-settings/me/domain (see DOMAINS.md for how it all fits together).
+// Talks to /api/shop-settings/me/domain (see docs/DOMAINS.md for how it all fits together).
 
 const PUBLIC_SHOP_URL = (import.meta.env.VITE_PUBLIC_SHOP_URL || "http://localhost:5174").replace(/\/+$/, "");
 

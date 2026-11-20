@@ -17,7 +17,7 @@ domain, the shop's pages live at the root (`/product/…`, `/about`, `/offers`).
    `DomainStatus`, `DomainVerifyToken`, `DomainVerifiedAt` to `dbo.Shops`). Until then, own
    domains show "not switched on yet" in Shop Admin; everything else works.
 2. **Pick your main domain**, e.g. `shopbuilder.in`, and set it in two places:
-   - `frontend/config.js` → `PLATFORM_DOMAIN = "shopbuilder.in"` (and `PRODUCTION_API_ORIGIN`)
+   - storefront settings (`frontend/.env` or the hosting panel) → `PLATFORM_DOMAIN=shopbuilder.in` (and `SHOP_API_URL`)
    - API environment (Render) → `PLATFORM_DOMAIN=shopbuilder.in`
 3. **Free subdomains:** in Vercel, add `*.shopbuilder.in` to the storefront project. Wildcard
    domains need the domain's nameservers to point to Vercel (Vercel shows the steps).

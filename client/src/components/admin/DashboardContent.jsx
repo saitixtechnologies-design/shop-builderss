@@ -8,7 +8,6 @@ import {
     CheckCircle2,
     CircleDollarSign,
     Clock3,
-    Copy,
     Gift,
     Layers3,
     Package,

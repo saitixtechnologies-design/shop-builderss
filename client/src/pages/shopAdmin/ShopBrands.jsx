@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../../styles/shop-admin/shop-brands.css";
 import ImageGalleryField from "../../components/ImageGalleryField.jsx";
 import { API_ORIGIN } from "../../lib/api.js";

@@ -1,6 +1,6 @@
 # Render Blueprint for the Shop Builder API (server/). Render → New → Blueprint → pick this repo.
 # Values marked "sync: false" are secrets: fill them in on Render, never in this file.
-# The admin panel (client/) and storefront (frontend/) are deployed on Vercel.
+# The admin panel (client/) and storefront (frontend/) go on Vercel or Hostinger (docs/DEPLOYMENT.md).
 services:
   - type: web
     name: shop-builder-api
@@ -48,4 +48,13 @@ services:
         sync: false
       # Your Vercel addresses, comma-separated, e.g. https://admin.example.vercel.app,https://shops.example.vercel.app
       - key: CORS_ORIGINS
+        sync: false
+      # Shop web addresses (docs/DOMAINS.md): your main domain, and optional Vercel automation
+      - key: PLATFORM_DOMAIN
+        sync: false
+      - key: VERCEL_TOKEN
+        sync: false
+      - key: VERCEL_PROJECT_ID
+        sync: false
+      - key: VERCEL_TEAM_ID
         sync: false

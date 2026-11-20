@@ -1,0 +1,29 @@
+# Hostinger (Apache / LiteSpeed) settings for the public storefront.
+# Upload the frontend folder's files to public_html (after "npm run build" has created env.js).
+
+Options -Indexes
+
+# Never serve project files that are not part of the website.
+<FilesMatch "^(\.env.*|server\.js|package(-lock)?\.json|vercel\.json)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^scripts/ - [F,L]
+
+    # Real files (app.js, *.css, env.js …) are served as they are.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Every other address is a storefront page: /shop/<slug>/…, or /product/… on a shop's own domain.
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    <FilesMatch "^(env\.js|index\.html)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

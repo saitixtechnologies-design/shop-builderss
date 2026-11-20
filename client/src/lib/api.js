@@ -47,7 +47,7 @@ const decodePayload = (token) => {
 const normalizeRole = (role) =>
     String(role || "")
         .toLowerCase()
-        .replace(/[ \_-]/g, "");
+        .replace(/[ _-]/g, "");
 
 
 // =====================================================

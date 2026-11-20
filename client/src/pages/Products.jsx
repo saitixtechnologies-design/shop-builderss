@@ -7,8 +7,7 @@ import {
   Trash2,
   Power,
   X,
-  Package,
-  RefreshCw
+  Package
 } from "lucide-react";
 import { toast } from "react-toastify";
 

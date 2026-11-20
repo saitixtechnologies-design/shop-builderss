@@ -16,7 +16,7 @@ import {
     ArrowRight,
     Store,
     TrendingUp,
-    TrendingDown,
+
     CircleDollarSign,
     AlertTriangle,
     BarChart3,
@@ -65,21 +65,6 @@ const formatCurrency = (value) =>
     `₹${Number(value || 0).toLocaleString("en-IN")}`;
 
 
-const formatDate = (date) => {
-    if (!date) return "-";
-
-    const parsedDate = new Date(date);
-
-    if (Number.isNaN(parsedDate.getTime())) {
-        return "-";
-    }
-
-    return parsedDate.toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    });
-};
 
 
 const formatDateTime = (date) => {
@@ -1765,11 +1750,7 @@ function ShopAdminDashboardContent() {
                                                     <button
                                                         type="button"
                                                         className="order-view-btn"
-                                                        onClick={() =>
-                                                            navigate
-                                                                ("/shop-admin/orders")
-                                                            
-                                                        }
+                                                        onClick={() => navigate("/shop-admin/orders")}
                                                         title={t("View order", "ऑर्डर देखें")}
                                                     >
                                                         <Eye

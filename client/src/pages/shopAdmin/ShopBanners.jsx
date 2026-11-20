@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Plus,
     Search,
@@ -34,7 +34,7 @@ const emptyForm = {
 };
 
 const getBannerImages = (banner) => {
-    let images = [];
+    let images;
     try {
         images = Array.isArray(banner?.ImageURLs) ? banner.ImageURLs : typeof banner?.ImageURLs === "string" ? JSON.parse(banner.ImageURLs) : [];
     } catch { images = []; }

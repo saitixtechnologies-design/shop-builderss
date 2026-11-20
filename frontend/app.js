@@ -9,7 +9,7 @@ const pathSegments = (pathname) => pathname.split("/").filter(Boolean).map((segm
 });
 
 /**
- * How this storefront was opened (see DOMAINS.md):
+ * How this storefront was opened (see docs/DOMAINS.md):
  * - "path":      any address + /shop/<slug>/...      (always works)
  * - "subdomain": <slug>.<platform domain>/...        (free address for every shop)
  * - "domain":    www.ownshop.com/...                 (the shop's own domain; the API says which shop)

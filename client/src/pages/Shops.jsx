@@ -2,15 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import "../styles/Shops.css";
-import ShopTemplatePicker, { getDefaultWebsiteTemplate, SHOP_TEMPLATES } from "../components/ShopTemplatePicker.jsx";
+import ShopTemplatePicker from "../components/ShopTemplatePicker.jsx";
+import { getDefaultWebsiteTemplate, SHOP_TEMPLATES } from "../components/shopTemplates.js";
 import { adminFetch as fetch, API_ORIGIN } from "../lib/api.js";
-import {
-    Eye,
-    Pencil,
-    Trash2,
-    X,
-    FileText
-} from "lucide-react";
+import { FileText } from "lucide-react";
 
 const API_URL = `${API_ORIGIN}/api/shops`;
 const authHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem("token") || ""}` });

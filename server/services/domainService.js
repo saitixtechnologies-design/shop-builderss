@@ -1,5 +1,5 @@
 // Shop web addresses: the free subdomain (<slug>.<PLATFORM_DOMAIN>) and the shop's own domain.
-// See DOMAINS.md for the full setup. All settings come from .env:
+// See docs/DOMAINS.md for the full setup. All settings come from .env:
 //   PLATFORM_DOMAIN       your main domain, e.g. "shopbuilder.in" (subdomains hang off it)
 //   DOMAIN_CNAME_TARGET   where a shop's "www" record points        (default: Vercel)
 //   DOMAIN_A_RECORD       where a shop's bare domain points          (default: Vercel)

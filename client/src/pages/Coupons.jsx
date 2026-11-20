@@ -769,7 +769,7 @@ function Coupons() {
                 (
                     statusFilter === "Active"
                         ? Boolean(coupon.IsActive)
-                        : !Boolean(coupon.IsActive)
+                        : !coupon.IsActive
                 );
 
 

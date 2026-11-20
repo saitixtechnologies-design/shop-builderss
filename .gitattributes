@@ -1,0 +1,12 @@
+# Store text files with LF line endings (stops "LF will be replaced by CRLF" warnings and keeps
+# files identical on Windows, Linux servers and macOS).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

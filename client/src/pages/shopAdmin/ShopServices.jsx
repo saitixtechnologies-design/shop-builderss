@@ -53,7 +53,7 @@ const isActive = (value) => {
 };
 
 const getServiceImages = (service) => {
-  let images = [];
+  let images;
   try {
     images = Array.isArray(service?.ImageURLs)
       ? service.ImageURLs

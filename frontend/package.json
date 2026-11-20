@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "Public shop websites (plain HTML/CSS/JS, no framework)",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "node scripts/write-env.js"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

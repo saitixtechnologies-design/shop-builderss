@@ -9,7 +9,7 @@ import {
     requiredRecords
 } from "../services/domainService.js";
 
-// Shop web addresses (see DOMAINS.md).
+// Shop web addresses (see docs/DOMAINS.md).
 // Shop admin:  GET/PUT/DELETE /api/shop-settings/me/domain, POST /api/shop-settings/me/domain/verify
 // Public:      GET /api/public/shops/by-domain/:host  -> which shop a visitor's address belongs to
 

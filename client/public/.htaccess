@@ -1,0 +1,26 @@
+# Hostinger (Apache / LiteSpeed) settings for the admin panel.
+# "npm run build" copies this file into dist/; upload the contents of dist/ to the site's folder.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Real files (assets/*.js, *.css, images) are served as they are.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # Every other address is a screen of the admin app (/admin/..., /shop/...).
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    <FilesMatch "^index\.html$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+    <FilesMatch "\.(js|css|svg|png|jpg|webp|woff2)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>

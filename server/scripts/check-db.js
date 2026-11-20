@@ -1,11 +1,11 @@
 // Checks the database connection with the settings in server/.env (read-only).
-// Run from the server folder:  node test-db.js
+// Run from the server folder:  npm run check:db
 import dotenv from "dotenv";
 import { fileURLToPath } from "node:url";
 
-dotenv.config({ path: fileURLToPath(new URL("./.env", import.meta.url)) });
+dotenv.config({ path: fileURLToPath(new URL("../.env", import.meta.url)) });
 
-const { connectDB } = await import("./config/db.js");
+const { connectDB } = await import("../config/db.js");
 
 try {
     const pool = await connectDB();

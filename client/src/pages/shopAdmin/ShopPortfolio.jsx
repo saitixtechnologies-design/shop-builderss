@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, Pencil, Trash2, Eye, EyeOff, X, Briefcase } from "lucide-react";
 import { toast } from "react-toastify";
 import "../../styles/shop-admin/ShopPortfolio.css";
@@ -9,7 +9,7 @@ const API_URL = `${API_ORIGIN}/api/shop-portfolio`;
 const EMPTY = { title: "", category: "", description: "", imageURL: "", imageURLs: [], videoURL: "", clientName: "", location: "", projectDate: "", displayOrder: 0, status: "Active" };
 const token = () => localStorage.getItem("shopAdminToken") || localStorage.getItem("token") || sessionStorage.getItem("shopAdminToken") || sessionStorage.getItem("token") || "";
 const getImages = (item) => {
-    let images = [];
+    let images;
     try { images = Array.isArray(item?.ImageURLs) ? item.ImageURLs : typeof item?.ImageURLs === "string" ? JSON.parse(item.ImageURLs) : []; } catch { images = []; }
     const unique = [...new Set((Array.isArray(images) ? images : []).filter((image) => typeof image === "string" && image.trim()).map((image) => image.trim()))].slice(0, 10);
     if (!unique.length && item?.ImageURL) unique.push(item.ImageURL);

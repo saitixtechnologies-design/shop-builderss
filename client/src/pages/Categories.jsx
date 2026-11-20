@@ -486,7 +486,7 @@ const Categories = () => {
         category
     ) => {
         const newStatus =
-            !Boolean(category.IsActive);
+            !category.IsActive;
 
         try {
             const response = await fetch(
@@ -653,7 +653,7 @@ const Categories = () => {
                         )) ||
                     (statusFilter ===
                         "inactive" &&
-                        !Boolean(
+                        !(
                             category.IsActive
                         ));
 

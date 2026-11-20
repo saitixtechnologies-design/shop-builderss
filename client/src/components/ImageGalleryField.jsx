@@ -60,11 +60,11 @@ export default function ImageGalleryField({ value = [], onChange, token, shopID,
   const addURL = () => {
     if (!url.trim()) return;
     const value = url.trim();
-    let imageURL = value;
+    let imageURL;
     if (value.startsWith("//")) imageURL = `https:${value}`;
     else if (/^https?:\/\//i.test(value)) imageURL = value;
     else if (/^(?:\/?uploads\/)/i.test(value) || value.startsWith("/")) imageURL = apiUrl(value);
-    else if (/^(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:\:\d+)?(?:\/|[?#]|$)/i.test(value)) imageURL = `https://${value}`;
+    else if (/^(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?::\d+)?(?:\/|[?#]|$)/i.test(value)) imageURL = `https://${value}`;
     else imageURL = apiUrl(`uploads/${value}`);
     try {
       const parsed = new URL(imageURL);
