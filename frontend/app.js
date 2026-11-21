@@ -1144,15 +1144,23 @@ function mountPublicPageContent(html) {
   frame.addEventListener("load", () => {
     const doc = frame.contentDocument;
     if (!doc) return;
+    // Fit the frame to its content. The frame is collapsed first and then measured: measured at its
+    // current height, the page would report at least that height and the frame could never shrink,
+    // leaving empty space under short content.
     const resize = () => {
-      const height = Math.max(doc.documentElement?.scrollHeight || 0, doc.body?.scrollHeight || 0, doc.body?.offsetHeight || 0);
-      if (height) frame.style.height = `${height + 8}px`;
+      if (!frame.isConnected || !doc.documentElement) return;
+      frame.style.height = "0px";
+      const height = Math.max(doc.documentElement.scrollHeight || 0, doc.body?.scrollHeight || 0);
+      frame.style.height = `${Math.max(height, 1)}px`;
     };
     doc.querySelectorAll("img").forEach((image) => image.addEventListener("load", resize));
     doc.fonts?.ready?.then(resize).catch(() => {});
     connectDesignedPageSlider(doc);
     resize();
     window.setTimeout(resize, 100);
+    // Text wraps differently when the window changes width (e.g. a phone is rotated).
+    const onWindowResize = () => (frame.isConnected ? resize() : window.removeEventListener("resize", onWindowResize));
+    window.addEventListener("resize", onWindowResize, { passive: true });
   });
   frame.srcdoc = buildPublicPageDocument(html);
 }
