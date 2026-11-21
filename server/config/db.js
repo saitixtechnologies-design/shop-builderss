@@ -39,7 +39,7 @@ let connected = false;
 export const connectDB = async () => {
     try {
         if (!dbConfig.server || !dbConfig.database) {
-            throw new Error("DB_SERVER and DB_DATABASE must be set in server/.env");
+            throw new Error("DB_SERVER and DB_DATABASE are not set. Add them to server/.env (local) or to the Environment settings on Render / Hostinger.");
         }
 
         console.log("🔄 Connecting to SQL Server...");

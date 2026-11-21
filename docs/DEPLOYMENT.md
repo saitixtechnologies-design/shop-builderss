@@ -41,7 +41,7 @@ API on Hostinger.
 
 ### Hostinger (Node.js hosting / VPS)
 1. hPanel → **Websites → Node.js** (Business / Cloud plans) → create an app.
-2. Application root: the `server` folder. Startup file: `server.js`. Node version 20 or newer.
+2. Application root: the `server` folder. Startup file: `server.js`. Node version 24 (20–24 work).
 3. Add the same environment variables as above (hPanel → the app → Environment variables), plus
    `NODE_ENV=production`.
 4. Run **NPM install**, then **Start**. Point `api.yourdomain.com` at the app.
