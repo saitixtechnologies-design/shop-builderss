@@ -1,4 +1,5 @@
 import { getDB } from "../config/db.js";
+import { sqlIndiaTime } from "../utils/indiaTime.js";
 
 const sendDatabaseError = (res, error, label) => {
     console.error(`${label} Error:`, error);
@@ -775,14 +776,23 @@ export const updateOrderStatus = async (req, res) => {
 
         // Cancelling gives the order's stock back; reopening a cancelled order takes it again.
         // Only orders marked StockDeducted took stock (see database/OrderStockMigration.sql).
+        // Every real change is also written to dbo.OrderHistory (who, from, to, when).
+        const changedBy = String(req.user?.fullName || req.user?.name || req.user?.email || "").slice(0, 150) ||
+            (shopID ? "Shop owner" : "Platform admin");
         const result = await db.request()
             .input("OrderID", orderID)
             .input("ShopID", shopID)
             .input("OrderStatus", status)
+            .input("ChangedBy", changedBy)
             .query(`
                 SET NOCOUNT ON;
                 BEGIN TRY
                 BEGIN TRANSACTION;
+
+                DECLARE @PreviousStatus NVARCHAR(40);
+                SELECT @PreviousStatus = OrderStatus
+                FROM dbo.Orders WITH (UPDLOCK, ROWLOCK)
+                WHERE OrderID = @OrderID AND (@ShopID IS NULL OR ShopID = @ShopID);
 
                 IF COL_LENGTH('dbo.Orders', 'StockDeducted') IS NOT NULL
                 BEGIN
@@ -845,6 +855,14 @@ export const updateOrderStatus = async (req, res) => {
                 WHERE
                     OrderID = @OrderID
                     AND (@ShopID IS NULL OR ShopID = @ShopID);
+
+                IF @PreviousStatus IS NOT NULL AND @PreviousStatus <> @OrderStatus
+                   AND OBJECT_ID(N'dbo.OrderHistory', N'U') IS NOT NULL
+                    EXEC sp_executesql
+                        N'INSERT INTO dbo.OrderHistory (OrderID, ShopID, EntryType, FromStatus, ToStatus, CreatedBy)
+                          SELECT OrderID, ShopID, N''Status'', @From, @To, @By FROM dbo.Orders WHERE OrderID = @OrderID;',
+                        N'@OrderID INT, @From NVARCHAR(40), @To NVARCHAR(40), @By NVARCHAR(150)',
+                        @OrderID, @PreviousStatus, @OrderStatus, @ChangedBy;
 
                 COMMIT TRANSACTION;
                 END TRY
@@ -921,10 +939,16 @@ export const getShopCustomers = async (req, res) => {
             .input("ShopID", Number(req.user.shopID ?? req.user.ShopID))
             .query(`
                 SELECT
-                    CustomerID, FullName, Email, Phone, IsActive, CreatedAt
-                FROM dbo.Customers
-                WHERE ShopID = @ShopID
-                ORDER BY CreatedAt DESC
+                    c.CustomerID, c.FullName, c.Email, c.Phone, c.IsActive,
+                    ${sqlIndiaTime("c.CreatedAt")} AS JoinedAtIndia,
+                    COUNT(CASE WHEN o.OrderStatus <> N'Cancelled' THEN 1 END) AS OrderCount,
+                    COALESCE(SUM(CASE WHEN o.OrderStatus <> N'Cancelled' THEN o.GrandTotal END), 0) AS TotalSpent,
+                    MAX(${sqlIndiaTime("o.CreatedAt")}) AS LastOrderAtIndia
+                FROM dbo.Customers c
+                LEFT JOIN dbo.Orders o ON o.CustomerID = c.CustomerID AND o.ShopID = c.ShopID
+                WHERE c.ShopID = @ShopID
+                GROUP BY c.CustomerID, c.FullName, c.Email, c.Phone, c.IsActive, c.CreatedAt
+                ORDER BY MAX(o.CreatedAt) DESC, c.CreatedAt DESC
             `);
         return res.json({ success: true, data: result.recordset });
     } catch (error) {

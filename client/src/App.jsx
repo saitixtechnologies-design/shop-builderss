@@ -40,6 +40,9 @@ import ShopCategories from "./pages/shopAdmin/ShopCategories";
 import ShopBrands from "./pages/shopAdmin/ShopBrands";
 import ShopServices from "./pages/shopAdmin/ShopServices";
 import ShopCustomers from "./pages/shopAdmin/ShopCustomers";
+import ShopOrders from "./pages/shopAdmin/ShopOrders";
+import ShopOrderInvoice from "./pages/shopAdmin/ShopOrderInvoice";
+import ShopReports from "./pages/shopAdmin/ShopReports";
 import ShopSettings from "./pages/shopAdmin/ShopSettings";
 import Banners from "./pages/Banners";
 import Coupons from "./pages/Coupons";
@@ -258,7 +261,7 @@ function App() {
                     <Route path="welcome" element={<ShopAdminWelcome />} />
                     <Route path="help" element={<ShopAdminHelp />} />
                     <Route path="live-preview" element={<ShopAdminLivePreview />} />
-                    <Route path="reports" element={<ShopAdminDashboard />} />
+                    <Route path="reports" element={<ShopReports />} />
 
                     {/* Products */}
                     <Route
@@ -291,10 +294,8 @@ function App() {
                     />
 
                     {/* Orders */}
-                    <Route
-                        path="orders"
-                        element={<OrderManagementPage shopAdmin />}
-                    />
+                    <Route path="orders" element={<ShopOrders />} />
+                    <Route path="orders/:id/invoice" element={<ShopOrderInvoice />} />
 
                     {/* Customers */}
                     <Route

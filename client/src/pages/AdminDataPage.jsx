@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { apiUrl, getShopAdminHeaders, getSuperAdminHeaders } from "../lib/api";
 import "../styles/data-pages.css";
 
-function AdminDataPage({ title, endpoint, columns, shopAdmin = false }) {
+// rowLink (optional): { label, to: (row) => path } adds a link at the end of each row.
+function AdminDataPage({ title, endpoint, columns, shopAdmin = false, rowLink = null }) {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -34,6 +36,11 @@ function AdminDataPage({ title, endpoint, columns, shopAdmin = false }) {
             const date = new Date(value);
             return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
         }
+        if (format === "indiaDateTime") {
+            // The API already sends Indian time; show it as is.
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString("en-IN", { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" });
+        }
         if (format === "boolean") return value ? "Active" : "Inactive";
         if (format === "currency") return Number(value).toLocaleString(undefined, { style: "currency", currency: "INR" });
         return String(value);
@@ -48,9 +55,10 @@ function AdminDataPage({ title, endpoint, columns, shopAdmin = false }) {
             {error && <div className="record-message error">{error}</div>}
             {!loading && !error && rows.length === 0 && <div className="record-message">No {title.toLowerCase()} found.</div>}
             {rows.length > 0 && <div className="record-table-wrap"><table className="record-table">
-                <thead><tr>{columns.map((column) => <th key={column.key}>{column.label}</th>)}</tr></thead>
+                <thead><tr>{columns.map((column) => <th key={column.key}>{column.label}</th>)}{rowLink && <th><span className="visually-hidden">{rowLink.label}</span></th>}</tr></thead>
                 <tbody>{rows.map((row, index) => <tr key={row[columns[0]?.key] ?? index}>
                     {columns.map((column) => <td key={column.key}>{formatValue(row[column.key], column.format)}</td>)}
+                    {rowLink && <td><Link className="record-row-link" to={rowLink.to(row)}>{rowLink.label}</Link></td>}
                 </tr>)}</tbody>
             </table></div>}
         </section>

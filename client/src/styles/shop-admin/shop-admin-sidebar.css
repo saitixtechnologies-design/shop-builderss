@@ -835,3 +835,18 @@
         transition: none;
     }
 }
+
+/* New-order count next to "Orders" (see hooks/useNewOrderAlerts.js). */
+.shop-sidebar-badge {
+    min-width: 20px;
+    height: 20px;
+    margin-left: auto;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 20px;
+    text-align: center;
+}

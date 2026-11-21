@@ -13,3 +13,8 @@
 .record-message { padding:28px; background:#fff; border:1px solid #e5e9f1; border-radius:14px; color:#59667d; }
 .record-message.error { border-color:#ffd7d2; color:#b42318; background:#fff8f7; }
 @media(max-width:700px) { .record-page-heading { align-items:flex-start; } .record-page-heading h1 { font-size:22px; } }
+
+/* Optional link at the end of a row (e.g. Customers → View orders). */
+.record-row-link { color: #4f46e5; font-weight: 700; white-space: nowrap; text-decoration: none; }
+.record-row-link:hover { text-decoration: underline; }
+.record-page .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

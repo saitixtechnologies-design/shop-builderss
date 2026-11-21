@@ -1,4 +1,5 @@
 import { getDB } from "../config/db.js";
+import { sqlIndiaDate, sqlIndiaToday } from "../utils/indiaTime.js";
 
 const sendDatabaseError = (res, error, label) => {
     console.error(`${label} Error:`, error);
@@ -188,8 +189,8 @@ export const getShopDashboard = async (req, res) => {
 
                     WHERE ShopID = @ShopID
 
-                    AND CAST(CreatedAt AS DATE)
-                        = CAST(GETDATE() AS DATE)
+                    AND ${sqlIndiaDate("CreatedAt")}
+                        = ${sqlIndiaToday}
                 `),
 
 
@@ -281,8 +282,8 @@ export const getShopDashboard = async (req, res) => {
 
                     AND OrderStatus <> 'Cancelled'
 
-                    AND CAST(CreatedAt AS DATE)
-                        = CAST(GETDATE() AS DATE)
+                    AND ${sqlIndiaDate("CreatedAt")}
+                        = ${sqlIndiaToday}
                 `),
 
 

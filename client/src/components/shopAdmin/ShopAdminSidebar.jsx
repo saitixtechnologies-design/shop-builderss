@@ -22,6 +22,7 @@ import {
 import { useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { getShopAdminLanguage, readShopAdminUser } from "../../lib/shopAdminLanguage.js";
+import { useNewOrderAlerts } from "../../hooks/useNewOrderAlerts.js";
 
 import "../../styles/shop-admin/shop-admin-sidebar.css";
 
@@ -34,6 +35,8 @@ function ShopAdminSidebar({ isOpen, onClose }) {
     })();
     const shopType = String(shopUser?.shop?.shopType || shopUser?.shop?.ShopType || "Ecommerce").toLowerCase();
     const isServiceShop = shopType === "service";
+    // Unseen orders since the owner last opened Orders (online shops only).
+    const newOrders = useNewOrderAlerts(!isServiceShop);
     const [language, setLanguage] = useState(() => getShopAdminLanguage(shopUser));
     useEffect(() => {
         const syncLanguage = (event) => {
@@ -285,6 +288,12 @@ function ShopAdminSidebar({ isOpen, onClose }) {
                             <span className="shop-sidebar-nav-label">
                                 {language === "hi" ? hindiLabels[item.label] : language === "hinglish" ? hinglishLabels[item.label] : item.label}
                             </span>
+
+                            {item.path === "/shop-admin/orders" && newOrders > 0 && (
+                                <span className="shop-sidebar-badge" aria-label={`${newOrders} new`}>
+                                    {newOrders > 99 ? "99+" : newOrders}
+                                </span>
+                            )}
 
                             {active && (
                                 <span className="shop-active-indicator" />
