@@ -31,6 +31,34 @@ const API_URL =
 // SHOP ADMIN TOKEN
 // =====================================================
 
+/* Links typed without "https://" (e.g. "maps.app.goo.gl/abc") still work. */
+const withHttps = (value) => {
+    const text = String(value || "").trim();
+    return !text || /^https?:\/\//i.test(text) ? text : `https://${text}`;
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Checks the fields the browser used to check silently (which could block a save without the
+ * owner noticing). Returns { field, message } for the first problem, or null.
+ */
+function findSettingsProblem(form) {
+    const email = String(form.settingsEmail || "").trim();
+    if (email && !EMAIL_PATTERN.test(email)) {
+        return { field: "settingsEmail", message: "Enter a valid shop email, for example shop@gmail.com." };
+    }
+    const latitude = form.latitude === "" ? null : Number(form.latitude);
+    if (latitude !== null && !(latitude >= -90 && latitude <= 90)) {
+        return { field: "latitude", message: "Latitude must be a number between -90 and 90." };
+    }
+    const longitude = form.longitude === "" ? null : Number(form.longitude);
+    if (longitude !== null && !(longitude >= -180 && longitude <= 180)) {
+        return { field: "longitude", message: "Longitude must be a number between -180 and 180." };
+    }
+    return null;
+}
+
 const getToken = () => {
     return (
         localStorage.getItem("shopAdminToken") ||
@@ -111,11 +139,12 @@ function ShopSettings() {
     // FETCH MY SHOP SETTINGS
     // =================================================
 
-    const fetchSettings = async () => {
+    // silent: refresh the values after a save without replacing the page with a loader.
+    const fetchSettings = async ({ silent = false } = {}) => {
 
         try {
 
-            setLoading(true);
+            if (!silent) setLoading(true);
 
             const token = getToken();
 
@@ -343,6 +372,18 @@ function ShopSettings() {
 
         e.preventDefault();
 
+        // One save at a time; a second click while saving does nothing.
+        if (saving) return;
+
+        const problem = findSettingsProblem(form);
+        if (problem) {
+            toast.error(problem.message);
+            const field = document.querySelector(`[name="${problem.field}"]`);
+            field?.scrollIntoView({ behavior: "smooth", block: "center" });
+            field?.focus({ preventScroll: true });
+            return;
+        }
+
 
         try {
 
@@ -409,7 +450,7 @@ function ShopSettings() {
                         // =====================================================
 
                         mapURL:
-                            form.mapURL,
+                            withHttps(form.mapURL),
 
                         latitude:
                             form.latitude === ""
@@ -434,13 +475,13 @@ function ShopSettings() {
                             form.closingTime,
 
                         facebookURL:
-                            form.facebookURL,
+                            withHttps(form.facebookURL),
 
                         instagramURL:
-                            form.instagramURL,
+                            withHttps(form.instagramURL),
 
                         youtubeURL:
-                            form.youtubeURL,
+                            withHttps(form.youtubeURL),
 
                         websiteStatus:
                             form.websiteStatus,
@@ -474,7 +515,7 @@ function ShopSettings() {
 
 
             // Refresh latest data
-            await fetchSettings();
+            await fetchSettings({ silent: true });
 
         }
 
@@ -583,7 +624,8 @@ function ShopSettings() {
             {/* Outside the settings form: it saves on its own buttons. */}
             <ShopDomainCard />
 
-            <form onSubmit={handleSubmit}>
+            {/* noValidate: fields are checked in handleSubmit, with a clear message. */}
+            <form onSubmit={handleSubmit} noValidate>
 
                 <ShopTemplatePicker shopType={form.shopType} value={form.websiteTemplate} onChange={(websiteTemplate) => setForm((previous) => ({ ...previous, websiteTemplate }))} />
 

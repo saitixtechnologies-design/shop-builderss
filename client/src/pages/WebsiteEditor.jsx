@@ -334,7 +334,7 @@ function WebsiteEditor({ shopAdmin = false }) {
                             </div>
 
                             <div className="website-editor-content-heading"><div><h3>Page Content</h3><p>Format text, add links, images and tables, or edit HTML directly.</p></div><span>HTML / RICH TEXT</span></div>
-                            <WebsiteHtmlEditor value={form.htmlContent} onChange={(htmlContent) => setForm((current) => ({ ...current, htmlContent }))} placeholder="Write website content…" minHeight={300} />
+                            <WebsiteHtmlEditor key={isCreating ? "new-page" : activePageId} value={form.htmlContent} onChange={(htmlContent) => setForm((current) => ({ ...current, htmlContent }))} placeholder="Write website content…" minHeight={300} />
                             <div className="website-editor-actions"><span>{isDirty ? "Unsaved changes" : "All changes saved"}</span><div><button type="button" className="we-button" onClick={() => setShowPreview(true)}><Eye size={16} /> Preview</button><button type="submit" className="we-button we-button--primary" disabled={saving || statusSaving}><Save size={16} /> {saving ? "Saving…" : isCreating ? "Save Page" : "Save Changes"}</button></div></div>
                         </form>
                     )}

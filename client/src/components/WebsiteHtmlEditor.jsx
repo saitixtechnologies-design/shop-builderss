@@ -4,6 +4,13 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import "../styles/WebsiteHtmlEditor.css";
 
+/**
+ * True when the HTML has design the rich-text view cannot keep (its own styles, layout blocks,
+ * classes). Such pages open in the HTML view so nothing is lost.
+ */
+const CUSTOM_DESIGN = /<(style|div|section|article|header|footer|nav|main|aside|figure|span|iframe|svg|form|button)\b|\sclass=["'](?!ql-)|\sstyle=/i; // "ql-…" classes are the editor's own
+const hasCustomDesign = (html) => CUSTOM_DESIGN.test(String(html ?? ""));
+
 const normalizeEmptyHtml = (html) => {
     const content = String(html ?? "");
     const emptyParagraphs = /^(\s*<p>(?:\s|<br\s*\/?\s*>|&nbsp;|&#160;)*<\/p>\s*)+$/i;
@@ -19,7 +26,15 @@ function WebsiteHtmlEditor({
 }) {
     const generatedId = useId();
     const toolbarId = `website-html-toolbar-${generatedId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
-    const [sourceMode, setSourceMode] = useState(false);
+    // Pages with their own design start in the HTML view.
+    const [sourceMode, setSourceMode] = useState(() => hasCustomDesign(value));
+
+    const showRichText = () => {
+        if (hasCustomDesign(value) && !window.confirm("This page has its own design (styles and layout). The rich text view can remove that design if you save from it. Switch anyway?")) {
+            return;
+        }
+        setSourceMode(false);
+    };
 
     const modules = useMemo(() => ({
         toolbar: {
@@ -50,7 +65,10 @@ function WebsiteHtmlEditor({
             : minHeight
     };
 
-    const handleChange = (html) => {
+    // Only the owner's own edits count. The editor reformats HTML when it opens; that must not
+    // mark the page as changed or overwrite what was saved.
+    const handleChange = (html, _delta, source) => {
+        if (source !== "user") return;
         onChange?.(normalizeEmptyHtml(html));
     };
 
@@ -64,7 +82,7 @@ function WebsiteHtmlEditor({
                         className={!sourceMode ? "is-active" : ""}
                         aria-pressed={!sourceMode}
                         disabled={disabled}
-                        onClick={() => setSourceMode(false)}
+                        onClick={showRichText}
                     >
                         Rich text
                     </button>

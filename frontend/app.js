@@ -162,14 +162,25 @@ const bold = () => (boldTemplate ??= createBoldTemplate({
   renderHeader, renderProductCards, renderShopBrands, renderCouponOffers, renderCartDrawer, renderCheckout
 }));
 
-function findAboutPageIndex() {
-  const typedIndex = state.pages.findIndex((page) => String(page.PageType || "").trim().toLowerCase() === "about");
-  if (typedIndex >= 0) return typedIndex;
+// Standard sections the menu links to as /about, /contact, /services, /gallery.
+const SECTION_PAGES = ["about", "contact", "services", "gallery"];
+const pageKey = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
 
-  const normalize = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
-  return state.pages.findIndex((page) =>
-    [page.Slug, page.PageName, page.PageTitle].some((value) => ["about", "aboutus"].includes(normalize(value)))
-  );
+/**
+ * The owner's own page for a standard section, or -1. A page counts when its type is that
+ * section, or its name / address is the section in everyday words: "Services", "Our Services",
+ * "our-services", "About Us", "contact-us" …
+ */
+function findSectionPageIndex(section) {
+  const typedIndex = state.pages.findIndex((page) => pageKey(page.PageType) === section);
+  if (typedIndex >= 0) return typedIndex;
+  const names = new Set([section, `${section}us`, `our${section}`, section.replace(/s$/, "")]);
+  return state.pages.findIndex((page) => [page.Slug, page.PageName, page.PageTitle].some((value) => names.has(pageKey(value))));
+}
+
+/** The section a page stands for ("services" for "Our Services"), or "". */
+function sectionOfPage(page) {
+  return SECTION_PAGES.find((section) => state.pages[findSectionPageIndex(section)] === page) || "";
 }
 function pageUrl(page, index = 0) {
   const slug = encodeURIComponent(page.Slug || "");
@@ -248,10 +259,11 @@ function resolveRoute() {
 
   const requestedSlug = section === "page" ? routeSlug : section;
   let page = state.pages.find((entry) => String(entry.Slug || "").toLowerCase() === String(requestedSlug || "").toLowerCase());
-  if (!page && section !== "page" && String(section).toLowerCase() === "about") {
-    const aboutIndex = findAboutPageIndex();
-    if (aboutIndex >= 0) page = state.pages[aboutIndex];
+  const sectionName = String(section).toLowerCase();
+  if (!page && section !== "page" && SECTION_PAGES.includes(sectionName)) {
+    page = state.pages[findSectionPageIndex(sectionName)];
   }
+  if (page && sectionOfPage(page)) page = { ...page, PageType: sectionOfPage(page) };
   if (!page && section !== "page") {
     page = state.pages.find((entry) => String(entry.PageType || "").toLowerCase() === section.toLowerCase());
   }
@@ -517,19 +529,20 @@ function getNavigationItems(isEcommerce) {
   if (isEcommerce) add("shop", "Shop", `${shopHomeHref()}#collections`);
   else add("services", "Services", `${shopUrl}/services`);
 
-  const aboutIndex = findAboutPageIndex();
-  const contactIndex = state.pages.findIndex((page) => String(page.PageType || "").toLowerCase() === "contact");
-  add("about", "About", aboutIndex >= 0 ? pageUrl(state.pages[aboutIndex], aboutIndex) : `${shopUrl}/about`);
-  add("contact", "Contact", contactIndex >= 0 ? pageUrl(state.pages[contactIndex], contactIndex) : `${shopUrl}/contact`);
+  add("about", "About", `${shopUrl}/about`);
+  add("contact", "Contact", `${shopUrl}/contact`);
 
+  // The owner's other pages. Pages standing for a section are already linked above
+  // (or, for Services / Gallery, below), so they are not listed twice.
+  const sectionPages = new Set(SECTION_PAGES.map((section) => state.pages[findSectionPageIndex(section)]).filter(Boolean));
   state.pages.forEach((page, index) => {
-    const type = String(page.PageType || "custom").toLowerCase();
-    if (["about", "contact"].includes(type)) return;
+    if (sectionPages.has(page)) return;
     add(`page-${page.Slug || index}`, page.PageName || slugTitle(page.Slug || "Page"), pageUrl(page, index));
   });
-  if (isEcommerce && state.services.length && !state.pages.some((page) => String(page.PageType || "").toLowerCase() === "services")) {
+  if (isEcommerce && (state.services.length || findSectionPageIndex("services") >= 0)) {
     add("services", "Services", `${shopUrl}/services`);
   }
+  if (findSectionPageIndex("gallery") >= 0) add("gallery", "Gallery", `${shopUrl}/gallery`);
   if (state.portfolio.length) add("portfolio", "Portfolio", `${shopUrl}/portfolio`);
   if (isEcommerce && state.coupons.length) add("offers", "Offers", `${shopUrl}/offers`);
   if (state.banners.length) add("banners", "Banners", `${shopUrl}/banners`);
@@ -1190,7 +1203,7 @@ function renderDedicatedRoute(routeInfo) {
   const hasContactDetailsInPage = /\b(address|phone|email|opening hours)\b/i.test(pageText);
   const routeSection = pageType === "services" ? `<section class="content-section">${renderServiceCards()}</section>` : pageType === "gallery" && !pageHtml ? `<section class="content-section"><div class="public-content-body"><p>Gallery images can be added to this page from the Website Editor.</p></div></section>` : "";
   const pageTitleSection = !hasDesignedHeading || !pageHtml ? `<section class="public-page-hero page-gutter"><span class="eyebrow"><span class="eyebrow-line"></span>${escapeHTML(shop.ShopName || "OUR STORY").toUpperCase()}</span><h1>${escapeHTML(pageTitle)}</h1>${pageType === "custom" ? "" : `<p>${escapeHTML(settings.Tagline || "Thoughtfully made for you.")}</p>`}</section>` : "";
-  app.innerHTML = `${isPreview ? `<div class="preview-ribbon">DESIGN PREVIEW <span>·</span> EXAMPLE CONTENT ONLY</div>` : ""}<div class="announcement"><span class="announcement-spark">✳</span> ${escapeHTML(settings.City || shop.ShopName || "Welcome")} <span class="announcement-separator">·</span> ${escapeHTML(settings.Tagline || "A little shop with a lot of heart")}</div>${renderHeader(isEcommerce)}<main class="public-page-main">${pageTitleSection}${pageHtml ? `<div class="public-html-frame-wrap"><iframe class="public-page-html-frame" title="${escapeHTML(pageTitle)}" sandbox="allow-same-origin" loading="eager"></iframe></div>` : `<div class="public-content-wrap page-gutter"><article class="public-content-body">${pageType === "about" ? `<p>${escapeHTML(settings.AboutUs || `Welcome to ${shop.ShopName || "our shop"}. We are glad you are here.`)}</p>` : ""}</article></div>`}${routeSection}${pageType === "about" || pageType === "contact" ? `<section class="content-section page-gutter">${pageType === "contact" ? (hasContactDetailsInPage ? "" : renderContactCard()) : `<div class="public-contact-cta"><div><span class="eyebrow">A LITTLE MORE</span><h2>We’d love to hear from you.</h2></div><a class="button button-dark" href="${shopHomeUrl()}/contact">Get in touch ${icon("arrow", 17)}</a></div>`}</section>` : ""}${isEcommerce ? `<section class="content-section page-gutter"><a class="button button-dark" href="${shopHomeHref()}#collections">Browse the collection ${icon("arrow", 17)}</a></section>` : ""}</main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
+  app.innerHTML = `${isPreview ? `<div class="preview-ribbon">DESIGN PREVIEW <span>·</span> EXAMPLE CONTENT ONLY</div>` : ""}<div class="announcement"><span class="announcement-spark">✳</span> ${escapeHTML(settings.City || shop.ShopName || "Welcome")} <span class="announcement-separator">·</span> ${escapeHTML(settings.Tagline || "A little shop with a lot of heart")}</div>${renderHeader(isEcommerce)}<main class="public-page-main">${pageTitleSection}${pageHtml ? `<div class="public-html-frame-wrap"><iframe class="public-page-html-frame" title="${escapeHTML(pageTitle)}" sandbox="allow-same-origin" loading="eager"></iframe></div>` : pageType === "about" ? `<div class="public-content-wrap page-gutter"><article class="public-content-body"><p>${escapeHTML(settings.AboutUs || `Welcome to ${shop.ShopName || "our shop"}. We are glad you are here.`)}</p></article></div>` : ""}${routeSection}${pageType === "about" || pageType === "contact" ? `<section class="content-section page-gutter">${pageType === "contact" ? (hasContactDetailsInPage ? "" : renderContactCard()) : `<div class="public-contact-cta"><div><span class="eyebrow">A LITTLE MORE</span><h2>We’d love to hear from you.</h2></div><a class="button button-dark" href="${shopHomeUrl()}/contact">Get in touch ${icon("arrow", 17)}</a></div>`}</section>` : ""}${isEcommerce ? `<section class="content-section page-gutter"><a class="button button-dark" href="${shopHomeHref()}#collections">Browse the collection ${icon("arrow", 17)}</a></section>` : ""}</main>${renderFooter()}${state.cartOpen ? renderCartDrawer() : ""}${state.checkoutOpen ? renderCheckout() : ""}`;
   if (pageHtml) mountPublicPageContent(pageHtml);
   bindEvents();
 }
@@ -1210,8 +1223,7 @@ function render() {
   const isEcommerce = isEcommerceShop();
   const banner = state.banners[0];
   const editorialBanners = state.banners.slice(1, 4);
-  const aboutPageIndex = findAboutPageIndex();
-  const aboutLink = aboutPageIndex >= 0 ? pageUrl(state.pages[aboutPageIndex], aboutPageIndex) : `${shopHomeUrl()}/about`;
+  const aboutLink = `${shopHomeUrl()}/about`;
   const serviceLink = `${shopHomeUrl()}/services`;
   const title = banner?.Title || settings.Tagline || `A little more ${shop.ShopName || "you"}.`;
   const subtitle = banner?.Subtitle || settings.AboutUs || "Thoughtfully chosen favourites, made easy to discover and lovely to bring home.";
