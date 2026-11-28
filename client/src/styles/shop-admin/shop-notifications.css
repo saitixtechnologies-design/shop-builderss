@@ -1,0 +1,345 @@
+/* =====================================================
+   SHOP ADMIN NOTIFICATIONS (bell + panel)
+===================================================== */
+
+.shop-notifications {
+    position: relative;
+}
+
+.shop-topbar-icon-btn.active {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.shop-notice-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+
+    background: #ef4444;
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.shop-notice-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+
+    width: 380px;
+    max-height: min(560px, calc(100vh - 100px));
+
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    background: #ffffff;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+
+    overflow: hidden;
+    z-index: 1000;
+
+    animation: shop-notice-in 0.16s ease-out;
+}
+
+@keyframes shop-notice-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.shop-notice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 14px 14px 12px 16px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.shop-notice-header > div:first-child {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+
+.shop-notice-header strong {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.shop-notice-header span {
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.shop-notice-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.shop-notice-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 6px 8px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+    color: #2563eb;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+
+    cursor: pointer;
+}
+
+.shop-notice-link:hover {
+    background: #eff6ff;
+}
+
+.shop-notice-close {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+    color: #64748b;
+
+    cursor: pointer;
+}
+
+.shop-notice-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.shop-notice-list {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 4px 0 8px;
+}
+
+.shop-notice-section h3 {
+    margin: 10px 16px 4px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.shop-notice-section ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.shop-notice {
+    position: relative;
+
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+
+    padding: 10px 30px 10px 16px;
+
+    border: 0;
+    background: transparent;
+
+    font: inherit;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.shop-notice:hover,
+.shop-notice:focus-visible {
+    background: #f8fafc;
+    outline: none;
+}
+
+.shop-notice.unread {
+    background: #f5f9ff;
+}
+
+.shop-notice.unread:hover {
+    background: #eef5ff;
+}
+
+.shop-notice-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+}
+
+.shop-notice-icon.info { background: #eff6ff; color: #2563eb; }
+.shop-notice-icon.good { background: #ecfdf5; color: #059669; }
+.shop-notice-icon.warn { background: #fffbeb; color: #d97706; }
+.shop-notice-icon.danger { background: #fef2f2; color: #dc2626; }
+.shop-notice-icon.muted { background: #f1f5f9; color: #64748b; }
+
+.shop-notice-body {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.shop-notice-body strong {
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.shop-notice.unread .shop-notice-body strong {
+    font-weight: 750;
+}
+
+.shop-notice-body span {
+    color: #475569;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.shop-notice-body time {
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.shop-notice-dot {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: #2563eb;
+
+    transform: translateY(-50%);
+}
+
+.shop-notice-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
+    padding: 34px 24px;
+
+    color: #64748b;
+    font-size: 13px;
+    text-align: center;
+}
+
+.shop-notice-state p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.shop-notice-state strong {
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.shop-notice-empty-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 4px;
+
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+/* Phones: the panel spans the screen just under the top bar. */
+@media (max-width: 640px) {
+    .shop-notice-panel {
+        position: fixed;
+        top: 70px;
+        left: 10px;
+        right: 10px;
+
+        width: auto;
+        max-height: calc(100dvh - 84px);
+    }
+
+    .shop-notice-link {
+        padding: 6px;
+    }
+}
+
+@media (max-width: 380px) {
+    .shop-notice-link {
+        font-size: 0;
+        gap: 0;
+    }
+
+    .shop-notice-link svg {
+        width: 17px;
+        height: 17px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .shop-notice-panel {
+        animation: none;
+    }
+}

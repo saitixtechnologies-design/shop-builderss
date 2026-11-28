@@ -33,6 +33,7 @@ const guideText = {
             ["Portfolio", "Show photos of your work or finished projects.", ["Open Portfolio and choose Add Item.", "Choose a photo of your work.", "Add a short title and description.", "Save and check it in Live Preview."], "Only add photos you have permission to use."],
             ["Coupons", "Give customers a discount code for their order.", ["Open Coupons and choose Add Coupon.", "Create a short code customers can type.", "Choose the discount and its end date.", "Save and share the code with customers."], "Check the end date and discount before sharing."],
             ["Reports", "Review your shop activity and sales summary.", ["Open Reports from the sidebar.", "Choose a date range if one is shown.", "Review the totals and recent activity."], "A report is a summary. Open Orders to see each order."],
+            ["Notifications", "The bell at the top tells you about new orders, low or finished stock, new customers and new enquiries.", ["Look at the bell at the top right. A red number means there is something new.", "Click the bell to see the list. \"Needs attention\" shows stock and late orders first.", "Click a notification to open that section.", "Click \"Mark all as read\" when you have seen everything."], "The bell checks for new things every minute while the dashboard is open."],
         ],
     },
     hi: {
@@ -63,6 +64,7 @@ const guideText = {
             ["पोर्टफ़ोलियो", "अपने काम या पूरे किए गए प्रोजेक्ट की तस्वीरें दिखाएँ।", ["पोर्टफ़ोलियो खोलें और नई जानकारी जोड़ें।", "अपने काम की तस्वीर चुनें।", "छोटा शीर्षक और जानकारी लिखें।", "सेव करें और लाइव प्रीव्यू में देखें।"], "वही तस्वीरें जोड़ें जिनका उपयोग करने की अनुमति हो।"],
             ["कूपन", "ग्राहक को ऑर्डर पर छूट देने का कोड बनाएँ।", ["कूपन खोलें और नया कूपन चुनें।", "छोटा कोड बनाएँ जिसे ग्राहक लिख सके।", "छूट और आखिरी तारीख चुनें।", "सेव करके ग्राहकों को कोड बताएँ।"], "साझा करने से पहले छूट और आखिरी तारीख जाँचें।"],
             ["रिपोर्ट", "दुकान की बिक्री और काम का सारांश देखें।", ["बगल की सूची से रिपोर्ट खोलें।", "तारीख पूछे तो तारीख चुनें।", "कुल बिक्री और नया काम देखें।"], "रिपोर्ट सारांश है। हर ऑर्डर देखने के लिए ऑर्डर खोलें।"],
+            ["सूचनाएँ", "ऊपर की घंटी नए ऑर्डर, कम या ख़त्म स्टॉक, नए ग्राहक और नई पूछताछ बताती है।", ["ऊपर दाईं ओर घंटी देखें। लाल नंबर का मतलब है कुछ नया आया है।", "सूची देखने के लिए घंटी दबाएँ। \"ध्यान दें\" में स्टॉक और देर वाले ऑर्डर पहले दिखते हैं।", "जिस सूचना को दबाएँगे, उसका भाग खुल जाएगा।", "सब देखने के बाद \"सब पढ़ा हुआ करें\" दबाएँ।"], "डैशबोर्ड खुला रहने पर घंटी हर मिनट नई जानकारी देखती है।"],
         ],
     },
     hinglish: {
@@ -93,6 +95,7 @@ const guideText = {
             ["Portfolio", "Apne kaam aur complete projects ki photos dikhayein.", ["Portfolio kholkar Add Item chuniye.", "Apne kaam ki photo chuniye.", "Chhota title aur description jodiye.", "Save karke Live Preview mein check karein."], "Sirf wahi photos add karein jinhe use karne ki permission ho."],
             ["Coupons", "Customers ke liye order discount code banayein.", ["Coupons kholkar Add Coupon chuniye.", "Chhota code banayein jo customer type kar sake.", "Discount aur last date chuniye.", "Save karke code customers ke saath share karein."], "Share karne se pehle discount aur date check karein."],
             ["Reports", "Shop activity aur sales ka short summary dekhein.", ["Sidebar se Reports kholiye.", "Date range pooche to chuniye.", "Total sales aur latest activity dekhein."], "Report ek summary hai. Har order ke liye Orders kholiye."],
+            ["Notifications", "Upar ki ghanti naye orders, kam ya khatam stock, naye customers aur nayi enquiries batati hai.", ["Upar right mein ghanti dekhein. Laal number matlab kuch naya aaya hai.", "List dekhne ke liye ghanti dabaiye. \"Dhyan dein\" mein stock aur late orders pehle dikhte hain.", "Notification dabaiye, uska section khul jayega.", "Sab dekhne ke baad \"Sab read mark karein\" dabaiye."], "Dashboard khula rahe to ghanti har minute nayi cheezein check karti hai."],
         ],
     },
 };
@@ -102,7 +105,7 @@ const guideRoutes = [
     "/shop-admin/settings", "/shop-admin/products", "/shop-admin/categories",
     "/shop-admin/brands", "/shop-admin/services", "/shop-admin/orders",
     "/shop-admin/customers", "/shop-admin/banners", "/shop-admin/portfolio",
-    "/shop-admin/coupons", "/shop-admin/reports",
+    "/shop-admin/coupons", "/shop-admin/reports", "/shop-admin/dashboard",
 ];
 
 function ShopAdminHelp() {

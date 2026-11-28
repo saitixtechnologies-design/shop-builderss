@@ -1,6 +1,5 @@
 import {
     Menu,
-    Bell,
     ChevronDown,
     Store,
     User,
@@ -9,6 +8,8 @@ import {
 
 import { useEffect, useRef, useState } from "react";
 import { getShopAdminLanguage, getShopAdminTenantId, readShopAdminUser, setShopAdminLanguage } from "../../lib/shopAdminLanguage.js";
+
+import NotificationBell from "./NotificationBell.jsx";
 
 import "../../styles/shop-admin/shop-admin-topbar.css";
 
@@ -35,6 +36,7 @@ function ShopAdminTopbar({ onMenuClick }) {
     }
 
     const shop = user?.shop || {};
+    const isServiceShop = String(shop.shopType || shop.ShopType || "Ecommerce").toLowerCase() === "service";
 
     const shopName =
         shop.shopName ||
@@ -231,18 +233,10 @@ function ShopAdminTopbar({ onMenuClick }) {
 
                 {/* Notification */}
 
-                <button
-                    type="button"
-                    className="shop-topbar-icon-btn"
-                    aria-label="Notifications"
-                    title="Notifications"
-                >
-
-                    <Bell size={19} />
-
-                    <span className="notification-dot" />
-
-                </button>
+                <NotificationBell
+                    language={language}
+                    isServiceShop={isServiceShop}
+                />
 
 
                 {/* Divider */}
