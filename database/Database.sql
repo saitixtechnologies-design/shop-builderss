@@ -526,6 +526,11 @@ BEGIN
         StockDeducted BIT NOT NULL
             CONSTRAINT DF_Orders_StockDeducted DEFAULT 0,
 
+        -- Online = the shop's website; Counter / Phone / WhatsApp / Other = entered in Add Sale
+        OrderSource NVARCHAR(20) NOT NULL
+            CONSTRAINT DF_Orders_OrderSource DEFAULT N'Online'
+            CONSTRAINT CK_Orders_OrderSource CHECK (OrderSource IN (N'Online', N'Counter', N'Phone', N'WhatsApp', N'Other')),
+
         CONSTRAINT FK_Orders_Shops
             FOREIGN KEY (ShopID) REFERENCES dbo.Shops(ShopID),
 

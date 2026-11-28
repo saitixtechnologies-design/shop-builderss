@@ -6,6 +6,8 @@ import { eachDate, readDateRange, sqlIndiaDate, sqlIndiaDateRange, sqlIndiaTime 
 // Dates are Indian dates (see utils/indiaTime.js). Revenue = orders that are not cancelled.
 
 export const ORDER_STATUSES = ["Pending", "Confirmed", "Processing", "Ready", "Out For Delivery", "Delivered", "Cancelled"];
+// Online = the shop's website; the others are sales entered in Shop Admin → Add Sale.
+export const ORDER_SOURCES = ["Online", "Counter", "Phone", "WhatsApp", "Other"];
 const MAX_PAGE_SIZE = 100;
 const MAX_EXPORT_ROWS = 10_000;
 
@@ -36,6 +38,11 @@ function orderFilters(req) {
         where.push("o.OrderStatus = @Status");
         params.Status = status;
     }
+    const source = String(req.query.source || "");
+    if (ORDER_SOURCES.includes(source)) {
+        where.push("o.OrderSource = @Source");
+        params.Source = source;
+    }
     const customerID = Number.parseInt(req.query.customerId, 10);
     if (customerID > 0) {
         where.push("o.CustomerID = @CustomerID");
@@ -56,6 +63,7 @@ function orderFilters(req) {
 
 const ORDER_COLUMNS = `
     o.OrderID, o.OrderNumber, o.OrderStatus, o.CustomerID,
+    o.OrderSource, o.PaymentStatus, o.PaymentMethod,
     COALESCE(c.FullName, o.ShippingName) AS CustomerName,
     COALESCE(c.Phone, o.ShippingPhone) AS CustomerPhone,
     o.ShippingCity, o.SubTotal, o.DiscountAmount, o.ShippingAmount, o.TaxAmount, o.GrandTotal,
@@ -111,7 +119,7 @@ export const getOrderSummary = async (req, res) => {
         const scoped = () => db.request().input("ShopID", shopIdFrom(req)).input("From", range.from).input("To", range.to);
         const inRange = `o.ShopID = @ShopID AND ${sqlIndiaDateRange("o.CreatedAt")}`;
 
-        const [totals, daily, byStatus, topProducts] = await Promise.all([
+        const [totals, daily, byStatus, topProducts, bySource] = await Promise.all([
             scoped().query(`
                 SELECT
                     COUNT(CASE WHEN o.OrderStatus <> N'Cancelled' THEN 1 END) AS Orders,
@@ -146,6 +154,12 @@ export const getOrderSummary = async (req, res) => {
                 WHERE ${inRange} AND o.OrderStatus <> N'Cancelled'
                 GROUP BY oi.ProductName
                 ORDER BY SUM(oi.TotalPrice) DESC
+            `),
+            scoped().query(`
+                SELECT o.OrderSource AS Source, COUNT(*) AS Orders, COALESCE(SUM(o.GrandTotal), 0) AS Revenue
+                FROM dbo.Orders o
+                WHERE ${inRange} AND o.OrderStatus <> N'Cancelled'
+                GROUP BY o.OrderSource
             `)
         ]);
 
@@ -176,7 +190,11 @@ export const getOrderSummary = async (req, res) => {
                     const row = byStatus.recordset.find((entry) => entry.Status === status);
                     return { status, orders: row?.Orders || 0, value: Number(row?.Value || 0) };
                 }),
-                topProducts: topProducts.recordset.map((row) => ({ name: row.ProductName, units: row.Units, revenue: Number(row.Revenue) }))
+                topProducts: topProducts.recordset.map((row) => ({ name: row.ProductName, units: row.Units, revenue: Number(row.Revenue) })),
+                bySource: ORDER_SOURCES.map((source) => {
+                    const row = bySource.recordset.find((entry) => entry.Source === source);
+                    return { source, orders: row?.Orders || 0, revenue: Number(row?.Revenue || 0) };
+                })
             }
         });
     } catch (error) {
@@ -208,15 +226,18 @@ export const exportOrders = async (req, res) => {
             ORDER BY o.CreatedAt DESC, o.OrderID DESC
         `);
 
-        const header = ["Order number", "Date (IST)", "Customer", "Phone", "City", "Items", "Status", "Subtotal", "Discount", "Total"];
+        const header = ["Order number", "Date (IST)", "Source", "Customer", "Phone", "City", "Items", "Status", "Payment", "Paid", "Subtotal", "Discount", "Total"];
         const lines = result.recordset.map((order) => [
             order.OrderNumber,
             new Date(order.CreatedAtIndia).toISOString().slice(0, 16).replace("T", " "),
+            order.OrderSource,
             order.CustomerName,
             order.CustomerPhone,
             order.ShippingCity,
             order.ItemCount,
             order.OrderStatus,
+            order.PaymentMethod,
+            order.PaymentStatus,
             Number(order.SubTotal).toFixed(2),
             Number(order.DiscountAmount).toFixed(2),
             Number(order.GrandTotal).toFixed(2)
@@ -239,6 +260,7 @@ export const exportOrders = async (req, res) => {
 async function findOrder(db, shopID, orderID) {
     const result = await db.request().input("ShopID", shopID).input("OrderID", orderID).query(`
         SELECT o.OrderID, o.OrderNumber, o.OrderStatus, o.CustomerID,
+            o.OrderSource, o.PaymentStatus, o.PaymentMethod,
             COALESCE(c.FullName, o.ShippingName) AS CustomerName,
             COALESCE(c.Phone, o.ShippingPhone) AS CustomerPhone,
             c.Email AS CustomerEmail,
@@ -328,9 +350,9 @@ export const getOrderAlerts = async (req, res) => {
         const afterID = Math.max(0, Number.parseInt(req.query.afterId, 10) || 0);
         const result = await getDB().request().input("ShopID", shopIdFrom(req)).input("AfterID", afterID).query(`
             SELECT
-                (SELECT COUNT(*) FROM dbo.Orders WHERE ShopID = @ShopID AND OrderID > @AfterID) AS NewOrders,
-                (SELECT TOP 1 OrderID FROM dbo.Orders WHERE ShopID = @ShopID ORDER BY OrderID DESC) AS LatestOrderID,
-                (SELECT TOP 1 OrderNumber FROM dbo.Orders WHERE ShopID = @ShopID ORDER BY OrderID DESC) AS LatestOrderNumber
+                (SELECT COUNT(*) FROM dbo.Orders WHERE ShopID = @ShopID AND OrderSource = N'Online' AND OrderID > @AfterID) AS NewOrders,
+                (SELECT TOP 1 OrderID FROM dbo.Orders WHERE ShopID = @ShopID AND OrderSource = N'Online' ORDER BY OrderID DESC) AS LatestOrderID,
+                (SELECT TOP 1 OrderNumber FROM dbo.Orders WHERE ShopID = @ShopID AND OrderSource = N'Online' ORDER BY OrderID DESC) AS LatestOrderNumber
         `);
         const row = result.recordset[0];
         res.set("Cache-Control", "no-store");

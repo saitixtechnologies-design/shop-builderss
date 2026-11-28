@@ -315,3 +315,33 @@
     .invoice-meta { text-align: left; }
     .invoice-meta p { justify-content: flex-start; }
 }
+
+/* ------------------------------------------------------------ order source (Add Sale) */
+
+.order-add-sale-button { background: var(--orders-accent, #6366f1); }
+.orders-source-filter select {
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 11px;
+    background: #fff;
+    color: var(--orders-ink, #111827);
+    font: inherit;
+    font-size: 14px;
+}
+.order-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.order-source-tag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.order-source-tag.is-online { background: #f1f5f9; color: #475569; }
+.order-source-tag.is-counter { background: #ecfdf5; color: #047857; }
+.order-source-tag.is-whatsapp { background: #f0fdf4; color: #15803d; }
+.order-source-tag.is-phone { background: #eff6ff; color: #1d4ed8; }
+.order-source-tag.is-unpaid { background: #fef2f2; color: #b91c1c; }

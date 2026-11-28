@@ -32,6 +32,17 @@ export const fetchOrderSummary = (range) => request(`/summary${toQuery(range)}`)
 export const fetchOrder = (orderID) => request(`/${orderID}`).then((result) => result.data);
 export const fetchOrderAlerts = (afterId) => request(`/alerts${toQuery({ afterId })}`).then((result) => result.data);
 export const changeOrderStatus = (orderID, status) => request(`/${orderID}/status`, { method: "PATCH", body: { status } });
+
+// ------------------------------------------------------------ Add Sale (counter / phone / WhatsApp)
+
+/** Where an order came from. "Online" = the shop's website; the rest are entered in Add Sale. */
+export const ORDER_SOURCES = ["Online", "Counter", "Phone", "WhatsApp", "Other"];
+export const SALE_SOURCES = ORDER_SOURCES.filter((source) => source !== "Online");
+export const SALE_PAYMENT_METHODS = ["Cash", "UPI", "Card", "Bank transfer", "Other"];
+
+export const fetchSaleProducts = (search) => request(`/sale-products${toQuery({ search })}`).then((result) => result.data);
+/** Saves a counter / phone / WhatsApp sale; stock goes down at once. Returns { orderID, orderNumber, total }. */
+export const createSale = (sale) => request("/", { method: "POST", body: sale }).then((result) => result.data);
 export const addOrderNote = (orderID, note) => request(`/${orderID}/notes`, { method: "POST", body: { note } }).then((result) => result.data);
 
 /** Downloads the orders matching the filters as a CSV file (opens in Excel). */

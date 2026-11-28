@@ -34,6 +34,7 @@ const guideText = {
             ["Coupons", "Give customers a discount code for their order.", ["Open Coupons and choose Add Coupon.", "Create a short code customers can type.", "Choose the discount and its end date.", "Save and share the code with customers."], "Check the end date and discount before sharing."],
             ["Reports", "Review your shop activity and sales summary.", ["Open Reports from the sidebar.", "Choose a date range if one is shown.", "Review the totals and recent activity."], "A report is a summary. Open Orders to see each order."],
             ["Notifications", "The bell at the top tells you about new orders, low or finished stock, new customers and new enquiries.", ["Look at the bell at the top right. A red number means there is something new.", "Click the bell to see the list. \"Needs attention\" shows stock and late orders first.", "Click a notification to open that section.", "Click \"Mark all as read\" when you have seen everything."], "The bell checks for new things every minute while the dashboard is open."],
+            ["Add Sale", "Record sales made at the counter, on the phone or on WhatsApp, so stock and reports stay correct.", ["Open Add Sale from the sidebar, or the Add sale button on Orders.", "Search for a product and tap it to add it to the bill. Change the quantity or price if needed.", "Choose where it was sold, how the customer paid, and whether they have the items.", "Add the customer's phone number if you want the sale in their record.", "Press Save sale. Stock goes down and the sale appears in Orders and Reports."], "Cancel a sale from Orders if it was a mistake: the stock comes back."],
         ],
     },
     hi: {
@@ -65,6 +66,7 @@ const guideText = {
             ["कूपन", "ग्राहक को ऑर्डर पर छूट देने का कोड बनाएँ।", ["कूपन खोलें और नया कूपन चुनें।", "छोटा कोड बनाएँ जिसे ग्राहक लिख सके।", "छूट और आखिरी तारीख चुनें।", "सेव करके ग्राहकों को कोड बताएँ।"], "साझा करने से पहले छूट और आखिरी तारीख जाँचें।"],
             ["रिपोर्ट", "दुकान की बिक्री और काम का सारांश देखें।", ["बगल की सूची से रिपोर्ट खोलें।", "तारीख पूछे तो तारीख चुनें।", "कुल बिक्री और नया काम देखें।"], "रिपोर्ट सारांश है। हर ऑर्डर देखने के लिए ऑर्डर खोलें।"],
             ["सूचनाएँ", "ऊपर की घंटी नए ऑर्डर, कम या ख़त्म स्टॉक, नए ग्राहक और नई पूछताछ बताती है।", ["ऊपर दाईं ओर घंटी देखें। लाल नंबर का मतलब है कुछ नया आया है।", "सूची देखने के लिए घंटी दबाएँ। \"ध्यान दें\" में स्टॉक और देर वाले ऑर्डर पहले दिखते हैं।", "जिस सूचना को दबाएँगे, उसका भाग खुल जाएगा।", "सब देखने के बाद \"सब पढ़ा हुआ करें\" दबाएँ।"], "डैशबोर्ड खुला रहने पर घंटी हर मिनट नई जानकारी देखती है।"],
+            ["बिक्री जोड़ें", "काउंटर, फ़ोन या WhatsApp पर हुई बिक्री लिखें, ताकि स्टॉक और रिपोर्ट सही रहें।", ["बगल की सूची से बिक्री जोड़ें खोलें, या ऑर्डर पेज पर बिक्री जोड़ें बटन दबाएँ।", "उत्पाद खोजें और बिल में जोड़ने के लिए उस पर टैप करें। ज़रूरत हो तो मात्रा या दाम बदलें।", "चुनें कि बिक्री कहाँ हुई, भुगतान कैसे हुआ और ग्राहक को सामान मिला या नहीं।", "ग्राहक के खाते में जोड़ने के लिए उसका फ़ोन नंबर लिखें।", "बिक्री सेव करें दबाएँ। स्टॉक कम होगा और बिक्री ऑर्डर व रिपोर्ट में दिखेगी।"], "ग़लती से बिक्री जुड़ गई हो तो ऑर्डर में उसे रद्द करें, स्टॉक वापस आ जाएगा।"],
         ],
     },
     hinglish: {
@@ -96,6 +98,7 @@ const guideText = {
             ["Coupons", "Customers ke liye order discount code banayein.", ["Coupons kholkar Add Coupon chuniye.", "Chhota code banayein jo customer type kar sake.", "Discount aur last date chuniye.", "Save karke code customers ke saath share karein."], "Share karne se pehle discount aur date check karein."],
             ["Reports", "Shop activity aur sales ka short summary dekhein.", ["Sidebar se Reports kholiye.", "Date range pooche to chuniye.", "Total sales aur latest activity dekhein."], "Report ek summary hai. Har order ke liye Orders kholiye."],
             ["Notifications", "Upar ki ghanti naye orders, kam ya khatam stock, naye customers aur nayi enquiries batati hai.", ["Upar right mein ghanti dekhein. Laal number matlab kuch naya aaya hai.", "List dekhne ke liye ghanti dabaiye. \"Dhyan dein\" mein stock aur late orders pehle dikhte hain.", "Notification dabaiye, uska section khul jayega.", "Sab dekhne ke baad \"Sab read mark karein\" dabaiye."], "Dashboard khula rahe to ghanti har minute nayi cheezein check karti hai."],
+            ["Add Sale", "Counter, phone ya WhatsApp par hui sale likhein, taaki stock aur reports sahi rahein.", ["Sidebar se Add Sale kholiye, ya Orders par Add sale button dabaiye.", "Product search karke tap kariye, woh bill mein jud jayega. Zaroorat ho to quantity ya price badlein.", "Chuniye sale kahan hui, payment kaise hua aur customer ko saman mila ya nahi.", "Customer ke record mein jodne ke liye uska phone number likhein.", "Save sale dabaiye. Stock kam hoga aur sale Orders aur Reports mein dikhegi."], "Galti se sale jud gayi ho to Orders mein use cancel karein, stock wapas aa jayega."],
         ],
     },
 };
@@ -105,7 +108,7 @@ const guideRoutes = [
     "/shop-admin/settings", "/shop-admin/products", "/shop-admin/categories",
     "/shop-admin/brands", "/shop-admin/services", "/shop-admin/orders",
     "/shop-admin/customers", "/shop-admin/banners", "/shop-admin/portfolio",
-    "/shop-admin/coupons", "/shop-admin/reports", "/shop-admin/dashboard",
+    "/shop-admin/coupons", "/shop-admin/reports", "/shop-admin/dashboard", "/shop-admin/sales/new",
 ];
 
 function ShopAdminHelp() {

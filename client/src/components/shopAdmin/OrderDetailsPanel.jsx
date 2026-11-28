@@ -141,6 +141,10 @@ export default function OrderDetailsPanel({ orderId, onClose, onStatusChanged })
                                 {Number(order.ShippingAmount) > 0 && <div><dt>Delivery</dt><dd>{formatMoney(order.ShippingAmount)}</dd></div>}
                                 {Number(order.TaxAmount) > 0 && <div><dt>Tax</dt><dd>{formatMoney(order.TaxAmount)}</dd></div>}
                                 <div className="is-total"><dt>Total</dt><dd>{formatMoney(order.GrandTotal)}</dd></div>
+                                <div><dt>Sold via</dt><dd>{!order.OrderSource || order.OrderSource === "Online" ? "Website" : order.OrderSource}</dd></div>
+                                {order.OrderSource && order.OrderSource !== "Online" && (
+                                    <div><dt>Payment</dt><dd>{order.PaymentMethod} · {order.PaymentStatus === "Paid" ? "Paid" : "Not paid yet"}</dd></div>
+                                )}
                             </dl>
                         </section>
 

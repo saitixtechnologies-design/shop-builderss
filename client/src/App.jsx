@@ -41,6 +41,7 @@ import ShopBrands from "./pages/shopAdmin/ShopBrands";
 import ShopServices from "./pages/shopAdmin/ShopServices";
 import ShopCustomers from "./pages/shopAdmin/ShopCustomers";
 import ShopOrders from "./pages/shopAdmin/ShopOrders";
+import ShopAddSale from "./pages/shopAdmin/ShopAddSale";
 import ShopOrderInvoice from "./pages/shopAdmin/ShopOrderInvoice";
 import ShopReports from "./pages/shopAdmin/ShopReports";
 import ShopSettings from "./pages/shopAdmin/ShopSettings";
@@ -295,6 +296,7 @@ function App() {
 
                     {/* Orders */}
                     <Route path="orders" element={<ShopOrders />} />
+                    <Route path="sales/new" element={<ShopAddSale />} />
                     <Route path="orders/:id/invoice" element={<ShopOrderInvoice />} />
 
                     {/* Customers */}

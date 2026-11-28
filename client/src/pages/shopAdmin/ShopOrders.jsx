@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { toast } from "react-toastify";
-import { BellOff, BellRing, ChevronLeft, ChevronRight, Download, Eye, Search, X } from "lucide-react";
+import { BellOff, BellRing, ChevronLeft, ChevronRight, CirclePlus, Download, Eye, Search, X } from "lucide-react";
 import DateRangeFilter from "../../components/shopAdmin/DateRangeFilter.jsx";
 import OrderDetailsPanel from "../../components/shopAdmin/OrderDetailsPanel.jsx";
 import { isOrderSoundOn, markOrdersSeen, setOrderSound } from "../../hooks/useNewOrderAlerts.js";
 import {
+    ORDER_SOURCES,
     ORDER_STATUSES,
     changeOrderStatus,
     downloadOrdersCsv,
@@ -28,6 +29,7 @@ export default function ShopOrders() {
 
     const [range, setRange] = useState(() => ({ preset: "30d", ...presetRange("30d") }));
     const [status, setStatus] = useState("All");
+    const [source, setSource] = useState("All");
     const [searchInput, setSearchInput] = useState("");
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
@@ -46,11 +48,12 @@ export default function ShopOrders() {
         from: range.from,
         to: range.to,
         status,
+        source,
         search,
         customerId,
         page,
         pageSize: PAGE_SIZE
-    }), [range.from, range.to, status, search, customerId, page]);
+    }), [range.from, range.to, status, source, search, customerId, page]);
 
     // Search after the owner stops typing.
     useEffect(() => {
@@ -91,6 +94,7 @@ export default function ShopOrders() {
 
     const changeRange = (next) => { setRange(next); setPage(1); };
     const changeStatusFilter = (next) => { setStatus(next); setPage(1); };
+    const changeSourceFilter = (next) => { setSource(next); setPage(1); };
     const clearCustomer = () => setSearchParams({});
 
     const updateStatus = async (order, nextStatus) => {
@@ -139,6 +143,9 @@ export default function ShopOrders() {
                     <p>See every order, change its status and keep notes. Times are in Indian time.</p>
                 </div>
                 <div className="orders-header-actions">
+                    <Link className="order-primary-button order-add-sale-button" to="/shop-admin/sales/new">
+                        <CirclePlus size={16} /> Add sale
+                    </Link>
                     <button type="button" className="order-secondary-button" onClick={toggleSound} aria-pressed={soundOn}>
                         {soundOn ? <BellRing size={16} /> : <BellOff size={16} />}
                         {soundOn ? "Sound on" : "Sound off"}
@@ -175,6 +182,13 @@ export default function ShopOrders() {
                         </button>
                     ))}
                 </div>
+                <label className="orders-source-filter">
+                    <span className="visually-hidden">Where the order came from</span>
+                    <select value={source} onChange={(event) => changeSourceFilter(event.target.value)}>
+                        <option value="All">All sources</option>
+                        {ORDER_SOURCES.map((name) => <option key={name} value={name}>{name === "Online" ? "Website (online)" : name}</option>)}
+                    </select>
+                </label>
                 <label className="orders-search">
                     <Search size={16} aria-hidden="true" />
                     <span className="visually-hidden">Search orders</span>
@@ -215,7 +229,13 @@ export default function ShopOrders() {
                         <tbody>
                             {orders.map((order) => (
                                 <tr key={order.OrderID}>
-                                    <td data-label="Order"><button type="button" className="order-link" onClick={() => setOpenOrderId(order.OrderID)}>{order.OrderNumber}</button></td>
+                                    <td data-label="Order">
+                                        <button type="button" className="order-link" onClick={() => setOpenOrderId(order.OrderID)}>{order.OrderNumber}</button>
+                                        <span className="order-tags">
+                                            <span className={`order-source-tag is-${String(order.OrderSource || "Online").toLowerCase()}`}>{order.OrderSource === "Online" || !order.OrderSource ? "Website" : order.OrderSource}</span>
+                                            {order.OrderSource && order.OrderSource !== "Online" && order.PaymentStatus !== "Paid" && <span className="order-source-tag is-unpaid">Not paid</span>}
+                                        </span>
+                                    </td>
                                     <td data-label="Date">{formatIndiaDateTime(order.CreatedAtIndia)}</td>
                                     <td data-label="Customer">
                                         <span className="order-customer">{order.CustomerName || "—"}</span>

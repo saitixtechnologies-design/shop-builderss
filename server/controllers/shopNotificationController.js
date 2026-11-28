@@ -4,7 +4,7 @@ import { getDB } from "../config/db.js";
 // Built from the shop's own data, so nothing extra is stored and every query is limited to the
 // signed-in owner's shop (ShopID from the sign-in token):
 //   attention: stock that ran out or is low, and orders still "Pending" after a day
-//   activity:  the latest orders, customers (online shops) or enquiries (service shops)
+//   activity:  the latest website orders, customers (online shops) or enquiries (service shops)
 // Each item has a stable key; the browser remembers which keys the owner has seen.
 
 const DEFAULT_LOW_STOCK = 5;
@@ -19,7 +19,7 @@ const ECOMMERCE_SQL = `
     SELECT TOP 20 OrderID, OrderNumber, OrderStatus, GrandTotal, ShippingName,
            DATEDIFF(second, CreatedAt, GETDATE()) AS AgeSeconds
     FROM dbo.Orders
-    WHERE ShopID = @ShopID
+    WHERE ShopID = @ShopID AND OrderSource = N'Online'
     ORDER BY OrderID DESC;
 
     SELECT COUNT(*) AS Waiting, MAX(OrderID) AS NewestID,

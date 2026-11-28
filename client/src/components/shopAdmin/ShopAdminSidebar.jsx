@@ -17,6 +17,7 @@ import {
     Eye,
     FileText,
     CircleHelp,
+    CirclePlus,
 } from "lucide-react";
 
 import { useLocation, useNavigate } from "react-router";
@@ -50,13 +51,13 @@ function ShopAdminSidebar({ isOpen, onClose }) {
     const hindiLabels = {
         Dashboard: "डैशबोर्ड", "Live Preview": "लाइव प्रीव्यू", "Shop Editor": "शॉप एडिटर",
         Products: "उत्पाद", Services: "सेवाएँ", Categories: "श्रेणियाँ", Brands: "ब्रांड",
-        Banners: "बैनर", Portfolio: "पोर्टफ़ोलियो", Orders: "ऑर्डर", Customers: "ग्राहक",
+        Banners: "बैनर", Portfolio: "पोर्टफ़ोलियो", Orders: "ऑर्डर", "Add Sale": "बिक्री जोड़ें", Customers: "ग्राहक",
         Coupons: "कूपन", Reports: "रिपोर्ट", "Shop Settings": "दुकान की सेटिंग्स", Help: "मदद",
     };
     const hinglishLabels = {
         Dashboard: "Dashboard", "Live Preview": "Live Preview", "Shop Editor": "Shop Editor",
         Products: "Products", Services: "Services", Categories: "Categories", Brands: "Brands",
-        Banners: "Banners", Portfolio: "Portfolio", Orders: "Orders", Customers: "Customers",
+        Banners: "Banners", Portfolio: "Portfolio", Orders: "Orders", "Add Sale": "Sale add karein", Customers: "Customers",
         Coupons: "Coupons", Reports: "Reports", "Shop Settings": "Shop Settings",
         Help: "Madad / Help",
     };
@@ -108,6 +109,11 @@ function ShopAdminSidebar({ isOpen, onClose }) {
             path: "/shop-admin/portfolio",
         },
         {
+            label: "Add Sale",
+            icon: CirclePlus,
+            path: "/shop-admin/sales/new",
+        },
+        {
             label: "Orders",
             icon: ShoppingCart,
             path: "/shop-admin/orders",
@@ -144,6 +150,7 @@ function ShopAdminSidebar({ isOpen, onClose }) {
               "/shop-admin/categories",
               "/shop-admin/brands",
               "/shop-admin/orders",
+              "/shop-admin/sales/new",
               "/shop-admin/customers",
               "/shop-admin/coupons",
               "/shop-admin/reports",

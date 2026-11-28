@@ -133,6 +133,24 @@ export default function ShopReports() {
                         </section>
                     </div>
 
+                    {report.bySource && (
+                        <section className="report-panel">
+                            <div className="report-panel-head">
+                                <h2>Sales by source</h2>
+                                <Link to="/shop-admin/sales/new">Add a sale</Link>
+                            </div>
+                            <ul className="report-status-list">
+                                {report.bySource.map((row) => (
+                                    <li key={row.source}>
+                                        <span className={`order-source-tag is-${row.source.toLowerCase()}`}>{row.source === "Online" ? "Website" : row.source}</span>
+                                        <span>{row.orders}</span>
+                                        <b>{formatMoney(row.revenue)}</b>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
+
                     <section className="report-panel">
                         <div className="report-panel-head">
                             <h2>Day by day</h2>

@@ -9,6 +9,7 @@ import {
     getOrderSummary,
     listOrders
 } from "../controllers/shopOrderController.js";
+import { createManualSale, listSaleProducts } from "../controllers/shopSaleController.js";
 
 // Shop Admin orders and sales reports: /api/shop-orders (online shops only).
 const router = express.Router();
@@ -18,6 +19,8 @@ router.get("/", listOrders);
 router.get("/summary", getOrderSummary);
 router.get("/export", exportOrders);
 router.get("/alerts", getOrderAlerts);
+router.get("/sale-products", listSaleProducts); // Add Sale: product search
+router.post("/", createManualSale);             // Add Sale: counter / phone / WhatsApp sale
 router.get("/:id", getOrder);
 router.patch("/:id/status", updateOrderStatus); // also gives stock back on cancel and records history
 router.post("/:id/notes", addOrderNote);
